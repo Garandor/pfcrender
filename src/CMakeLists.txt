@@ -1,10 +1,9 @@
 #Gather Sources and include folders
 SET ( SRCS "")
-SET ( INCDIRS "")
+SET ( INCDIRS ""
 
-#CMSIS
-file(GLOB_RECURSE INCFLS ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
-file(GLOB_RECURSE SRCFLS ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+file(GLOB_RECURSE INCFLS *.h)
+file(GLOB_RECURSE SRCFLS *.cpp)
 
 SET( SRCS
   ${SRCFLS}
