@@ -1,6 +1,6 @@
 #Gather Sources and include folders
 SET ( SRCS "")
-SET ( INCDIRS ""
+SET ( INCDIRS "")
 
 file(GLOB_RECURSE INCFLS *.h)
 file(GLOB_RECURSE SRCFLS *.cpp)
