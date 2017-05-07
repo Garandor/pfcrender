@@ -8,10 +8,11 @@
 #ifndef _PFCRENDER_H
 #define _PFCRENDER_H
 
-#include <stdio.h>
+#include <iostream>
 
 class PFCRender {
-	public void do_stuff();
+	public:
+		void do_stuff();
 };
 
 #endif //_PFCRENDER_H
