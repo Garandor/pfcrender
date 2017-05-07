@@ -1,5 +1,7 @@
 #include "PFCRender.h"
 
+using namespace std;
+
 PFCRender::PFCRender(){
 	do_stuff();
 }
