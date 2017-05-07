@@ -8,9 +8,9 @@
 #ifndef _PFCRENDER_H
 #define _PFCRENDER_H
 
-#include <stdio>
+#include <stdio.h>
 
-class PFCrender {
+class PFCRender {
 	public void do_stuff();
 };
 
