@@ -12,6 +12,7 @@
 
 class PFCRender {
 	public:
+		PFCRender();
 		void do_stuff();
 };
 
