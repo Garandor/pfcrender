@@ -1,6 +1,6 @@
 language: cpp
 compiler: gcc
-script: cd bin && cmake .. && make
+script: cd bin && cmake .. && make && make test
 os:
         - linux
         - osx
