@@ -1,5 +1,9 @@
-include_directories(${CMAKE_SOURCE_DIR}/src)
+include_directories(
+	${CMAKE_SOURCE_DIR}/lib/CUTE/cute
+	${CMAKE_SOURCE_DIR}/src
+	)
 
 file(GLOB_RECURSE SRC *.cpp)
-add_executable(unittest ${SRC})
-add_test(NAME UnitTests COMMAND unittest)
+#add_executable(cute ${SRC})
+add_executable(cute Test.cpp)
+add_test(NAME UnitTests COMMAND cute)
