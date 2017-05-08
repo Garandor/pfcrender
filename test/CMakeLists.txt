@@ -3,6 +3,8 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost 1.45.0)
 
 if(Boost_FOUND)
+	enable_testing()
+
 	include_directories(
 		${Boost_INCLUDE_DIRS}
 		${CMAKE_SOURCE_DIR}/lib/CUTE/cute
