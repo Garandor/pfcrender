@@ -1,5 +1,5 @@
-#ifndef P_F_C_RENDER_H
-#define P_F_C_RENDER_H
+#ifndef GUI_P_F_CMODEL_H
+#define GUI_P_F_CMODEL_H
 
 #include <string>
 #include <vector>
@@ -7,6 +7,8 @@
 #include <iostream>
 #include <assert.h>
 
+namespace GUI
+{
 /**
  * Project pfcrender 
  * 
@@ -16,12 +18,9 @@
  * 
  * @version 0.1
  */
-class PFCRender
+class PFCmodel
 {
-public:
-	PFCRender();
-
-	void do_stuff();
-
 };
+
+}  // namespace GUI
 #endif
