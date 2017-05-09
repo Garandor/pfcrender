@@ -1,19 +1,16 @@
-#include "projectinfo.h"
+#include <string>
+#include <vector>
+#include <list>
+#include <iostream>
+#include <assert.h>
 
 #include "PFCRender.h"
 
-using namespace std;
 
-PFCRender::PFCRender(){
-	do_stuff();
-}
-
-void PFCRender::do_stuff(){
-	cout << "hi, this is " << VERSION_STRING << endl;
-}
-
-int main(int argc, char** argv)
+PFCRender::PFCRender()
 {
-	new PFCRender();
-	return 0;
+}
+
+void PFCRender::do_stuff()
+{
 }
