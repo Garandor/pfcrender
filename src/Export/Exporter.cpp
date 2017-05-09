@@ -1,4 +1,5 @@
-#include "SVGExporter.h"
+
+#include "Exporter.h"
 
 namespace Export
 {
