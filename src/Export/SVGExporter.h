@@ -7,9 +7,11 @@
 #include <iostream>
 #include <assert.h>
 
+#include "Export/Exporter.h"
+
 namespace Export
 {
-class SVGExporter
+class SVGExporter : public Exporter
 {
 };
 
