@@ -9,11 +9,21 @@ foreach(_hdrfile ${INCFLS})
 endforeach()
 list(REMOVE_DUPLICATES INCDIRS)
 
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+set(CMAKE_AUTOMOC ON)
+
 
 include_directories(
 	${CMAKE_CURRENT_BINARY_DIR}
 	${INCDIRS}
 )
 
+#Check for Qt5
+find_package(Qt5Core REQUIRED)
+
 #Build executable
 add_executable(${PROJECT_NAME} ${SRCS})
+
+#Link with Qt
+target_link_libraries(${PROJECT_NAME} Qt5::Core)
