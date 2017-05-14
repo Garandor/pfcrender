@@ -1,3 +1,6 @@
+dist: trusty
+sudo: required
+
 language: cpp
 compiler:
         - gcc
@@ -8,6 +11,7 @@ addons:
                         - boost-latest
                 packages:
                         - libboost1.55-all-dev
+                        - libqt5-devel
                         - cmake
 script: cd bin && cmake .. && make && make test
 os:
