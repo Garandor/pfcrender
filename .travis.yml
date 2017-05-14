@@ -11,6 +11,7 @@ addons:
                         - libboost1.55-all-dev
                         - cmake
                         - cmake-data
+                        - libqt5-devel
 script: cd bin && cmake .. && make && make test
 os:
         - linux
