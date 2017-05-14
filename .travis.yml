@@ -1,7 +1,9 @@
-language: cpp
-compiler:
-        - gcc
-        - clang++
+before-install:
+
+         - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
+         - sudo apt-get update -qq
+         - sudo apt-get install qtbase5-dev qtdeclarative5-dev libqt5webkit5-dev libsqlite3-dev
+         - sudo apt-get install qt5-default qttools5-dev-tools
 addons:
         apt:
                 sources:
@@ -11,7 +13,12 @@ addons:
                         - libboost1.55-all-dev
                         - cmake
                         - cmake-data
-                        - libqt5-devel
+                        - qt5-default
+                        - qttools5-dev-tools
+language: cpp
+compiler:
+        - gcc
+        - clang++
 script: cd bin && cmake .. && make && make test
 os:
         - linux
