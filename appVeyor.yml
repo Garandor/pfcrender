@@ -1,5 +1,7 @@
 #Forked from https://github.com/fifengine/cpp-tutorials/blob/master/appveyor.yml
 
+
+
 # Build worker image (VM template)
 image: Visual Studio 2013
 
@@ -28,7 +30,7 @@ configuration:
 environment:
   MSBUILD_FLAGS: /verbosity:minimal /maxcpucount
   matrix:
-    - generator: "Visual Studio 12 2013"
+    - generator: "Visual Studio 14 2015 Win64"
 
 matrix:
   fast_finish: true
@@ -43,3 +45,9 @@ before_build:
   - cd %APPVEYOR_BUILD_FOLDER%/bin
   # generate build script
   - cmake %APPVEYOR_BUILD_FOLDER% -G "%generator%" -DCMAKE_INSTALL_PREFIX=%P%
+
+build_script:
+  - cd bin
+  - cmake -G "%generator%" ..
+  - cmake --build . --config Release
+  - ctest
