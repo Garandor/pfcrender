@@ -1,4 +1,3 @@
-
 #include "PNGExporter.h"
 
 namespace Export

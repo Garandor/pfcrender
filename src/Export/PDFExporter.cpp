@@ -1,4 +1,3 @@
-
 #include "PDFExporter.h"
 
 namespace Export

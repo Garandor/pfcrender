@@ -1,4 +1,3 @@
-
 #include "PFCmodel.h"
 
 namespace Model
