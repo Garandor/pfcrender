@@ -3,42 +3,27 @@ platform:
   - x64
 
 configuration:
-  - Release
   - Debug
   
-clone_folder: C:\pfcrender
-
 init:
-  - cmd: cmake --version
   - cmd: msbuild /version
   - git config --global core.autocrlf input
-  # Set "build version number" to "short-commit-hash" or when tagged to "tag name" (Travis style)
-  - ps: >-
-      if ($env:APPVEYOR_REPO_TAG -eq "true")
-      {
-        Update-AppveyorBuild -Version "$env:APPVEYOR_REPO_TAG_NAME"
-      }
-      else
-      {
-        Update-AppveyorBuild -Version "dev-$($env:APPVEYOR_REPO_COMMIT.substring(0,7))"
-      }
+
+version: {build}
 
 # specify custom environment variables
 environment:
   MSVC_DEFAULT_OPTIONS: ON
   matrix:
-    - GENERATOR: "Visual Studio 12 2013"
-      os: Visual Studio 2015
     - GENERATOR: "Visual Studio 14 2015"
       os: Visual Studio 2015
 
-install:
-  - cmd: git submodule update --init --recursive
+#install:
+#  - cmd: git submodule update --init --recursive
 
 before_build:
-  - cmd: cd C:\pfcrender\bin
-  - cmd: if "%platform%"=="Win32" cmake -G "%GENERATOR%" -DCMAKE_BUILD_TYPE=%configuration% -DBUILD_SHARED_LIBS=ON -DBOOST_ROOT="%BOOST_ROOT%" ..
-  - cmd: if "%platform%"=="x64" cmake -G "%GENERATOR% Win64" -DCMAKE_BUILD_TYPE=%configuration% -DBUILD_SHARED_LIBS=ON -DBOOST_ROOT="%BOOST_ROOT%" ..
+  - cd bin
+  - cmake -G "%GENERATOR% Win64" -DCMAKE_BUILD_TYPE=%configuration% ..
 
 build:
-  project: C:\pfcrender\bin\pfcrender.sln
+  project: pfcrender.sln
