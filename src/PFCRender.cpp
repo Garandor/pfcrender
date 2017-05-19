@@ -1,5 +1,3 @@
-using namespace std;
-
 #include "PFCRender.h"
 #include "projectinfo.h"
 #include<iostream>
@@ -14,7 +12,7 @@ void PFCRender::do_stuff()
 
 int main (int argc, char** argv)
 {
-	cout << "hi this is " << argv[0] << " V" << VERSION_STRING << endl;
+	std::cout << "hi this is " << argv[0] << " V" << VERSION_STRING << std::endl;
 	return 0;
 
 }
