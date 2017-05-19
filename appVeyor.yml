@@ -26,9 +26,11 @@ configuration:
   - Release
   - Debug
 
+generator:
+  - "MinGW Makefiles"
 install:
   - cd bin
-  - cmake -G "%generator% %platform%" ..
+  - cmake -G "%generator%" ..
 
 build_script:
   - cmake --build . --config %configuration%
