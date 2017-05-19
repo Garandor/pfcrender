@@ -1,15 +1,15 @@
 # scripts that are called at very beginning, before repo cloning
-platform:
-  - x64
-
-configuration:
-  - Debug
-  
 init:
   - cmd: msbuild /version
   - git config --global core.autocrlf input
 
 version: {build}
+
+platform:
+  - x64
+
+configuration:
+  - Debug
 
 # specify custom environment variables
 environment:
@@ -26,4 +26,4 @@ before_build:
   - cmake -G "%GENERATOR% Win64" -DCMAKE_BUILD_TYPE=%configuration% ..
 
 build:
-  project: pfcrender.sln
+  project: bin/pfcrender.sln
