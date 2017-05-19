@@ -33,15 +33,13 @@ environment:
 matrix:
   fast_finish: true
 
+install:
+  # by default, all script lines are interpreted as batch
+
+build:
+  project: INSTALL.vcxproj
+
 before_build:
   - cd %APPVEYOR_BUILD_FOLDER%/bin
   # generate build script
-  - >
-    cmake %APPVEYOR_BUILD_FOLDER%
-    -G "%generator%" 
-
-build_script:
-  # build
-  - cmake --build . --target ALL_BUILD --config %configuration% -- /nologo /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
-  # install
-  - cmake --build . --target INSTALL --config %configuration% -- /nologo
+  - cmake %APPVEYOR_BUILD_FOLDER% -G "%generator%" -DCMAKE_INSTALL_PREFIX=%P%
