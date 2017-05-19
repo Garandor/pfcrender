@@ -3,10 +3,11 @@
 
 
 # Build worker image (VM template)
-image: Visual Studio 2013
+image: Visual Studio 2015
 
 # scripts that are called at very beginning, before repo cloning
 init:
+  - git config --global core.autocrlf input
   # Set "build version number" to "short-commit-hash" or when tagged to "tag name" (Travis style)
   - ps: >-
       if ($env:APPVEYOR_REPO_TAG -eq "true")
@@ -18,8 +19,6 @@ init:
         Update-AppveyorBuild -Version "dev-$($env:APPVEYOR_REPO_COMMIT.substring(0,7))"
       }
 
-version: '{build}'
-
 platform:
   - x64
 
@@ -27,27 +26,10 @@ configuration:
   - Release
   - Debug
 
-environment:
-  MSBUILD_FLAGS: /verbosity:minimal /maxcpucount
-  matrix:
-    - generator: "Visual Studio 14 2015 Win64"
-
-matrix:
-  fast_finish: true
-
 install:
-  # by default, all script lines are interpreted as batch
-
-build:
-  project: INSTALL.vcxproj
-
-before_build:
-  - cd %APPVEYOR_BUILD_FOLDER%/bin
-  # generate build script
-  - cmake %APPVEYOR_BUILD_FOLDER% -G "%generator%" -DCMAKE_INSTALL_PREFIX=%P%
+  - cd bin
+  - cmake -G "%generator% %platform%" ..
 
 build_script:
-  - cd bin
-  - cmake -G "%generator%" ..
-  - cmake --build . --config Release
+  - cmake --build . --config %configuration%
   - ctest
