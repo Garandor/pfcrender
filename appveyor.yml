@@ -3,7 +3,7 @@ init:
   - cmd: msbuild /version
   - git config --global core.autocrlf input
 
-version: {build}
+version: '0.2.{build}'
 
 platform:
   - x64
