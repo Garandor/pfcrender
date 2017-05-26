@@ -7,7 +7,9 @@ set -o nounset
 git config --global user.email "nobody@nobody.org"
 git config --global user.name "Travis CI"
 
-cd bin
+pwd
+
+cd ../bin
 
 make doc
 
