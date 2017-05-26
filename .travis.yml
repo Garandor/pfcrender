@@ -42,4 +42,4 @@ os:
 
 #Generated doxygen docs and put in gh_pages
 after_success:
-        - bash doc/deploy-doxygen-to-gh-pages.sh
+        - bash ../doc/deploy-doxygen-to-gh-pages.sh
