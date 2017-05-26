@@ -1,4 +1,6 @@
-# Sources: https://gist.github.com/vidavidorra/548ffbcdae99d752da02
+# Sources:
+# https://gist.github.com/vidavidorra/548ffbcdae99d752da02
+# http://www.steveklabnik.com/automatically_update_github_pages_with_travis_example/      
 
 #blacklist
 branches:
@@ -7,8 +9,7 @@ branches:
 
 env:
         global:
-        - GH_NAME: pfcrender
-        - GH_REF: github.com/garandor/pfcrender.git
+        - GITHUB_REPO: pfcrender
         - DOXYFILE: $TRAVIS_BUILD_DIR/bin/doc/Doxyfile
 
 #additional deps
@@ -34,13 +35,11 @@ compiler:
         - clang++
 
 script: cd bin && cmake .. && make && make test
-os:$TRAVIS_BUILD_DIR/<path_to_your_doxygen_configuration_file>
+
+os:
         - linux
         - osx
 
 #Generated doxygen docs and put in gh_pages
 after_success:
-        - doxygen $DOXYFILE
-        - git add --all 
-        - git commit -m "Deploy code docs to GitHub Pages Travis build: ${TRAVIS_BUILD_NUMBER}" -m "Commit: ${TRAVIS_COMMIT}"
-        - git push "https://${GH_REPO_TOKEN}@${GH_REPO_REF}" > /dev/null 2>&1
+        - bash doc/deploy-doxygen-to-gh-pages.sh
