@@ -4,12 +4,8 @@ set -o errexit
 set -o nounset
 
 # config
-git config --global user.email "nobody@nobody.org"
-git config --global user.name "Travis CI"
-
-pwd
-
-cd ../bin
+git config --global user.name "TravisCI"
+git config --global user.email "deploy@travis-ci.org"
 
 make doc
 
