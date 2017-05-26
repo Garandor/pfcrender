@@ -39,6 +39,6 @@ os:
         - linux
         - osx
 
-#Generated doxygen docs and put in gh_pages
+#On successful build of master branch regenerate doxygen docs and publish on Github Pages 
 after_success:
-        - bash $TRAVIS_BUILD_DIR/doc/deploy-doxygen-to-gh-pages.sh
+        - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash $TRAVIS_BUILD_DIR/doc/deploy-doxygen-to-gh-pages.sh
