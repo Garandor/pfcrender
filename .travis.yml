@@ -10,7 +10,6 @@ branches:
 env:
         global:
         - GITHUB_REPO: pfcrender
-        - DOXYFILE: $TRAVIS_BUILD_DIR/bin/doc/Doxyfile
 
 #additional deps
 addons:
@@ -42,4 +41,4 @@ os:
 
 #Generated doxygen docs and put in gh_pages
 after_success:
-        - bash ../doc/deploy-doxygen-to-gh-pages.sh
+        - bash $TRAVIS_BUILD_DIR/doc/deploy-doxygen-to-gh-pages.sh
