@@ -2,6 +2,10 @@
 # https://gist.github.com/vidavidorra/548ffbcdae99d752da02
 # http://www.steveklabnik.com/automatically_update_github_pages_with_travis_example/      
 
+#use trusty distro for C++11 and cmake 3+
+dist: trusty
+sudo: false
+
 #blacklist
 branches:
         except:
@@ -14,8 +18,6 @@ env:
 #additional deps
 addons:
         apt:
-                sources:
-                        - boost-latest
                 packages:
                 #docs
                 - doxygen
@@ -23,8 +25,6 @@ addons:
                 - doxygen-latex
                 - doxygen
                 - graphviz
-                #unit testing w CUTE
-                - libboost1.55-all-dev
                 #build
                 - cmake
 

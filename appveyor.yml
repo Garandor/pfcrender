@@ -18,8 +18,8 @@ environment:
     - GENERATOR: "Visual Studio 14 2015"
       os: Visual Studio 2015
 
-#install:
-#  - cmd: git submodule update --init --recursive
+install:
+  - git submodule update --init --recursive
 
 before_build:
   - cd bin
