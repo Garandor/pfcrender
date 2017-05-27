@@ -14,8 +14,6 @@ env:
 #additional deps
 addons:
         apt:
-                sources:
-                        - boost-latest
                 packages:
                 #docs
                 - doxygen
@@ -23,8 +21,6 @@ addons:
                 - doxygen-latex
                 - doxygen
                 - graphviz
-                #unit testing w CUTE
-                - libboost1.55-all-dev
                 #build
                 - cmake
 
