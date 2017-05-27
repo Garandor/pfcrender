@@ -1,6 +1,3 @@
-# pfcrender
-A tool for the visualization of Lindenmeyer system (lsys) iterates
-
 # Build Status
 
 |                                                                     | Linux/Mac                                                                                                                       | Windows  |

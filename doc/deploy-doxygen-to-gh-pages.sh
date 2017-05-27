@@ -12,6 +12,7 @@ make doc
 # deploy
 cd doc/doc/html
 git init
+touch .nojekyll
 git add .
 git commit -m "Deploy to Github Pages"
 git push --force --quiet "https://garandor:${GITHUB_TOKEN}@github.com/garandor/${GITHUB_REPO}.git" master:gh-pages > /dev/null 2>&1
