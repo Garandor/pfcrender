@@ -1,25 +1,44 @@
-before-install:
+# Sources:
+# https://gist.github.com/vidavidorra/548ffbcdae99d752da02
+# http://www.steveklabnik.com/automatically_update_github_pages_with_travis_example/      
 
-         - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
-         - sudo apt-get update -qq
-         - sudo apt-get install qtbase5-dev qtdeclarative5-dev libqt5webkit5-dev libsqlite3-dev
-         - sudo apt-get install qt5-default qttools5-dev-tools
+#use trusty distro for C++11 and cmake 3+
+dist: trusty
+sudo: false
+
+#blacklist
+branches:
+        except:
+        - gh-pages
+
+env:
+        global:
+        - GITHUB_REPO: pfcrender
+
+#additional deps
 addons:
         apt:
-                sources:
-                        - boost-latest
-                        - george-edison55-precise-backports
                 packages:
-                        - libboost1.55-all-dev
-                        - cmake
-                        - cmake-data
-                        - qt5-default
-                        - qttools5-dev-tools
+                #docs
+                - doxygen
+                - doxygen-doc
+                - doxygen-latex
+                - doxygen
+                - graphviz
+                #build
+                - cmake
+
 language: cpp
 compiler:
         - gcc
         - clang++
+
 script: cd bin && cmake .. && make && make test
+
 os:
         - linux
         - osx
+
+#On successful build of master branch regenerate doxygen docs and publish on Github Pages 
+after_success:
+        - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash $TRAVIS_BUILD_DIR/doc/deploy-doxygen-to-gh-pages.sh

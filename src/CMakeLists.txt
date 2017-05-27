@@ -13,14 +13,13 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOMOC ON)
 
+#Check for Qt5
+find_package(Qt5Core REQUIRED)
 
 include_directories(
 	${CMAKE_CURRENT_BINARY_DIR}
 	${INCDIRS}
 )
-
-#Check for Qt5
-find_package(Qt5Core REQUIRED)
 
 #Build executable
 add_executable(${PROJECT_NAME} ${SRCS})
