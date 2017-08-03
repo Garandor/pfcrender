@@ -1,13 +1,7 @@
 configure_file(projectinfo.h.in projectinfo.h @ONLY)
 
-file(GLOB_RECURSE SRCS *.cpp)
-file(GLOB_RECURSE INCFLS *.h)
-
-foreach(_hdrfile ${INCFLS})
-	get_filename_component(_dir ${_hdrfile} PATH)
-	list (APPEND INCDIRS ${_dir})
-endforeach()
-list(REMOVE_DUPLICATES INCDIRS)
+set(SRC LSYS.cpp PFCRender.cpp)
+set(INC LSYS.h PFCRender.h)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -21,8 +15,14 @@ include_directories(
 	${INCDIRS}
 )
 
+
+add_subdirectory(CLI)
+add_subdirectory(Export)
+add_subdirectory(GUI)
+add_subdirectory(Model)
+
 #Build executable
-add_executable(${PROJECT_NAME} ${SRCS})
+add_executable(${PROJECT_NAME} ${SRC})
 
 #Link with Qt
 target_link_libraries(${PROJECT_NAME} Qt5::Core)
