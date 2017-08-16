@@ -13,6 +13,7 @@ configuration:
 
 # specify custom environment variables
 environment:
+  QTDIR: 'C:\Qt\5.9.1\msvc2015_64'
   MSVC_DEFAULT_OPTIONS: ON
   matrix:
     - GENERATOR: "Visual Studio 14 2015"
@@ -23,7 +24,7 @@ install:
 
 before_build:
   - cd bin
-  - cmake -G "%GENERATOR% Win64" -DCMAKE_BUILD_TYPE=%configuration% ..
+  - cmake -G "%GENERATOR% Win64" -DCMAKE_BUILD_TYPE=%configuration% -DCMAKE_PREFIX_PATH=%QTDIR% ..
 
 build:
   project: bin/pfcrender.sln
