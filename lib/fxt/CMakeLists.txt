@@ -1,5 +1,5 @@
 set(CMAKE_INCLUDE_CURRENT_DIR)
 
-SRCS=(stringsubst.cc)
+set(SRC stringsubst.cc)
 
-add_library(fxt $SRCS)
+add_library(fxt $SRC)
