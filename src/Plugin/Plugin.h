@@ -1,5 +1,5 @@
-#ifndef CLI_C_L_I_PARSER_H
-#define CLI_C_L_I_PARSER_H
+#ifndef PLUGIN_PLUGIN_H
+#define PLUGIN_PLUGIN_H
 
 #include <string>
 #include <vector>
@@ -7,11 +7,11 @@
 #include <iostream>
 #include <assert.h>
 
-namespace CLI
+namespace Plugin
 {
-class CLIParser
+class Plugin
 {
 };
 
-}  // namespace CLI
+}  // namespace Plugin
 #endif

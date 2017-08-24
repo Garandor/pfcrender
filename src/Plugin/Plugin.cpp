@@ -4,10 +4,10 @@
 #include <iostream>
 #include <assert.h>
 
-#include "Curve.h"
+#include "Plugin.h"
 
-namespace Model
+namespace Plugin
 {
 
 
-}  // namespace Model
+}  // namespace Plugin

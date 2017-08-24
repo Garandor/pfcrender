@@ -1,5 +1,5 @@
-#ifndef GUI_P_F_CMODEL_H
-#define GUI_P_F_CMODEL_H
+#ifndef P_F_C_START_H
+#define P_F_C_START_H
 
 #include <string>
 #include <vector>
@@ -7,8 +7,6 @@
 #include <iostream>
 #include <assert.h>
 
-namespace GUI
-{
 /**
  * Project pfcrender 
  * 
@@ -18,9 +16,12 @@ namespace GUI
  * 
  * @version 0.1
  */
-class PFCmodel
+class PFCStart
 {
-};
+public:
+	PFCStart();
 
-}  // namespace GUI
+	void do_stuff();
+
+};
 #endif

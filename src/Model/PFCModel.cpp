@@ -4,7 +4,7 @@
 #include <iostream>
 #include <assert.h>
 
-#include "Curve.h"
+#include "PFCModel.h"
 
 namespace Model
 {

@@ -4,7 +4,7 @@ project(pfcrender)
 
 # The project version number.
 set(VERSION_MAJOR   0   CACHE STRING "Major version number.")
-set(VERSION_MINOR   1   CACHE STRING "Minor version number.")
+set(VERSION_MINOR   2   CACHE STRING "Minor version number.")
 set(VERSION_PATCH   0   CACHE STRING "Patch version number.")
 mark_as_advanced(VERSION_MAJOR VERSION_MINOR VERSION_PATCH)
 

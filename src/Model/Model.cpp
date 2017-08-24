@@ -4,13 +4,10 @@
 #include <iostream>
 #include <assert.h>
 
-#include "Builder.h"
+#include "Model.h"
 
-namespace GUI
+namespace Model
 {
 
-int Builder::do_stuff()
-{
-	return 0;
-}
-}  // namespace GUI
+
+}  // namespace Model

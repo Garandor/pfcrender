@@ -1,5 +1,5 @@
-#ifndef GUI_G_U_I_BUILDER_H
-#define GUI_G_U_I_BUILDER_H
+#ifndef QTCLI_P_F_C_RENDER_H
+#define QTCLI_P_F_C_RENDER_H
 
 #include <string>
 #include <vector>
@@ -7,7 +7,9 @@
 #include <iostream>
 #include <assert.h>
 
-namespace GUI
+#include "Qt/QGUIApplication.h"
+
+namespace QtCLI
 {
 /**
  * Project pfcrender 
@@ -18,7 +20,7 @@ namespace GUI
  * 
  * @version 0.1
  */
-class GUIBuilder
+class PFCRender : public Qt::QGUIApplication
 {
 public:
 	int someflag;
@@ -42,5 +44,5 @@ public:
 
 };
 
-}  // namespace GUI
+}  // namespace QtCLI
 #endif

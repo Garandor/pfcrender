@@ -4,10 +4,10 @@
 #include <iostream>
 #include <assert.h>
 
-#include "PFCmodel.h"
+#include "GridModel.h"
 
-namespace GUI
+namespace Model
 {
 
 
-}  // namespace GUI
+}  // namespace Model

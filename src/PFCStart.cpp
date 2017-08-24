@@ -4,13 +4,19 @@
 #include <iostream>
 #include <assert.h>
 
-#include "GUIBuilder.h"
+#include "PFCStart.h"
 
-namespace GUI
+PFCStart::PFCStart()
 {
+}
 
-int GUIBuilder::do_stuff()
+void PFCStart::do_stuff()
 {
+}
+
+int main(int argc, void** argv)
+{
+		
+
 	return 0;
 }
-}  // namespace GUI

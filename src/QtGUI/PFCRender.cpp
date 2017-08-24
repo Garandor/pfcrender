@@ -6,14 +6,8 @@
 
 #include "PFCRender.h"
 
-namespace CLI
+namespace QtGUI
 {
 
-PFCRender::PFCRender()
-{
-}
 
-void PFCRender::do_stuff()
-{
-}
-}  // namespace CLI
+}  // namespace QtGUI

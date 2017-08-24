@@ -1,5 +1,5 @@
-#ifndef CLI_P_F_C_RENDER_H
-#define CLI_P_F_C_RENDER_H
+#ifndef QTGUI_P_F_C_RENDER_H
+#define QTGUI_P_F_C_RENDER_H
 
 #include <string>
 #include <vector>
@@ -7,7 +7,9 @@
 #include <iostream>
 #include <assert.h>
 
-namespace CLI
+#include "Qt/QCoreApplication.h"
+
+namespace QtGUI
 {
 /**
  * Project pfcrender 
@@ -18,14 +20,9 @@ namespace CLI
  * 
  * @version 0.1
  */
-class PFCRender
+class PFCRender : public Qt::QCoreApplication
 {
-public:
-	PFCRender();
-
-	void do_stuff();
-
 };
 
-}  // namespace CLI
+}  // namespace QtGUI
 #endif
