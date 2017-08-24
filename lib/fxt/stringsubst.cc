@@ -4,7 +4,7 @@
 // see the file COPYING.txt in the main directory.
 
 
-#include "comb/stringsubst.h"
+#include "stringsubst.h"
 
 #include "fxtio.h"
 #include "fxttypes.h"  // ulong, uchar
