@@ -1,17 +1,13 @@
-#include <string>
-#include <vector>
-#include <list>
-#include <iostream>
-#include <assert.h>
-
 #include "Plugin_Registry.h"
 
 namespace Plugin
 {
 
-Plugin_Registry Plugin_Registry::getInstance()
+Plugin_Registry* Plugin_Registry::getInstance()
 {
-	return 0;
+	if(instance == NULL)
+		instance = new Plugin_Registry();
+	return instance;
 }
 
 Plugin_Registry::Plugin_Registry()
