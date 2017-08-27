@@ -15,6 +15,8 @@ private:
 
 private:
 	Plugin_Registry();
+	Plugin_Registry(const Plugin_Registry &)= delete ;
+	Plugin_Registry& operator=(const Plugin_Registry &) = delete;
 
 public:
 	static Plugin_Registry* getInstance();

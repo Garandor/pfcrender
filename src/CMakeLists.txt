@@ -27,11 +27,11 @@ set(INC "PFCStart.h"
 )
 
 #Build executable
-add_executable(${PROJECT_NAME} ${SRC} ${INC})
+add_executable(${PROJECT_NAME} ${SRC})
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 	${CMAKE_CURRENT_BINARY_DIR}
-	"./Plugin"
+	"Plugin"
 )
 
 #Link with Qt
@@ -40,3 +40,4 @@ target_link_libraries(${PROJECT_NAME} Qt5::Core)
 if(COMPILE_GUI_SUPPORT)
 	target_link_libraries(${PROJECT_NAME} Qt5::Gui Qt5::Qml Qt5::Quick)
 endif()
+

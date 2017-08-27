@@ -2,6 +2,7 @@
 
 namespace Plugin
 {
+Plugin_Registry* Plugin_Registry::instance = NULL;
 
 Plugin_Registry* Plugin_Registry::getInstance()
 {
@@ -12,5 +13,6 @@ Plugin_Registry* Plugin_Registry::getInstance()
 
 Plugin_Registry::Plugin_Registry()
 {
+	
 }
 }  // namespace Plugin
