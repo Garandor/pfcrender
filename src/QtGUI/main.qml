@@ -5,7 +5,15 @@ ApplicationWindow
 {
 	id: main
     visible:true
-    Text{
-        text: "HelloWorld"
+
+    header: ToolBar
+    {}
+
+    footer: TabBar
+    {}
+
+    HelloWorld
+    {
+
     }
 }

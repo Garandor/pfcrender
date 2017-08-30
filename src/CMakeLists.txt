@@ -19,14 +19,19 @@ if(COMPILE_GUI_SUPPORT)
 
 endif()
 
-set(SRC "PFCStart.cpp"
+set(SRC
+        "QtGUI/PFCRender.cpp"
 
 	"Plugin/Plugin_Registry.cpp"
+
+        "PFCStart.cpp"
 )
 
 set(INC 
 
-	"Plugin/Plugin_Registry.h"
+        "QtGUI/PFCRender.h"
+
+        "Plugin/Plugin_Registry.h"
 )
 
 

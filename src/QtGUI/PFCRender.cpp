@@ -1,13 +1,12 @@
-#include <string>
-#include <vector>
-#include <list>
-#include <iostream>
-#include <assert.h>
-
 #include "PFCRender.h"
+#include<iostream>
 
 namespace QtGUI
 {
 
+    PFCRender::PFCRender()
+    {
+
+    }
 
 }  // namespace QtGUI
