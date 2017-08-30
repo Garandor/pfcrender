@@ -1,9 +1,8 @@
 #ifndef PLUGIN_PLUGIN_H
 #define PLUGIN_PLUGIN_H
 
-#include "QList.h"
-#include "auto.h"
-#include "QString.h"
+#include <QList>
+#include <QString>
 
 namespace Plugin
 {
@@ -12,7 +11,7 @@ class Plugin
 public:
 	virtual QList<QString> lookupServices()=0;
 
-	virtual auto execService()=0;
+    virtual auto execService() -> int =0;
 
 	virtual bool hasService()=0;
 

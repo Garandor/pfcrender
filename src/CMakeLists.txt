@@ -40,6 +40,7 @@ set(INC
         "QtGUI/PFCRender.h"
 
         "Plugin/Plugin_Registry.h"
+
 )
 
 
@@ -63,4 +64,8 @@ target_link_libraries(${PROJECT_NAME} Qt5::Core)
 if(COMPILE_GUI_SUPPORT)
 	target_link_libraries(${PROJECT_NAME} Qt5::Gui Qt5::Qml Qt5::Quick)
 endif()
+
+#descend into plugins subdirectory to build plugins
+add_subdirectory(Plugin)
+
 
