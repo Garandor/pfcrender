@@ -15,7 +15,7 @@ branches:
 env:
         global:
         - GITHUB_REPO: pfcrender
-        - QT_ROOT: 'usr/local/qt5'
+
 
 #additional deps
 addons:
@@ -47,7 +47,7 @@ install:
   - if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then sudo apt-get install qt59-meta-full ; fi
   - if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then source /opt/qt59/bin/qt59-env.sh ; fi
   - if [[ $TRAVIS_OS_NAME == 'osx' ]] ; then brew install qt5 ; fi
-  - if [[ $TRAVIS_OS_NAME == 'osx' ]] ; then brew link qt5 --force ; fi
+#  - if [[ $TRAVIS_OS_NAME == 'osx' ]] ; then brew link --force qt5 && ln -s /usr/local/Cellar/qt5/5.9.1/mkspecs /usr/local/mkspecs && ln -s /usr/local/Cellar/qt5/5.9.1/plugins /usr/local/plugins ; fi
 
 script: 
   - cd bin && cmake .. && make && make test
