@@ -22,10 +22,10 @@ bool LSYS::hasService(QString name)
 	return false;
 }
 
-std::unique_ptr<QQuickItem> LSYS::_computeLSYS(QString LSYS, int iterate)
+std::shared_ptr<QQuickItem> LSYS::_computeLSYS(QString LSYS, int iterate)
 {
     //Create a unique pointer to the QuickItem we will create and use as the new model
-    std::unique_ptr<QQuickItem> mdl = std::make_unique<QQuickItem>(Q_NULLPTR);
+    std::shared_ptr<QQuickItem> mdl = std::make_shared<QQuickItem>(Q_NULLPTR);
 
     //call stringsubst
 

@@ -14,7 +14,7 @@ namespace LSYS
 class LSYS : public QObject, Import
 {
 private:
-	std::unique_ptr<QQuickItem> _computeLSYS(QString LSYS, int iterate);
+    std::shared_ptr<QQuickItem> _computeLSYS(QString LSYS, int iterate);
 
 public:
     LSYS();
@@ -25,8 +25,8 @@ public:
 	bool hasService(QString name);
 
     //Import Interface methods
-    virtual std::unique_ptr<QQuickItem> getModel() override;
-    virtual ~LSYS() override;
+    std::shared_ptr<QQuickItem> getModel() override;
+    ~LSYS() override;
 
 };
 
