@@ -1,6 +1,6 @@
 SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Plugins)
 
-add_library(plugin_LSYS
+add_library(plugin_LSYS SHARED
 
     "fxt/stringsubst.cc"
 

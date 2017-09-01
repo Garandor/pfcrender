@@ -9,31 +9,65 @@ namespace LSYS
 
 QList<QString> LSYS::lookupServices()
 {
-    return QList<QString>{"asd","asd"};
+    return QList<QString>{"asd","as"};
 }
 
-auto LSYS::execService(QString name, auto params)
+void LSYS::execService(QString name, QVariant params)
 {
-	return 0;
+    if(name.compare(QStringLiteral("LSYS")))
+    {        _computeLSYS( QStringLiteral("L+L"), 2 );
+    }
 }
 
 bool LSYS::hasService(QString name)
 {
-	return false;
+    return false;
 }
 
-std::shared_ptr<QQuickItem> LSYS::_computeLSYS(QString LSYS, int iterate)
+void* LSYS::getParams()
+{
+    QList<QString> myParams{};
+    return nullptr;
+}
+
+std::unique_ptr<QQuickItem> LSYS::getModel()
+{
+    return nullptr;
+}
+
+LSYS::~LSYS()
+{
+
+}
+
+std::unique_ptr<QQuickItem> LSYS::_computeLSYS(QString axiom, int iterate)
 {
     //Create a unique pointer to the QuickItem we will create and use as the new model
-    std::shared_ptr<QQuickItem> mdl = std::make_shared<QQuickItem>(Q_NULLPTR);
+    std::unique_ptr<QQuickItem> mdl = std::make_unique<QQuickItem>(Q_NULLPTR);
 
-    //call stringsubst
+    //Build stringsubst object from passed params
 
+    string_subst lsys{1};
+    lsys.set_axiom(axiom.toLatin1().data());
+
+    const char *rules[10];
+    rules[0]="+";
+    rules[1]="L+L-L";
+
+    lsys.set_rules(rules,2);
+
+   lsys.print_all();
+
+   for( ; iterate > 0 ;iterate--)
+       lsys.next();
+
+   lsys.print_all();
 
     //Populate our QQuickItem
 
     //Return it to the caller
-    return mdl;
+   return mdl;
 }
+
 }  // namespace LSYS
 }  // namespace Plugin

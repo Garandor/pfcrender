@@ -18,15 +18,12 @@ int main(int argc, char** argv)
 
     //XXX: For now, let's not mess with CLI mode
 #if 1
-		QGuiApplication qapp(argc,argv);
+        QGuiApplication app(argc,argv);
         QQmlApplicationEngine qeng(QUrl(QStringLiteral("qrc:///main.qml")));
 
         QtGUI::PFCRender desktop_obj;
 
-        QObject* pItem = qobject_cast<QObject*>(qeng.rootObjects()[0]->findChild<QQuickItem*>(QString(QStringLiteral("Comptest"))));
-        QObject* pDesktop = &desktop_obj;
-
-		return qapp.exec();
+        return app.exec();
 #else
 		QCoreApplication qapp(argc,argv);
 		return qapp.exec();

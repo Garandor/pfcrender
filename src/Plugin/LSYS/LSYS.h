@@ -4,7 +4,6 @@
 #include <QList>
 #include <QQuickItem>
 #include <QString>
-#include <QQuickItem>
 #include "Import.h"
 
 namespace Plugin
@@ -13,19 +12,24 @@ namespace LSYS
 {
 class LSYS : public QObject, Import
 {
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID "PFCRender.Plugin.Import")
+    Q_INTERFACES(Plugin::Import)
+
 private:
-    std::shared_ptr<QQuickItem> _computeLSYS(QString LSYS, int iterate);
+    std::unique_ptr<QQuickItem> _computeLSYS(QString axiom, int iterate);
 
 public:
     LSYS();
-	QList<QString> lookupServices();
 
-	auto execService(QString name, auto params);
-
-	bool hasService(QString name);
+    //Plugin Interface Methods
+    QList<QString> lookupServices() override;
+    void execService(QString name, QVariant params) override;
+    bool hasService(QString name) override ;
 
     //Import Interface methods
-    std::shared_ptr<QQuickItem> getModel() override;
+    void* getParams() override;
+    std::unique_ptr<QQuickItem> getModel() override;
     ~LSYS() override;
 
 };

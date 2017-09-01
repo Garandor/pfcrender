@@ -4,15 +4,21 @@ namespace Plugin
 {
 Plugin_Registry* Plugin_Registry::instance = NULL;
 
-Plugin_Registry* Plugin_Registry::getInstance()
+Plugin_Registry * const Plugin_Registry::getInstance()
 {
 	if(instance == NULL)
 		instance = new Plugin_Registry();
-	return instance;
+    return instance;
 }
 
-Plugin_Registry::Plugin_Registry()
+const QString& Plugin_Registry::getPlugin(const QString& serviceName) const
 {
-	
+    return m_registered.value(serviceName);
 }
+
+Plugin_Registry::Plugin_Registry() :  m_registered{}
+{
+    m_registered.insert("importLSYS",QString("Plugin/LSYS"));
+}
+
 }  // namespace Plugin
