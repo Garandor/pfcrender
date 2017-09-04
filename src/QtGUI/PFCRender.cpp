@@ -2,8 +2,10 @@
 #include<QPluginLoader>
 #include<QDir>
 #include<QGuiApplication>
-#include"Plugin_Registry.h"
-#include"Import.h"
+#include"Plugins/Plugin_Registry.h"
+#include"Plugins/Import.h"
+#include<QDebug>
+
 
 namespace QtGUI
 {
@@ -14,17 +16,26 @@ namespace QtGUI
         //Load plugin from registry
 
         QDir pluginsDir(qApp->applicationDirPath());
-        pluginsDir.cd("Plugins");
-        QPluginLoader ldr(pluginsDir.absoluteFilePath(Plugin::Plugin_Registry::getInstance()->getPlugin(QStringLiteral("importLSYS"))),this);
+        pluginsDir.cd("../plugins");  //XXX : THIS WILL BREAK ON DEPLOYMENT
+        QString pname(::Plugins::Plugin_Registry::getInstance()->getPlugin(QStringLiteral("importLSYS")));
+        qDebug() <<  pname;
+        qDebug() << pluginsDir.absoluteFilePath(Plugins::Plugin_Registry::getInstance()->getPlugin(QStringLiteral("importLSYS")));
+        qDebug() << pluginsDir.absoluteFilePath(::Plugins::Plugin_Registry::getInstance()->getPlugin(QStringLiteral("importLSYS")));
 
-        QObject *plugin = ldr.instance();
+        QPluginLoader ldr(pluginsDir.absoluteFilePath(Plugins::Plugin_Registry::getInstance()->getPlugin(QStringLiteral("importLSYS"))),this);
+        QObject* plugin = ldr.instance();
+        qDebug() << QVariant(ldr.isLoaded());
         if (plugin) {
-                ::Plugin::Import* importer = qobject_cast<::Plugin::Import *>(plugin);
+                ::Plugins::Import* importer = qobject_cast<::Plugins::Import *>(plugin);
                 if (importer)
                 {
                     importer->execService(QStringLiteral("LSYS"),QVariant());
                 }
         ldr.unload();
+        }
+        else
+        {
+            qWarning() << ldr.errorString() << " lo no que siento";
         }
 
     }

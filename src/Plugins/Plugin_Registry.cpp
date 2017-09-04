@@ -1,6 +1,6 @@
 #include "Plugin_Registry.h"
 
-namespace Plugin
+namespace Plugins
 {
 Plugin_Registry* Plugin_Registry::instance = NULL;
 
@@ -11,14 +11,14 @@ Plugin_Registry * const Plugin_Registry::getInstance()
     return instance;
 }
 
-const QString& Plugin_Registry::getPlugin(const QString& serviceName) const
+const QString Plugin_Registry::getPlugin(const QString& serviceName) const
 {
     return m_registered.value(serviceName);
 }
 
 Plugin_Registry::Plugin_Registry() :  m_registered{}
 {
-    m_registered.insert("importLSYS",QString("Plugin/LSYS"));
+    m_registered.insert("importLSYS",QString("libplugin_LSYS"));
 }
 
 }  // namespace Plugin

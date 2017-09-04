@@ -30,7 +30,7 @@ endif()
 set(SRC
         "QtGUI/PFCRender.cpp"
 
-	"Plugin/Plugin_Registry.cpp"
+        "Plugins/Plugin_Registry.cpp"
 
         "PFCStart.cpp"
 
@@ -41,7 +41,7 @@ set(INC
 
         "QtGUI/PFCRender.h"
 
-        "Plugin/Plugin_Registry.h"
+        "Plugins/Plugin_Registry.h"
 
 )
 
@@ -57,7 +57,6 @@ endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 	${CMAKE_CURRENT_BINARY_DIR}
-	"Plugin"
 )
 
 #Link with Qt
@@ -68,6 +67,4 @@ if(COMPILE_GUI_SUPPORT)
 endif()
 
 #descend into plugins subdirectory to build plugins
-add_subdirectory(Plugin)
-
-
+add_subdirectory(Plugins)

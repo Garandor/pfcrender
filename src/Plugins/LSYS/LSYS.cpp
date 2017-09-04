@@ -2,7 +2,7 @@
 
 #include"stringsubst.h"
 
-namespace Plugin
+namespace Plugins
 {
 namespace LSYS
 {
@@ -14,8 +14,9 @@ QList<QString> LSYS::lookupServices()
 
 void LSYS::execService(QString name, QVariant params)
 {
-    if(name.compare(QStringLiteral("LSYS")))
-    {        _computeLSYS( QStringLiteral("L+L"), 2 );
+    if(!name.compare(QStringLiteral("LSYS")))
+    {
+        _computeLSYS( QStringLiteral("L+L"), 2 );
     }
 }
 
@@ -39,6 +40,7 @@ LSYS::~LSYS()
 {
 
 }
+
 
 std::unique_ptr<QQuickItem> LSYS::_computeLSYS(QString axiom, int iterate)
 {

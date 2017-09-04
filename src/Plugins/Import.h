@@ -1,14 +1,17 @@
 #ifndef PLUGIN_IMPORT_H
 #define PLUGIN_IMPORT_H
-#include<memory>		//for unique_ptr
+
 #include"Plugin.h"
+#include<memory>		//for unique_ptr
 
 class QQuickItem;
 
-namespace Plugin
+namespace Plugins
 {
 class Import : public Plugin
 {
+    Q_OBJECT
+
 public:
 
     /**
@@ -20,11 +23,11 @@ public:
 
 
 
-    virtual ~Import() =0 ;
+    virtual ~Import() {}
 };
 
 }
 
-Q_DECLARE_INTERFACE(Plugin::Import,"PFCRender.Plugin.Import")
-
+using namespace Plugins;
+Q_DECLARE_INTERFACE(Import,"PFCRender.Plugins.Import")
 #endif

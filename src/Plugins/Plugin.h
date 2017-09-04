@@ -1,14 +1,16 @@
 #ifndef PLUGIN_PLUGIN_H
 #define PLUGIN_PLUGIN_H
 
+#include <QObject>
 #include <QList>
 #include <QString>
+#include <QtPlugin>
 
-namespace Plugin
+namespace Plugins
 {
-class Plugin
+class Plugin : public QObject
 {
-
+    Q_OBJECT
 public:
     virtual QList<QString> lookupServices() =0 ;
 
@@ -19,11 +21,11 @@ public:
 
     virtual bool hasService(QString name)=0 ;
 
-    virtual ~Plugin() =0 ;
+    virtual ~Plugin() {}
 };
 }  // namespace Plugin
 
-
-Q_DECLARE_INTERFACE(Plugin::Import,"PFCRender.Plugin.Import")
+using namespace Plugins;
+Q_DECLARE_INTERFACE(Plugin,"PFCRender.Plugins.Plugin")
 #endif
 

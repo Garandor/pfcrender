@@ -11,7 +11,7 @@
 #include <QString>
 #include <QFile>
 
-namespace Plugin
+namespace Plugins
 {
 class Plugin_Registry
 {
@@ -26,7 +26,7 @@ private:
 
 public:
     static Plugin_Registry* const getInstance();
-    const QString& getPlugin(const QString& serviceName) const;
+    const QString getPlugin(const QString& serviceName) const;
 };
 
 }  // namespace Plugin

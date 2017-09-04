@@ -5,12 +5,12 @@
 #include <QQmlApplicationEngine>
 #include <QQuickItem>
 
-#include "Plugin/Plugin_Registry.h"
+#include "Plugins/Plugin_Registry.h"
 #include "QtGUI/PFCRender.h"
 
 int main(int argc, char** argv)
 {
-    Plugin::Plugin_Registry* plugins = Plugin::Plugin_Registry::getInstance();
+    Plugins::Plugin_Registry* plugins = Plugins::Plugin_Registry::getInstance();
 	
 	//open config file
 
