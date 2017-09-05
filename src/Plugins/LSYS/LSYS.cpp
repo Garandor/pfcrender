@@ -49,31 +49,34 @@ std::unique_ptr<QQuickItem> LSYS::_computeLSYS(QString axiom, int iterate)
     std::unique_ptr<QQuickItem> mdl = std::make_unique<QQuickItem>(Q_NULLPTR);
 
     QString axio(QStringLiteral("F")); //TODO: IGNORE PARAMETER FOR NOW, CHANGE LATER
-    std::cout << "Curve: R5-Dragon" << std::endl;
+    std::cout << "Curve: R9-1 for square grid" << std::endl;
     //Build stringsubst object from passed params
 
-    string_subst lsys{25};	//Initial "levels" whatever those are
+    string_subst lsys{50};	//Initial "levels" whatever those are
     lsys.set_axiom(axio.toLatin1().data());
 
     const char *rules[10];
     rules[0]="F";
-    rules[1]="F+F+F-F-F";
+    rules[1]="F+F-F-F-F+F+F+F-F";
     rules[2]="+";
     rules[3]="+";
     rules[4]="-";
     rules[5]="-";
 
     lsys.set_rules(rules,6);
-    iterate = 100;
 
    if(lsys.first())
    {
-    lsys.print_all();
+    lsys.print_rules();
     iterate--;
        for( ; iterate > 0 ;iterate--)
        {
            lsys.next();
-           lsys.print_all();
+//           lsys.print_all();
+                    for(int i=0;i<lsys.nlev_+1;i++)
+                       std::cout << (char)*lsys.lev_ptr_[i];
+         std::cout << std::endl;
+
        }
 }
 
