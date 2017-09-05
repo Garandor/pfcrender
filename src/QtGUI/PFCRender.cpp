@@ -18,13 +18,9 @@ namespace QtGUI
         QDir pluginsDir(qApp->applicationDirPath());
         pluginsDir.cd("../plugins");  //XXX : THIS WILL BREAK ON DEPLOYMENT
         QString pname(::Plugins::Plugin_Registry::getInstance()->getPlugin(QStringLiteral("importLSYS")));
-        qDebug() <<  pname;
-        qDebug() << pluginsDir.absoluteFilePath(Plugins::Plugin_Registry::getInstance()->getPlugin(QStringLiteral("importLSYS")));
-        qDebug() << pluginsDir.absoluteFilePath(::Plugins::Plugin_Registry::getInstance()->getPlugin(QStringLiteral("importLSYS")));
 
         QPluginLoader ldr(pluginsDir.absoluteFilePath(Plugins::Plugin_Registry::getInstance()->getPlugin(QStringLiteral("importLSYS"))),this);
         QObject* plugin = ldr.instance();
-        qDebug() << QVariant(ldr.isLoaded());
         if (plugin) {
                 ::Plugins::Import* importer = qobject_cast<::Plugins::Import *>(plugin);
                 if (importer)
@@ -35,7 +31,7 @@ namespace QtGUI
         }
         else
         {
-            qWarning() << ldr.errorString() << " lo no que siento";
+            qWarning() << "Plugin Load failed with :" << ldr.errorString() ;
         }
 
     }

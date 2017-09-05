@@ -1,6 +1,7 @@
 #include "LSYS.h"
 
 #include"stringsubst.h"
+#include"string.h"
 
 namespace Plugins
 {
@@ -16,7 +17,7 @@ void LSYS::execService(QString name, QVariant params)
 {
     if(!name.compare(QStringLiteral("LSYS")))
     {
-        _computeLSYS( QStringLiteral("L+L"), 2 );
+        _computeLSYS( QString("L+L"), 6 );
     }
 }
 
@@ -47,23 +48,34 @@ std::unique_ptr<QQuickItem> LSYS::_computeLSYS(QString axiom, int iterate)
     //Create a unique pointer to the QuickItem we will create and use as the new model
     std::unique_ptr<QQuickItem> mdl = std::make_unique<QQuickItem>(Q_NULLPTR);
 
+    QString axio(QStringLiteral("F")); //TODO: IGNORE PARAMETER FOR NOW, CHANGE LATER
+    std::cout << "Curve: R5-Dragon" << std::endl;
     //Build stringsubst object from passed params
 
-    string_subst lsys{1};
-    lsys.set_axiom(axiom.toLatin1().data());
+    string_subst lsys{25};	//Initial "levels" whatever those are
+    lsys.set_axiom(axio.toLatin1().data());
 
     const char *rules[10];
-    rules[0]="+";
-    rules[1]="L+L-L";
+    rules[0]="F";
+    rules[1]="F+F+F-F-F";
+    rules[2]="+";
+    rules[3]="+";
+    rules[4]="-";
+    rules[5]="-";
 
-    lsys.set_rules(rules,2);
+    lsys.set_rules(rules,6);
+    iterate = 100;
 
-   lsys.print_all();
-
-   for( ; iterate > 0 ;iterate--)
-       lsys.next();
-
-   lsys.print_all();
+   if(lsys.first())
+   {
+    lsys.print_all();
+    iterate--;
+       for( ; iterate > 0 ;iterate--)
+       {
+           lsys.next();
+           lsys.print_all();
+       }
+}
 
     //Populate our QQuickItem
 
