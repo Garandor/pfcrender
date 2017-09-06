@@ -37,7 +37,33 @@ std::unique_ptr<QQuickItem> LSYS::_createQuickItem(const QString& curve)
     //Populate our QQuickItem
     std::unique_ptr<QQuickItem> mdl{};
 
-    qDebug() << curve.length();
+
+   //TODO: If this is not a case for a builder, I don't know what is
+//    class enum orientation{
+//        LEFT;
+//        RIGHT;
+//                UP;
+//                DOWN;
+//    };
+
+    for (QChar& c : curve )
+    {
+        qDebug() << c;
+
+        switch (c)
+        {
+         case 'F' : {
+            break;
+        }
+        case '+' : {
+            break;
+        }
+        case '-' : {
+            break;
+        }
+        }
+
+    }
 
     return mdl;
 }
