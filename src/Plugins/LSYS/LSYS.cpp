@@ -1,59 +1,77 @@
 #include "LSYS.h"
 
-#include"stringsubst.h"
-#include"string.h"
+//FXTLIB includes
+#include "stringsubst.h"
 
 namespace Plugins
 {
 namespace LSYS
 {
 
-QList<QString> LSYS::lookupServices()
+bool LSYS::hasService(QString name)
 {
-    return QList<QString>{"asd","as"};
+    return false;
 }
 
 void LSYS::execService(QString name, QVariant params)
 {
     if(!name.compare(QStringLiteral("LSYS")))
     {
-        _computeLSYS( QString("L+L"), 6 );
+        getModel();
+        return;
     }
 }
 
-bool LSYS::hasService(QString name)
+std::unique_ptr<QQuickItem> LSYS::getModel()
 {
-    return false;
+    //TODO: Make sure this uses move semantics
+    const QString curve( _computeLSYS( QString("L+L"), 3 ) );
+
+    std::unique_ptr<QQuickItem> mdl = _createQuickItem(std::move(curve));
+
+    return mdl;
 }
+
+std::unique_ptr<QQuickItem> LSYS::_createQuickItem(const QString& curve)
+{
+    //Populate our QQuickItem
+    std::unique_ptr<QQuickItem> mdl{};
+
+    qDebug() << curve.length();
+
+    return mdl;
+}
+
+QList<QString> LSYS::lookupServices()
+{
+    return QList<QString>{"asd","as"};
+}
+
+
 
 void* LSYS::getParams()
 {
     QList<QString> myParams{};
     return nullptr;
 }
-
-std::unique_ptr<QQuickItem> LSYS::getModel()
-{
-    return nullptr;
-}
-
 LSYS::~LSYS()
 {
 
 }
 
 
-std::unique_ptr<QQuickItem> LSYS::_computeLSYS(QString axiom, int iterate)
+const QString LSYS::_computeLSYS(QString axiom, ulong iterate)
 {
     //Create a unique pointer to the QuickItem we will create and use as the new model
     std::unique_ptr<QQuickItem> mdl = std::make_unique<QQuickItem>(Q_NULLPTR);
 
     QString axio(QStringLiteral("F")); //TODO: IGNORE PARAMETER FOR NOW, CHANGE LATER
-    std::cout << "Curve: R9-1 for square grid" << std::endl;
-    //Build stringsubst object from passed params
 
-    string_subst lsys{50};	//Initial "levels" whatever those are
-    lsys.set_axiom(axio.toLatin1().data());
+    //Build stringsubst object from passed params
+    string_subst lsys{iterate};	//levels == number of generations == iterates
+//    lsys.set_axiom(axio.toLatin1().data());
+
+    lsys.set_axiom("F");
 
     const char *rules[10];
     rules[0]="F";
@@ -65,25 +83,22 @@ std::unique_ptr<QQuickItem> LSYS::_computeLSYS(QString axiom, int iterate)
 
     lsys.set_rules(rules,6);
 
-   if(lsys.first())
-   {
-    lsys.print_rules();
-    iterate--;
-       for( ; iterate > 0 ;iterate--)
+    QString curve{};
+    if(lsys.first())
+    {
+       lsys.print_rules();
+
+       ulong ct = 0;
+       char c;
+       while ( (c = lsys.current()) != '\0' )
        {
+           curve.append(c);
            lsys.next();
-//           lsys.print_all();
-                    for(int i=0;i<lsys.nlev_+1;i++)
-                       std::cout << (char)*lsys.lev_ptr_[i];
-         std::cout << std::endl;
-
        }
-}
+    }
 
-    //Populate our QQuickItem
-
-    //Return it to the caller
-   return mdl;
+    //Magic has been worked, return our result
+    return static_cast<const QString>(curve);
 }
 
 }  // namespace LSYS
