@@ -5,7 +5,7 @@
 
 #include <QList>
 #include <QObject>
-#include <QQuickItem>
+#include <QQuickPaintedItem>
 #include <QString>
 #include<QtPlugin>
 #include<memory>
@@ -22,7 +22,7 @@ class LSYS : public Import
 
 private:
     const QString _computeLSYS(QString axiom, ulong iterate);
-    std::unique_ptr<QQuickItem> _createQuickItem(const QString& curve );
+    auto _createQQuickPaintedItem(const QString& curve );
     std::unique_ptr<QQuickItem> _createGrid();
 
 public:
@@ -34,7 +34,7 @@ public:
 
     //Import Interface methods
     void* getParams() override;
-    std::unique_ptr<QQuickItem> getModel() override;
+    std::unique_ptr<QQuickPaintedItem> getModel() override;
 
     ~LSYS() final override;
 };

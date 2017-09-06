@@ -2,6 +2,7 @@
 
 //FXTLIB includes
 #include "stringsubst.h"
+#include "PFCModel.h"
 
 namespace Plugins
 {
@@ -22,21 +23,22 @@ void LSYS::execService(QString name, QVariant params)
     }
 }
 
-std::unique_ptr<QQuickItem> LSYS::getModel()
+std::unique_ptr<QQuickPaintedItem> LSYS::getModel()
 {
     //TODO: Make sure this uses move semantics
     const QString curve( _computeLSYS( QString("L+L"), 3 ) );
 
-    std::unique_ptr<QQuickItem> mdl = _createQuickItem(std::move(curve));
+    auto paintedItem = _createQQuickPaintedItem(std::move(curve));
 
-    return mdl;
+    return paintedItem;
 }
 
-std::unique_ptr<QQuickItem> LSYS::_createQuickItem(const QString& curve)
+auto LSYS::_createQQuickPaintedItem(const QString& curve)
 {
-    //Populate our QQuickItem
-    std::unique_ptr<QQuickItem> mdl{};
+    //Build the Painter from our curve
+    std::unique_ptr<PFCModel> mdl{};
 
+    QPainter p{mdl};
 
    //TODO: If this is not a case for a builder, I don't know what is
 //    class enum orientation{
@@ -46,11 +48,9 @@ std::unique_ptr<QQuickItem> LSYS::_createQuickItem(const QString& curve)
 //                DOWN;
 //    };
 
-    for (QChar& c : curve )
+    for (const QChar& c : curve )
     {
-        qDebug() << c;
-
-        switch (c)
+        switch (c.toLatin1())
         {
          case 'F' : {
             break;
@@ -80,6 +80,7 @@ void* LSYS::getParams()
     QList<QString> myParams{};
     return nullptr;
 }
+
 LSYS::~LSYS()
 {
 
