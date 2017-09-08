@@ -7,6 +7,7 @@
 
 #include "Plugins/Plugin_Registry.h"
 #include "QtGUI/PFCRender.h"
+#include "Model/CustomGeometryModel.h"
 
 int main(int argc, char** argv)
 {
@@ -18,10 +19,14 @@ int main(int argc, char** argv)
 
     //XXX: For now, let's not mess with CLI mode
 #if 1
+        qmlRegisterType<Model::CustomGeometryModel>("sci.pfcrender.customModel", 1, 0, "CustomGeometryModel");
+
+
         QGuiApplication app(argc,argv);
         QQmlApplicationEngine qeng(QUrl(QStringLiteral("qrc:///main.qml")));
 
-        QtGUI::PFCRender desktop_obj;
+
+        QtGUI::PFCRender desktop_obj(&qeng);
 
         return app.exec();
 #else

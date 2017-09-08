@@ -1,14 +1,15 @@
 #ifndef PLUGIN_LSYS_LIB_L_S_Y_S_H
 #define PLUGIN_LSYS_LIB_L_S_Y_S_H
 
-#include "Import.h"
+#include<memory>
 
 #include <QList>
 #include <QObject>
 #include <QSGGeometryNode>
 #include <QString>
 #include<QtPlugin>
-#include<memory>
+
+#include "Import.h"
 
 namespace Plugins
 {
@@ -22,7 +23,7 @@ class LSYS : public Import
 
 private:
     const QString _computeLSYS(QList<QString> definition, ulong iterate);
-    QSGGeometryNode* _createGeometry(const QString& curve );
+    std::unique_ptr<QSGGeometryNode> _createGeometry(const QString& curve );
 
 public:
 
@@ -33,7 +34,7 @@ public:
 
     //Import Interface methods
     void* getParams() override;
-    QSGGeometryNode* getModel() override;
+    std::unique_ptr<QSGGeometryNode> getModel() override;
 
     ~LSYS() override;
 };

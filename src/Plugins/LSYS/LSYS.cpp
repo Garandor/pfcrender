@@ -27,18 +27,18 @@ void LSYS::execService(QString name, QVariant params)
     }
 }
 
-QSGGeometryNode* LSYS::getModel()
+std::unique_ptr<QSGGeometryNode> LSYS::getModel()
 {
     //TODO: Make sure this uses move semantics
     const QString curve( _computeLSYS( QList<QString>{"F","F","F+F-F-F-F+F+F+F-F","+","+","-","-"}, 3 ) );
 
-    QSGGeometryNode* mdl = _createGeometry(std::move(curve));
+    std::unique_ptr<QSGGeometryNode> mdl = _createGeometry(std::move(curve));
     return mdl;
 }
 
-QSGGeometryNode* LSYS::_createGeometry(const QString& curve)
+std::unique_ptr<QSGGeometryNode> LSYS::_createGeometry(const QString& curve)
 {
-    auto geom = new QSGGeometryNode;
+    auto geom = std::make_unique<QSGGeometryNode>();
 
     //Set Geometry
     //TODO: build curve from LSYS
@@ -60,7 +60,6 @@ QSGGeometryNode* LSYS::_createGeometry(const QString& curve)
     geom->setFlag(QSGNode::OwnedByParent);
     geom->setFlag(QSGNode::OwnsGeometry);
     geom->setFlag(QSGNode::OwnsMaterial);
-
 
     return geom;
 }

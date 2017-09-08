@@ -1,20 +1,24 @@
-#include "PFCRender.h"
+#include<memory>
+
+#include<QQmlApplicationEngine>
+#include<QQuickItem>
 #include<QPluginLoader>
 #include<QDir>
 #include<QGuiApplication>
+#include<QDebug>
+
+#include "PFCRender.h"
 #include"Plugins/Plugin_Registry.h"
 #include"Plugins/Import.h"
-#include<QDebug>
+#include"Model/CustomGeometryModel.h"
 
 
 namespace QtGUI
 {
 
-    PFCRender::PFCRender()
+    PFCRender::PFCRender(QQmlApplicationEngine* eng)
     {
-
         //Load plugin from registry
-
         QDir pluginsDir(qApp->applicationDirPath());
         pluginsDir.cd("../plugins");  //XXX : THIS WILL BREAK ON DEPLOYMENT
         QString pname(::Plugins::Plugin_Registry::getInstance()->getPlugin(QStringLiteral("importLSYS")));
@@ -25,7 +29,14 @@ namespace QtGUI
                 ::Plugins::Import* importer = qobject_cast<::Plugins::Import *>(plugin);
                 if (importer)
                 {
-                    auto mdl = importer->getModel();
+                    auto mdlData = importer->getModel();
+
+                    Model::CustomGeometryModel* mdlItem = qobject_cast<Model::CustomGeometryModel*>(eng->rootObjects()[0]->findChild<QQuickItem*>(QStringLiteral("model")));
+                    if(mdlItem)
+                    {
+                        mdlItem->setGeometryNode(std::move(mdlData));
+                    }
+
                 }
         ldr.unload();
         }
@@ -33,6 +44,12 @@ namespace QtGUI
         {
             qWarning() << "Plugin Load failed with :" << ldr.errorString() ;
         }
+
+
+    }
+
+    void PFCRender::onQmlReady()
+    {
 
     }
 

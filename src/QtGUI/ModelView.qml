@@ -1,6 +1,6 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.2
-
+import sci.pfcrender.customModel 1.0
 
 Flickable{
     clip: false
@@ -30,9 +30,9 @@ Flickable{
     }
 
 
-    Image{
+    CustomGeometryModel{
+    objectName: 'model'
     id: model
-    source: "qrc:///res/eucalyptus.jpg"
 }
 
 }

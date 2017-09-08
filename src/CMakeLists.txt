@@ -28,20 +28,23 @@ if(COMPILE_GUI_SUPPORT)
 endif()
 
 set(SRC
-        "QtGUI/PFCRender.cpp"
+        "PFCStart.cpp"
 
         "Plugins/Plugin_Registry.cpp"
 
-        "PFCStart.cpp"
+        "Model/CustomGeometryModel.cpp"
 
 
+        "QtGUI/PFCRender.cpp"
 )
 
 set(INC 
 
-        "QtGUI/PFCRender.h"
-
         "Plugins/Plugin_Registry.h"
+
+        "Model/CustomGeometryModel.h"
+
+        "QtGUI/PFCRender.h"
 
 )
 
