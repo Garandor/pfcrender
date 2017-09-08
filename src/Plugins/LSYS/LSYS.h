@@ -5,7 +5,7 @@
 
 #include <QList>
 #include <QObject>
-#include <QQuickPaintedItem>
+#include <QSGGeometryNode>
 #include <QString>
 #include<QtPlugin>
 #include<memory>

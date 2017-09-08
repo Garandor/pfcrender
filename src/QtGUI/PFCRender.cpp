@@ -25,7 +25,7 @@ namespace QtGUI
                 ::Plugins::Import* importer = qobject_cast<::Plugins::Import *>(plugin);
                 if (importer)
                 {
-                    importer->execService(QStringLiteral("LSYS"),QVariant());
+                    auto mdl = importer->getModel();
                 }
         ldr.unload();
         }

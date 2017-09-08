@@ -18,54 +18,50 @@ void LSYS::execService(QString name, QVariant params)
 {
     if(!name.compare(QStringLiteral("LSYS")))
     {
-        getModel();
-        return;
+        return getModel();
+    }
+    else{
+        return nullptr;
     }
 }
 
-std::unique_ptr<QQuickPaintedItem> LSYS::getModel()
+QSGGeometryNode* LSYS::getModel()
 {
     //TODO: Make sure this uses move semantics
-    const QString curve( _computeLSYS( QString("L+L"), 3 ) );
+    const QString curve( _computeLSYS( QList<QString>{"F","F","F+F-F-F-F+F+F+F-F","+","+","-","-"}, 3 ) );
 
-    auto paintedItem = _createQQuickPaintedItem(std::move(curve));
-
-    return paintedItem;
-}
-
-auto LSYS::_createQQuickPaintedItem(const QString& curve)
-{
-    //Build the Painter from our curve
-    std::unique_ptr<PFCModel> mdl{};
-
-    QPainter p{mdl};
-
-   //TODO: If this is not a case for a builder, I don't know what is
-//    class enum orientation{
-//        LEFT;
-//        RIGHT;
-//                UP;
-//                DOWN;
-//    };
-
-    for (const QChar& c : curve )
-    {
-        switch (c.toLatin1())
-        {
-         case 'F' : {
-            break;
-        }
-        case '+' : {
-            break;
-        }
-        case '-' : {
-            break;
-        }
-        }
-
-    }
+    auto mdl = _createGeometry(std::move(curve));
 
     return mdl;
+}
+
+auto LSYS::_createGeometry(const QString& curve)
+{
+    QSGGeometryNode* geom = new QSGGeometryNode;
+
+    //Set Geometry
+    //TODO: build curve from LSYS
+    QSGGeometry *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), 2);
+    geometry->setDrawingMode(GL_LINES);
+    geometry->setLineWidth(3);
+    geometry->vertexDataAsPoint2D()[0].set(0, 0);
+    geometry->vertexDataAsPoint2D()[1].set(width(), height());
+
+    //Create Material
+    QSGFlatColorMaterial *material = new QSGFlatColorMaterial;
+    material->setColor(QColor(255, 0, 0));
+
+    //Assign everything to the node
+    geom->setGeometry(geometry);
+    geom->setMaterial(material);
+
+    //Set flags to makes sure geometry and material are destroyed with the node
+    geom->setFlag(QSGNode::OwnedByParent);
+    geom->setFlag(QSGNode::OwnsGeometry);
+    geom->setFlag(QSGNode::OwnsMaterial);
+
+
+    return geom;
 }
 
 QList<QString> LSYS::lookupServices()

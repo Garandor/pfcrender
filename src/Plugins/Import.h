@@ -2,7 +2,7 @@
 #define PLUGIN_IMPORT_H
 
 #include"Plugin.h"
-#include<QQuickPaintedItem>
+#include<QSGGeometryNode>
 #include<memory>		//for unique_ptr
 
 class QQuickItem;
@@ -20,7 +20,7 @@ public:
     * Since Model is likely a very large QQuickItem, we hand it over as a unique pointer to force using move semantics
     * @return  A unique pointer to the QQuickItem to use as new model
     */
-    virtual std::unique_ptr<QQuickPaintedItem> getModel() =0 ;
+    virtual std::unique_ptr<QSGGeometryNode> getModel() =0 ;
 
 
 
