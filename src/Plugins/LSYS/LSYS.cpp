@@ -2,7 +2,6 @@
 
 //FXTLIB includes
 #include "stringsubst.h"
-#include "PFCModel.h"
 
 namespace Plugins
 {
@@ -31,7 +30,6 @@ QSGGeometryNode* LSYS::getModel()
     const QString curve( _computeLSYS( QList<QString>{"F","F","F+F-F-F-F+F+F+F-F","+","+","-","-"}, 3 ) );
 
     auto mdl = _createGeometry(std::move(curve));
-
     return mdl;
 }
 
@@ -77,6 +75,12 @@ void* LSYS::getParams()
     return nullptr;
 }
 
+
+void* LSYS::getParams()
+{
+    QList<QString> myParams{};
+    return nullptr;
+}
 LSYS::~LSYS()
 {
 

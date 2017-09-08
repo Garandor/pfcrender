@@ -36,7 +36,7 @@ public:
     void* getParams() override;
     std::unique_ptr<QQuickPaintedItem> getModel() override;
 
-    ~LSYS() final override;
+    ~LSYS() override;
 };
 
 }  // namespace LSYS
