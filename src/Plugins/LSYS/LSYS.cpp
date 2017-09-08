@@ -56,8 +56,9 @@ std::unique_ptr<QSGGeometryNode> LSYS::_createGeometry(const QString& curve)
     geom->setGeometry(geometry);
     geom->setMaterial(material);
 
-    //Set flags to makes sure geometry and material are destroyed with the node
-    geom->setFlag(QSGNode::OwnedByParent);
+    //Make sure no automatic resource release is done on this object, the owner (=model) must release resources (guaranteed by smart_ptr)
+    geom->setFlag(QSGNode::OwnedByParent,false);
+    //Set flags to make sure geometry and material are destroyed with the node
     geom->setFlag(QSGNode::OwnsGeometry);
     geom->setFlag(QSGNode::OwnsMaterial);
 

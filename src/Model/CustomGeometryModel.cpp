@@ -5,7 +5,7 @@ namespace Model
 
 QString CustomGeometryModel::getType()
 {
-	return 0;
+    return QString{};
 }
 
 void CustomGeometryModel::setGeometryNode(std::unique_ptr<QSGGeometryNode> newNode)
@@ -34,7 +34,9 @@ CustomGeometryModel::CustomGeometryModel() : QQuickItem()
 
 CustomGeometryModel::~CustomGeometryModel()
 {
-    //BUG possible: Check if the Geometry and Material get deleted by Qt and then reference nullpointers on subsequent rendering attempts of the SGGNode
+    //BUG possible: While we are sure the QSGGeometryNode is deleted via smart_ptr on model destruction, the contained Geometry and Material are managed by Qt
+    //If we reuse the GeometryNode it is possible to have deleted geometries and materials
+    //Check if the Geometry and Material get deleted by Qt and then reference nullpointers on subsequent rendering attempts of the SGGNode
     //The Node itself should get automagically deleted by the smart ptr
 }
 
