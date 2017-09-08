@@ -3,6 +3,9 @@
 //FXTLIB includes
 #include "stringsubst.h"
 
+#include<QSGGeometry>
+#include<QSGFlatColorMaterial>
+
 namespace Plugins
 {
 namespace LSYS
@@ -17,10 +20,10 @@ void LSYS::execService(QString name, QVariant params)
 {
     if(!name.compare(QStringLiteral("LSYS")))
     {
-        return getModel();
+//        return getModel();
     }
     else{
-        return nullptr;
+//        return nullptr;
     }
 }
 
@@ -29,24 +32,24 @@ QSGGeometryNode* LSYS::getModel()
     //TODO: Make sure this uses move semantics
     const QString curve( _computeLSYS( QList<QString>{"F","F","F+F-F-F-F+F+F+F-F","+","+","-","-"}, 3 ) );
 
-    auto mdl = _createGeometry(std::move(curve));
+    QSGGeometryNode* mdl = _createGeometry(std::move(curve));
     return mdl;
 }
 
-auto LSYS::_createGeometry(const QString& curve)
+QSGGeometryNode* LSYS::_createGeometry(const QString& curve)
 {
-    QSGGeometryNode* geom = new QSGGeometryNode;
+    auto geom = new QSGGeometryNode;
 
     //Set Geometry
     //TODO: build curve from LSYS
-    QSGGeometry *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), 2);
+    auto *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), 2);
     geometry->setDrawingMode(GL_LINES);
     geometry->setLineWidth(3);
     geometry->vertexDataAsPoint2D()[0].set(0, 0);
-    geometry->vertexDataAsPoint2D()[1].set(width(), height());
+    geometry->vertexDataAsPoint2D()[1].set(200,400);
 
     //Create Material
-    QSGFlatColorMaterial *material = new QSGFlatColorMaterial;
+    auto *material = new QSGFlatColorMaterial;
     material->setColor(QColor(255, 0, 0));
 
     //Assign everything to the node
@@ -67,31 +70,19 @@ QList<QString> LSYS::lookupServices()
     return QList<QString>{"asd","as"};
 }
 
-
-
 void* LSYS::getParams()
 {
     QList<QString> myParams{};
     return nullptr;
 }
 
-
-void* LSYS::getParams()
-{
-    QList<QString> myParams{};
-    return nullptr;
-}
 LSYS::~LSYS()
 {
 
 }
 
-
-const QString LSYS::_computeLSYS(QString axiom, ulong iterate)
+const QString LSYS::_computeLSYS(const QList<QString> definition, ulong iterate)
 {
-    //Create a unique pointer to the QuickItem we will create and use as the new model
-    std::unique_ptr<QQuickItem> mdl = std::make_unique<QQuickItem>(Q_NULLPTR);
-
     QString axio(QStringLiteral("F")); //TODO: IGNORE PARAMETER FOR NOW, CHANGE LATER
 
     //Build stringsubst object from passed params

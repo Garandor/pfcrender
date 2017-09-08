@@ -9,8 +9,6 @@ add_library(plugin_LSYS SHARED
 
     "LSYS.cpp"
     "LSYS.h"
-    "PFCModel.cpp"
-    "PFCModel.h"
     )
 
 target_include_directories(plugin_LSYS PRIVATE
