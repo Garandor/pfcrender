@@ -40,13 +40,88 @@ std::unique_ptr<QSGGeometryNode> LSYS::_createGeometry(const QString& curve)
 {
     auto geom = std::make_unique<QSGGeometryNode>();
 
-    //Set Geometry
-    //TODO: build curve from LSYS
+    //Build curve geometry
     auto *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), 2);
     geometry->setDrawingMode(GL_LINES);
     geometry->setLineWidth(3);
-    geometry->vertexDataAsPoint2D()[0].set(0, 0);
-    geometry->vertexDataAsPoint2D()[1].set(200,400);
+
+    constexpr int seg_len =  10;
+
+    //TODO: make interpretation of +- selectable
+    enum class dir{
+       U,D,L,R
+    };
+    dir last_dir = dir::R;
+    int segcount = 0;
+
+    for (int i=0; i<curve.length();i+=2)
+    {
+        if(i==0 && curve.at(i)=="F")
+        {
+        geometry->vertexDataAsPoint2D()[0].set(0, 0);
+        geometry->vertexDataAsPoint2D()[1].set(seg_len,0);
+        segcount = 1;
+
+        last_dir = dir::R;
+        continue;
+        }
+
+        //Quick and shitty implementation, this should be a Builder
+        switch(curve.at(i-1).toLatin1())
+        {
+        case '+' :
+            switch(last_dir)
+            {
+            case dir::R:
+                segcount++;
+                geometry->vertexDataAsPoint2D()[segcount].set(geometry->vertexDataAsPoint2D()[segcount-1].x,geometry->vertexDataAsPoint2D()[segcount-1].y-seg_len);
+                last_dir = dir::D;
+                break;
+            case dir::L:
+                segcount++;
+                geometry->vertexDataAsPoint2D()[segcount].set(geometry->vertexDataAsPoint2D()[segcount-1].x,geometry->vertexDataAsPoint2D()[segcount-1].y+seg_len);
+                last_dir = dir::U;
+                break;
+            case dir::U:
+                segcount++;
+                geometry->vertexDataAsPoint2D()[segcount].set(geometry->vertexDataAsPoint2D()[segcount-1].x+seg_len,geometry->vertexDataAsPoint2D()[segcount-1].y);
+                last_dir = dir::R;
+                break;
+            case dir::D:
+                segcount++;
+                geometry->vertexDataAsPoint2D()[segcount].set(geometry->vertexDataAsPoint2D()[segcount-1].x-seg_len,geometry->vertexDataAsPoint2D()[segcount-1].y);
+                last_dir = dir::L;
+                break;
+            }
+            break;
+
+        case '-' :
+            switch(last_dir)
+            {
+            case dir::R:
+                segcount++;
+                geometry->vertexDataAsPoint2D()[segcount].set(geometry->vertexDataAsPoint2D()[segcount-1].x,geometry->vertexDataAsPoint2D()[segcount-1].y-seg_len);
+                last_dir = dir::D;
+                break;
+            case dir::L:
+                segcount++;
+                geometry->vertexDataAsPoint2D()[segcount].set(geometry->vertexDataAsPoint2D()[segcount-1].x,geometry->vertexDataAsPoint2D()[segcount-1].y+seg_len);
+                last_dir = dir::U;
+                break;
+            case dir::U:
+                segcount++;
+                geometry->vertexDataAsPoint2D()[segcount].set(geometry->vertexDataAsPoint2D()[segcount-1].x+seg_len,geometry->vertexDataAsPoint2D()[segcount-1].y);
+                last_dir = dir::R;
+                break;
+            case dir::D:
+                segcount++;
+                geometry->vertexDataAsPoint2D()[segcount].set(geometry->vertexDataAsPoint2D()[segcount-1].x-seg_len,geometry->vertexDataAsPoint2D()[segcount-1].y);
+                last_dir = dir::L;
+                break;
+            }
+            break;
+        }
+    }
 
     //Create Material
     auto *material = new QSGFlatColorMaterial;

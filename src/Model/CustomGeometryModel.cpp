@@ -18,6 +18,7 @@ void CustomGeometryModel::setGeometryNode(std::unique_ptr<QSGGeometryNode> newNo
 
 QSGNode* CustomGeometryModel::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* updatePaintNodeData)
 {
+    Q_UNUSED(updatePaintNodeData);
     //
     if(m_geometry.get() != oldNode)
     {
