@@ -2,13 +2,19 @@
 
 #include<QSGFlatColorMaterial>
 #include<QSGGeometryNode>
+#include<QDebug>
 
 namespace ViewModel {
 
-void add_segment_at(QSGGeometry* g, unsigned int &offset, QSGGeometry::Point2D start, QSGGeometry::Point2D end)
+void add_segment_to(QSGGeometry* g, unsigned int &offset, QSGGeometry::Point2D start, QSGGeometry::Point2D end)
 {
+        qDebug() << "x" << ((g->vertexDataAsPoint2D()[offset]).x) << "y" << ((g->vertexDataAsPoint2D()[offset]).y);
+
         g->vertexDataAsPoint2D()[offset]= start;
-        g->vertexDataAsPoint2D()[offset++] = end;
+        qDebug() << "x" << ((g->vertexDataAsPoint2D()[offset]).x) << "y" << ((g->vertexDataAsPoint2D()[offset]).y);
+        offset++;
+        g->vertexDataAsPoint2D()[offset] = end;
+        qDebug() << "x" << ((g->vertexDataAsPoint2D()[offset]).x) << "y" << ((g->vertexDataAsPoint2D()[offset]).y);
         offset++;
 }
 
@@ -29,82 +35,75 @@ std::unique_ptr<QSGGeometryNode> ViewModelFactory::_createGeometry(const QString
     enum class dir{
        U,D,L,R
     };
-    dir last_dir = dir::R;
+    dir direc = dir::R;
 
     unsigned int offset = 0;
 
-    add_segment_at(geometry,offset,{100,30},{100,30});
-    add_segment_at(geometry,offset,{100,30},{100,30});
+    add_segment_to(geometry,offset,{300,300},{300,300});
 
-
-//    for ( int i=0; i < curve.size() - 2;i += 2 )
-//    {
-//        if(i==0 && curve.at(i)=="F")
-//        {
-//        geometry->vertexDataAsPoint2D()[0].set(0, 0);
-//        geometry->vertexDataAsPoint2D()[1].set(seg_len,0);
-//        segcount = 1;
-
-//        last_dir = dir::R;
-//        continue;
-//        }
-
-//        //Quick and shitty implementation, this should be a Builder
-//        switch(curve.at(i-1).toLatin1())
-//        {
-//        case '+' :
-//            switch(last_dir)
-//            {
-//            case dir::R:
-//                segcount++;
-//                geometry->vertexDataAsPoint2D()[segcount].set(geometry->vertexDataAsPoint2D()[segcount-1].x,geometry->vertexDataAsPoint2D()[segcount-1].y-seg_len);
-//                last_dir = dir::D;
-//                break;
-//            case dir::L:
-//                segcount++;
-//                geometry->vertexDataAsPoint2D()[segcount].set(geometry->vertexDataAsPoint2D()[segcount-1].x,geometry->vertexDataAsPoint2D()[segcount-1].y+seg_len);
-//                last_dir = dir::U;
-//                break;
-//            case dir::U:
-//                segcount++;
-//                geometry->vertexDataAsPoint2D()[segcount].set(geometry->vertexDataAsPoint2D()[segcount-1].x+seg_len,geometry->vertexDataAsPoint2D()[segcount-1].y);
-//                last_dir = dir::R;
-//                break;
-//            case dir::D:
-//                segcount++;
-//                geometry->vertexDataAsPoint2D()[segcount].set(geometry->vertexDataAsPoint2D()[segcount-1].x-seg_len,geometry->vertexDataAsPoint2D()[segcount-1].y);
-//                last_dir = dir::L;
-//                break;
-//            }
-//            break;
-
-//        case '-' :
-//            switch(last_dir)
-//            {
-//            case dir::R:
-//                segcount++;
-//                geometry->vertexDataAsPoint2D()[segcount].set(geometry->vertexDataAsPoint2D()[segcount-1].x,geometry->vertexDataAsPoint2D()[segcount-1].y-seg_len);
-//                last_dir = dir::D;
-//                break;
-//            case dir::L:
-//                segcount++;
-//                geometry->vertexDataAsPoint2D()[segcount].set(geometry->vertexDataAsPoint2D()[segcount-1].x,geometry->vertexDataAsPoint2D()[segcount-1].y+seg_len);
-//                last_dir = dir::U;
-//                break;
-//            case dir::U:
-//                segcount++;
-//                geometry->vertexDataAsPoint2D()[segcount].set(geometry->vertexDataAsPoint2D()[segcount-1].x+seg_len,geometry->vertexDataAsPoint2D()[segcount-1].y);
-//                last_dir = dir::R;
-//                break;
-//            case dir::D:
-//                segcount++;
-//                geometry->vertexDataAsPoint2D()[segcount].set(geometry->vertexDataAsPoint2D()[segcount-1].x-seg_len,geometry->vertexDataAsPoint2D()[segcount-1].y);
-//                last_dir = dir::L;
-//                break;
-//            }
-//            break;
-//        }
-//    }
+    for ( int i=0; i < curve.length()-3 ; i++ )
+    {
+        //Quick and shitty implementation, this should be a Builder
+        switch(curve.at(i).toLatin1())
+        {
+        case 'F' :	//Add new line segment
+        {
+            QSGGeometry::Point2D start(geometry->vertexDataAsPoint2D()[offset-1]),
+                    end(geometry->vertexDataAsPoint2D()[offset-1]);
+            switch(direc)
+            {
+            case dir::R:
+                end.x += seg_len;
+                break;
+            case dir::L:
+                end.x -= seg_len;
+                break;
+            case dir::D:
+                end.y -= seg_len;
+                break;
+            case dir::U:
+                end.y += seg_len;
+                break;
+            }
+            add_segment_to(geometry,offset,start,end);
+            break;
+        }
+        case '+' : 	//change dir clockwise
+            switch(direc)
+            {
+            case dir::R:
+                direc = dir::D;
+                break;
+            case dir::D:
+                direc = dir::L;
+                break;
+            case dir::L:
+                direc = dir::U;
+                break;
+            case dir::U:
+                direc = dir::R;
+                break;
+            }
+            break;
+        case '-' :	//change dir counterclockwise
+            switch(direc)
+            {
+            case dir::R:
+                direc = dir::U;
+                break;
+            case dir::U:
+                direc = dir::L;
+                break;
+            case dir::L:
+                direc = dir::D;
+                break;
+            case dir::D:
+                direc = dir::R;
+                break;
+            }
+            break;
+        }
+    }
 
     //Create Material
     QSGFlatColorMaterial* material = new QSGFlatColorMaterial();
