@@ -4,3 +4,4 @@
 pfcrender_uml.asta.lock
 *.swp
 CMakeLists.txt.user
+*.autosave

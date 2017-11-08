@@ -28,18 +28,30 @@ if(COMPILE_GUI_SUPPORT)
 endif()
 
 set(SRC
-        "QtGUI/PFCRender.cpp"
-
-	"Plugin/Plugin_Registry.cpp"
-
         "PFCStart.cpp"
+
+        "Plugins/Plugin_Registry.cpp"
+
+        "Model/LSYSModel.cpp"
+
+        "ViewModel/ViewModelFactory.cpp"
+        "ViewModel/CustomGeometryModel.cpp"
+
+
+        "QtGUI/PFCRender.cpp"
 )
 
 set(INC 
 
+        "Plugins/Plugin_Registry.h"
+
+        "Model/LSYSModel.h"
+
+        "ViewModel/ViewModelFactory.h"
+        "ViewModel/CustomGeometryModel.h"
+
         "QtGUI/PFCRender.h"
 
-        "Plugin/Plugin_Registry.h"
 )
 
 
@@ -54,7 +66,6 @@ endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 	${CMAKE_CURRENT_BINARY_DIR}
-	"Plugin"
 )
 
 #Link with Qt
@@ -64,3 +75,5 @@ if(COMPILE_GUI_SUPPORT)
 	target_link_libraries(${PROJECT_NAME} Qt5::Gui Qt5::Qml Qt5::Quick)
 endif()
 
+#descend into plugins subdirectory to build plugins
+add_subdirectory(Plugins)

@@ -9,24 +9,24 @@
 
 #include <QHash>
 #include <QString>
+#include <QFile>
 
-namespace Plugin
+namespace Plugins
 {
 class Plugin_Registry
 {
 private:
 	static Plugin_Registry* instance;
-	QHash<QString,QString> m_registered;
+    QHash<QString,QString> m_registered;
 
 private:
 	Plugin_Registry();
-	Plugin_Registry(const Plugin_Registry &)= delete ;
-	Plugin_Registry& operator=(const Plugin_Registry &) = delete;
+    Q_DISABLE_COPY(Plugin_Registry)
 
 
 public:
-	static Plugin_Registry* getInstance();
-	QString getPlugin(QString serviceName);
+    static Plugin_Registry* const getInstance();
+    const QString getPlugin(const QString& serviceName) const;
 };
 
 }  // namespace Plugin

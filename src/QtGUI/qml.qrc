@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>HelloWorld.qml</file>
+        <file>res/eucalyptus.jpg</file>
+        <file>ModelView.qml</file>
     </qresource>
 </RCC>

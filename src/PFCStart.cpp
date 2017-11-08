@@ -5,12 +5,14 @@
 #include <QQmlApplicationEngine>
 #include <QQuickItem>
 
-#include "Plugin/Plugin_Registry.h"
+#include "Plugins/Plugin_Registry.h"
 #include "QtGUI/PFCRender.h"
+#include "Model/LSYSModel.h"
+#include "ViewModel/CustomGeometryModel.h"
 
 int main(int argc, char** argv)
 {
-    Plugin::Plugin_Registry* plugins = Plugin::Plugin_Registry::getInstance();
+    Plugins::Plugin_Registry* plugins = Plugins::Plugin_Registry::getInstance();
 	
 	//open config file
 
@@ -18,15 +20,16 @@ int main(int argc, char** argv)
 
     //XXX: For now, let's not mess with CLI mode
 #if 1
-		QGuiApplication qapp(argc,argv);
+        qmlRegisterType<ViewModel::CustomGeometryModel>("sci.pfcrender.customModel", 1, 0, "CustomGeometryModel");
+
+
+        QGuiApplication app(argc,argv);
         QQmlApplicationEngine qeng(QUrl(QStringLiteral("qrc:///main.qml")));
 
-        QtGUI::PFCRender desktop_obj;
 
-        QObject* pItem = qobject_cast<QObject*>(qeng.rootObjects()[0]->findChild<QQuickItem*>(QString(QStringLiteral("Comptest"))));
-        QObject* pDesktop = &desktop_obj;
+        QtGUI::PFCRender desktop_obj(&qeng);
 
-		return qapp.exec();
+        return app.exec();
 #else
 		QCoreApplication qapp(argc,argv);
 		return qapp.exec();

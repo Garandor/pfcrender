@@ -5,6 +5,8 @@ ApplicationWindow
 {
 	id: main
     visible:true
+    width: 800
+    height: 600
 
     header: ToolBar
     {}
@@ -12,7 +14,7 @@ ApplicationWindow
     footer: TabBar
     {}
 
-    HelloWorld
+    ModelView
     {
 
     }
