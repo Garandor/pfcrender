@@ -52,7 +52,7 @@ install:
   # g++ should call g++-5
   - if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then travis_retry sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 90 ; fi
   #Qt5.9
-  - if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then travis_retry sudo apt-get install qt59-meta-full ; fi
+  - if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then travis_retry travis_wait sudo apt-get install qt59-meta-full ; fi
   - if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then source /opt/qt59/bin/qt59-env.sh ; fi
   - if [[ $TRAVIS_OS_NAME == 'osx' ]] ; then travis_retry brew update ; fi
   - if [[ $TRAVIS_OS_NAME == 'osx' ]] ; then brew install qt5 ; fi
