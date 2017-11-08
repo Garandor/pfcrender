@@ -7,7 +7,8 @@
 
 #include "Plugins/Plugin_Registry.h"
 #include "QtGUI/PFCRender.h"
-#include "Model/CustomGeometryModel.h"
+#include "Model/LSYSModel.h"
+#include "ViewModel/CustomGeometryModel.h"
 
 int main(int argc, char** argv)
 {
@@ -19,7 +20,7 @@ int main(int argc, char** argv)
 
     //XXX: For now, let's not mess with CLI mode
 #if 1
-        qmlRegisterType<Model::CustomGeometryModel>("sci.pfcrender.customModel", 1, 0, "CustomGeometryModel");
+        qmlRegisterType<ViewModel::CustomGeometryModel>("sci.pfcrender.customModel", 1, 0, "CustomGeometryModel");
 
 
         QGuiApplication app(argc,argv);

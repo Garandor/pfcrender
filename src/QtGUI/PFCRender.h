@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QQmlApplicationEngine>
+#include "Model/LSYSModel.h"
 
 namespace QtGUI
 {
@@ -10,14 +11,17 @@ namespace QtGUI
 class PFCRender : public QObject
 {
     Q_OBJECT
-public:
-    PFCRender(QQmlApplicationEngine*);
 
-public slots:
-    void onQmlReady();
+    public slots:
+        void onModelChanged(const QString&);
 
-private:
-};
+    public:
+        PFCRender(QQmlApplicationEngine*);
+
+    private:
+        Model::LSYSModel m_dMdl;
+        QQmlApplicationEngine* p_eng;
+    };
 
 }  // namespace QtGUI
 #endif

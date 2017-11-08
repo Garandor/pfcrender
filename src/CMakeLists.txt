@@ -32,7 +32,10 @@ set(SRC
 
         "Plugins/Plugin_Registry.cpp"
 
-        "Model/CustomGeometryModel.cpp"
+        "Model/LSYSModel.cpp"
+
+        "ViewModel/ViewModelFactory.cpp"
+        "ViewModel/CustomGeometryModel.cpp"
 
 
         "QtGUI/PFCRender.cpp"
@@ -42,7 +45,10 @@ set(INC
 
         "Plugins/Plugin_Registry.h"
 
-        "Model/CustomGeometryModel.h"
+        "Model/LSYSModel.h"
+
+        "ViewModel/ViewModelFactory.h"
+        "ViewModel/CustomGeometryModel.h"
 
         "QtGUI/PFCRender.h"
 

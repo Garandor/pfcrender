@@ -22,9 +22,8 @@ public:
     * Since Model is likely a very large QQuickItem, we hand it over as a unique pointer to force using move semantics
     * @return  A unique pointer to the QQuickItem to use as new model
     */
-    virtual std::unique_ptr<QSGGeometryNode> getModel() =0 ;
 
-
+    virtual std::unique_ptr<QString> getModel() = 0 ;
 
     virtual ~Import() {}
 };

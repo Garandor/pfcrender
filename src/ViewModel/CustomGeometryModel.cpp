@@ -1,19 +1,15 @@
 #include<QDebug>
 #include "CustomGeometryModel.h"
-namespace Model
+namespace ViewModel
 {
 
-QString CustomGeometryModel::getType()
-{
-    return QString{};
-}
 
 void CustomGeometryModel::setGeometryNode(std::unique_ptr<QSGGeometryNode> newNode)
 {
     qDebug() << QStringLiteral("test") << QVariant((newNode != nullptr) ? true : false);
     m_geometry = std::move(newNode);
     update();
-    emit modelChanged();
+    emit viewModelChanged();
 }
 
 QSGNode* CustomGeometryModel::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* updatePaintNodeData)

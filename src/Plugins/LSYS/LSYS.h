@@ -22,11 +22,9 @@ class LSYS : public Import
     Q_PLUGIN_METADATA(IID "PFCRender.Plugins.Import.LSYS")
 
 private:
-    const QString _computeLSYS(QList<QString> definition, ulong iterate);
-    std::unique_ptr<QSGGeometryNode> _createGeometry(const QString& curve );
+    std::unique_ptr<QString> _computeLSYS(const QList<QString> definition, ulong iterate);
 
 public:
-
     //Plugin Interface Methods
     QList<QString> lookupServices() override;
     void execService(QString name, QVariant params) override;
@@ -34,7 +32,7 @@ public:
 
     //Import Interface methods
     void* getParams() override;
-    std::unique_ptr<QSGGeometryNode> getModel() override;
+    std::unique_ptr<QString> getModel() override;
 
     ~LSYS() override;
 };

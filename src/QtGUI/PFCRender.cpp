@@ -10,13 +10,22 @@
 #include "PFCRender.h"
 #include"Plugins/Plugin_Registry.h"
 #include"Plugins/Import.h"
-#include"Model/CustomGeometryModel.h"
-
+#include"ViewModel/CustomGeometryModel.h"
+#include"ViewModel/ViewModelFactory.h"
 
 namespace QtGUI
 {
 
-    PFCRender::PFCRender(QQmlApplicationEngine* eng)
+void PFCRender::onModelChanged(const QString& mdl)
+{
+    auto* mdlItem = qobject_cast<ViewModel::CustomGeometryModel*>(p_eng->rootObjects()[0]->findChild<QQuickItem*>(QStringLiteral("model")));
+    if(mdlItem)
+    {
+        mdlItem->setGeometryNode(std::move(ViewModel::createGeom(mdl)));
+    }
+}
+
+PFCRender::PFCRender(QQmlApplicationEngine* eng) : p_eng(eng)
     {
         //Load plugin from registry
         QDir pluginsDir(qApp->applicationDirPath());
@@ -29,13 +38,11 @@ namespace QtGUI
                 ::Plugins::Import* importer = qobject_cast<::Plugins::Import *>(plugin);
                 if (importer)
                 {
-                    auto mdlData = importer->getModel();
+                     auto dataModel = importer->getModel();
 
-                    Model::CustomGeometryModel* mdlItem = qobject_cast<Model::CustomGeometryModel*>(eng->rootObjects()[0]->findChild<QQuickItem*>(QStringLiteral("model")));
-                    if(mdlItem)
-                    {
-                        mdlItem->setGeometryNode(std::move(mdlData));
-                    }
+                     QObject::connect(&m_dMdl,SIGNAL(modelChanged(const QString&)),this,SLOT(onModelChanged(const QString&)));
+
+                     m_dMdl.setModel(std::move(dataModel));
 
                 }
         ldr.unload();
@@ -45,11 +52,6 @@ namespace QtGUI
             qWarning() << "Plugin Load failed with :" << ldr.errorString() ;
         }
 
-
-    }
-
-    void PFCRender::onQmlReady()
-    {
 
     }
 
