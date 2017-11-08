@@ -6,7 +6,7 @@ namespace ViewModel
 
 void CustomGeometryModel::setGeometryNode(std::unique_ptr<QSGGeometryNode> newNode)
 {
-    qDebug() << QStringLiteral("test") << QVariant((newNode != nullptr) ? true : false);
+//    qDebug() << QStringLiteral("test") << QVariant((newNode != nullptr) ? true : false);
     m_geometry = std::move(newNode);
     update();
     emit viewModelChanged();

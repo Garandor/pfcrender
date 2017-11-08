@@ -8,13 +8,13 @@ namespace ViewModel {
 
 void add_segment_to(QSGGeometry* g, unsigned int &offset, QSGGeometry::Point2D start, QSGGeometry::Point2D end)
 {
-        qDebug() << "x" << ((g->vertexDataAsPoint2D()[offset]).x) << "y" << ((g->vertexDataAsPoint2D()[offset]).y);
+//        qDebug() << "x" << ((g->vertexDataAsPoint2D()[offset]).x) << "y" << ((g->vertexDataAsPoint2D()[offset]).y);
 
         g->vertexDataAsPoint2D()[offset]= start;
-        qDebug() << "x" << ((g->vertexDataAsPoint2D()[offset]).x) << "y" << ((g->vertexDataAsPoint2D()[offset]).y);
+//        qDebug() << "x" << ((g->vertexDataAsPoint2D()[offset]).x) << "y" << ((g->vertexDataAsPoint2D()[offset]).y);
         offset++;
         g->vertexDataAsPoint2D()[offset] = end;
-        qDebug() << "x" << ((g->vertexDataAsPoint2D()[offset]).x) << "y" << ((g->vertexDataAsPoint2D()[offset]).y);
+//        qDebug() << "x" << ((g->vertexDataAsPoint2D()[offset]).x) << "y" << ((g->vertexDataAsPoint2D()[offset]).y);
         offset++;
 }
 

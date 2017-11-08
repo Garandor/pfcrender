@@ -3,9 +3,8 @@ import QtQuick.Controls 2.2
 import sci.pfcrender.customModel 1.0
 
 Flickable{
-    clip: false
-    width: 500
-    height: 600
+    clip: true
+    anchors.fill: parent
     contentWidth: model.width
     contentHeight: model.height
 
