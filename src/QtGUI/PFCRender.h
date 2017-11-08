@@ -2,6 +2,7 @@
 #define QTGUI_P_F_C_RENDER_H
 
 #include <QObject>
+#include <QString>
 #include <QQmlApplicationEngine>
 #include "Model/LSYSModel.h"
 
@@ -18,7 +19,9 @@ class PFCRender : public QObject
     public:
         PFCRender(QQmlApplicationEngine*);
 
-    private:
+        void post_status(const QString &what);
+
+private:
         Model::LSYSModel m_dMdl;
         QQmlApplicationEngine* p_eng;
     };

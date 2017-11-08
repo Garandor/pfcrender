@@ -25,6 +25,11 @@ void PFCRender::onModelChanged(const QString& mdl)
     }
 }
 
+void PFCRender::post_status(const QString &what)
+{
+    p_eng->rootObjects()[0]->findChild<QQuickItem*>(QStringLiteral("status"))->setProperty("text",what);
+}
+
 PFCRender::PFCRender(QQmlApplicationEngine* eng) : p_eng(eng)
     {
         //Load plugin from registry
@@ -38,11 +43,13 @@ PFCRender::PFCRender(QQmlApplicationEngine* eng) : p_eng(eng)
                 ::Plugins::Import* importer = qobject_cast<::Plugins::Import *>(plugin);
                 if (importer)
                 {
-                     auto dataModel = importer->getModel();
 
-                     QObject::connect(&m_dMdl,SIGNAL(modelChanged(const QString&)),this,SLOT(onModelChanged(const QString&)));
+                    post_status("Running Import plugin");
+                    auto dataModel = importer->getModel();
 
-                     m_dMdl.setModel(std::move(dataModel));
+                    QObject::connect(&m_dMdl,SIGNAL(modelChanged(const QString&)),this,SLOT(onModelChanged(const QString&)));
+
+                    m_dMdl.setModel(std::move(dataModel));
 
                 }
         ldr.unload();
