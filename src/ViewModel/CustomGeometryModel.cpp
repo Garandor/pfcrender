@@ -8,23 +8,17 @@ namespace ViewModel
 
 void CustomGeometryModel::setGeometryNode(QSGGeometryNode* newNode)
 {
-//    qDebug() << QStringLiteral("test") << QVariant((newNode != nullptr) ? true : false);
-
     //store the node reference so the render thread can get it later
     p_node = newNode;
 
     //do some processing on the node before addidng it to the scene
-    //Normalize coordinates (make sure it has no negative coords)
-
-    //fit to parent dimensions
-
     //Set up the new properties of the quickitem according to its new geometry
     _setNewOuterDimensions();
 
-    qDebug() << "QQuickItem outer dimensions" << boundingRect();
-
     //Schedule updating the paintNode
     update();
+
+    //fit to parent dimensions
     emit viewModelChanged();
 }
 
@@ -60,8 +54,10 @@ void CustomGeometryModel::_setNewOuterDimensions()
     }
 
     qDebug() << "rectangle coords: (" << min.x << ',' << min.y << ") ; (" << max.x << "," << max.y;
-    this->setWidth(max.x - min.x);
-    this->setHeight(max.y - min.y);
+
+    m_vertexSize.setWidth(max.x - min.x);
+    m_vertexSize.setHeight(max.y - min.y);
+    this->setSize(vertexSize());
 
     //Normalize coordinates so they conform to item coordinates (0,0 = top of image) used by scenegraph
     if(std::min<double>({min.x,max.x,min.y,max.y}) < 0)
@@ -71,9 +67,6 @@ void CustomGeometryModel::_setNewOuterDimensions()
         QMatrix4x4 transform = wrapNode->matrix();
 
         transform.translate(-std::min<double>({min.x,max.x,0.0}),-std::min<double>({min.y,max.y,0}),0);
-//        qDebug() << parent()->property("height").toFloat() << ' ' << parent()->property("width").toFloat();
-//        qDebug() << height() << ' ' << width();
-//        transform.scale(std::min((parent()->property("height")).toFloat()/height(),parent()->property("width").toFloat()/width()));
 
         wrapNode->setMatrix(transform);
         wrapNode->appendChildNode(p_node);
@@ -81,15 +74,12 @@ void CustomGeometryModel::_setNewOuterDimensions()
         p_node = wrapNode;
     }
 
-    qDebug() << ": " << x()  << " " << y();
-    qDebug() << "bound: " << boundingRect().x()  << " " << boundingRect().y();
-    qDebug() << "bound: " << boundingRect().width()  << " " << boundingRect().height();
-
-    qDebug() << "parent: " << parent()->property("height") << " " << parent()->property("width");
     setTransformOrigin(QQuickItem::TopLeft);
-    setScale(2);
-    setSize(QSizeF(width()*2,height()*2));
-    emit dimensionChanged();
+
+    //initially fit to parent
+//    const float FAC = std::min(parent()->height() / height(), parent()->width() / width());
+//    setScale(FAC);
+//    setSize(QSizeF(width() * FAC,height() * FAC));
 }
 
 CustomGeometryModel::CustomGeometryModel() : QQuickItem()
@@ -103,6 +93,11 @@ CustomGeometryModel::~CustomGeometryModel()
     //If we reuse the GeometryNode it is possible to have deleted geometries and materials
     //Check if the Geometry and Material get deleted by Qt and then reference nullpointers on subsequent rendering attempts of the SGGNode
     //The Node itself should get automagically deleted by the smart ptr
+}
+
+QSizeF CustomGeometryModel::vertexSize()
+{
+    return m_vertexSize;
 }
 
 }  // namespace Model

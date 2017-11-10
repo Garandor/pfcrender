@@ -104,6 +104,11 @@ QSGGeometryNode *ViewModelFactory::_createGeometry(const QString& curve)
     }
     geometry->markVertexDataDirty();
 
+//    for(int i=0;i<geometry->vertexCount();i++)
+//        printf("%f:%f\t",v[i].x,v[i].y);
+//    fflush(stdout);
+
+
     //Create Material
     QSGFlatColorMaterial* material = new QSGFlatColorMaterial();
     material->setColor(QColor(255, 0, 0));
