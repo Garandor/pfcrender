@@ -71,6 +71,9 @@ void CustomGeometryModel::_setNewOuterDimensions()
         QMatrix4x4 transform = wrapNode->matrix();
 
         transform.translate(-std::min<double>({min.x,max.x,0.0}),-std::min<double>({min.y,max.y,0}),0);
+//        qDebug() << parent()->property("height").toFloat() << ' ' << parent()->property("width").toFloat();
+//        qDebug() << height() << ' ' << width();
+//        transform.scale(std::min((parent()->property("height")).toFloat()/height(),parent()->property("width").toFloat()/width()));
 
         wrapNode->setMatrix(transform);
         wrapNode->appendChildNode(p_node);
@@ -83,9 +86,10 @@ void CustomGeometryModel::_setNewOuterDimensions()
     qDebug() << "bound: " << boundingRect().width()  << " " << boundingRect().height();
 
     qDebug() << "parent: " << parent()->property("height") << " " << parent()->property("width");
-    emit dimensionChanged();
     setTransformOrigin(QQuickItem::TopLeft);
-//    setScale(2);
+    setScale(2);
+    setSize(QSizeF(width()*2,height()*2));
+    emit dimensionChanged();
 }
 
 CustomGeometryModel::CustomGeometryModel() : QQuickItem()

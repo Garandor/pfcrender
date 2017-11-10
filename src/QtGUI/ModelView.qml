@@ -9,6 +9,7 @@ Rectangle{
 
 
     Flickable{
+        id: container
         clip: false
         anchors.fill: parent
         contentWidth: model.width
@@ -43,6 +44,7 @@ Rectangle{
         CustomGeometryModel {
         objectName: 'model'
         id: model
+        onDimensionChanged: container.returnToBounds()
         }
 
     }

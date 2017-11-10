@@ -9,14 +9,13 @@ QSGGeometryNode *ViewModelFactory::_createGeometry(const QString& curve)
 {
     auto geom = new QSGGeometryNode; //As all QSG classes are managed by the scene graph, we need not worry about leaking memory / unique_ptrs / cleanup
 
+    //TODO: F is  hardcoded for now
     //Count number of segments by counting occurrences of F in string to allocate correct size
-
-    //Build curve geometry
     unsigned int segcount = 0;
     for (QChar c : curve)
         if(c == QChar('F'))segcount++;
 
-    //TODO: Go through string to find Fs so we only allocate a vertex for an actual segment
+    //Build curve geometry
     auto geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), segcount+1);
     geometry->setVertexDataPattern(QSGGeometry::StaticPattern);	//we won't touch the vertices after they have first been rendered. NOTE: if we do, mark_dirty
     geometry->setDrawingMode(QSGGeometry::DrawLineStrip);	//Draw connected lines each vertex
@@ -35,10 +34,9 @@ QSGGeometryNode *ViewModelFactory::_createGeometry(const QString& curve)
 
     QSGGeometry::Point2D* v = geometry->vertexDataAsPoint2D();
     unsigned int offset = 1;
-//    add_segment_to(geometry,offset,{0,0},{0,0});
     v[0] = {0.0f,0.0f};
 
-    for ( const QChar c : curve )
+    for ( const QChar& c : curve )
     {
         if(c.isNull())
             break;
@@ -105,11 +103,6 @@ QSGGeometryNode *ViewModelFactory::_createGeometry(const QString& curve)
         }
     }
     geometry->markVertexDataDirty();
-
-    for(int i=0;i<geometry->vertexCount();i++)
-        printf("%f:%f\t",v[i].x,v[i].y);
-    fflush(stdout);
-
 
     //Create Material
     QSGFlatColorMaterial* material = new QSGFlatColorMaterial();
