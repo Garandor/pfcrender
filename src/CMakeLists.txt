@@ -54,8 +54,7 @@ set(INC
 
 )
 
-
-
+#TODO: Split SRC and INC by common and GUI
 
 #Build executable
 if(COMPILE_GUI_SUPPORT)
@@ -65,7 +64,11 @@ else()
 endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC
-	${CMAKE_CURRENT_BINARY_DIR}
+        "${CMAKE_CURRENT_BINARY_DIR}"
+        "${Qt5Core_INCLUDE_DIRS}"
+        "${Qt5Gui_INCLUDE_DIRS}"
+        "${Qt5Qml_INCLUDE_DIRS}"
+        "${Qt5Quick_INCLUDE_DIRS}"
 )
 
 #Link with Qt

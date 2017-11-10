@@ -38,7 +38,7 @@ void* LSYS::getParams()
 std::unique_ptr<QString> LSYS::getModel()
 {
         //TODO: Make sure this uses move semantics
-    auto ret = _computeLSYS(QList<QString>{"F","F","F+F-F-F-F+F+F+F-F","+","+","-","-"}, 7 );
+    auto ret = _computeLSYS(QList<QString>{"F","F","F+F-F-F-F+F+F+F-F","+","+","-","-"}, 5 );
 
     return ret;
 }

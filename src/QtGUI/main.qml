@@ -15,7 +15,8 @@ ApplicationWindow
 
     ModelView
     {
-
+        anchors.fill: parent
+        anchors.centerIn: parent
     }
 
     statusBar:  StatusBar{

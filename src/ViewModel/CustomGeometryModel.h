@@ -16,6 +16,7 @@ class CustomGeometryModel : public QQuickItem
 
     signals:
         void viewModelChanged();
+        void dimensionChanged();
 
     public:
         CustomGeometryModel();
@@ -28,6 +29,8 @@ class CustomGeometryModel : public QQuickItem
 
     private:
 
+        void _setNewOuterDimensions();
+        void _normalizeGeometry();
         std::unique_ptr<QSGGeometryNode> m_geometry;
 
 };

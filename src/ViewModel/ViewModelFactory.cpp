@@ -39,7 +39,7 @@ std::unique_ptr<QSGGeometryNode> ViewModelFactory::_createGeometry(const QString
 
     unsigned int offset = 0;
 
-    add_segment_to(geometry,offset,{300,300},{300,300});
+    add_segment_to(geometry,offset,{0,0},{0,0});
 
     for ( int i=0; i < curve.length()-3 ; i++ )
     {
@@ -119,12 +119,18 @@ std::unique_ptr<QSGGeometryNode> ViewModelFactory::_createGeometry(const QString
     geom->setFlag(QSGNode::OwnsGeometry);
     geom->setFlag(QSGNode::OwnsMaterial);
 
+
+
     return geom;
 }
 
 std::unique_ptr<QSGGeometryNode> createGeom(const QString & mdl)
 {
     ViewModelFactory fac;
+
+
+
+
     return std::move(fac._createGeometry(mdl) );
 
 }
