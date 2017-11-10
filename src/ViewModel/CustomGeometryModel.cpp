@@ -46,16 +46,17 @@ void CustomGeometryModel::_setNewOuterDimensions()
     //calculate new bounding box and update properties
     // min = minium coordinate of the box
     // max = maxium coordinate of the box
-    auto g = (dynamic_cast<QSGGeometryNode*>(p_node))->geometry();
-    #define V g->vertexDataAsPoint2D()
-    QSGGeometry::Point2D min = V[0];
-    QSGGeometry::Point2D max = V[0];
-    for (int i = 1; i < g->vertexCount(); ++i)
+    auto n =  dynamic_cast<QSGGeometryNode*>(p_node);
+    auto g = n->geometry()->vertexDataAsPoint2D();
+    QSGGeometry::Point2D min = g[0],
+                         max = g[0];
+
+    for (int i = 1; i < n->geometry()->vertexCount(); ++i)
     {
-        if ( V[i].x < min.x ) min.x = V[i].x;
-        if ( V[i].y < min.y ) min.y = V[i].y;
-        if ( V[i].x > max.x ) max.x = V[i].x;
-        if ( V[i].y > max.y ) max.y = V[i].y;
+        if ( g[i].x < min.x ) min.x = g[i].x;
+        if ( g[i].y < min.y ) min.y = g[i].y;
+        if ( g[i].x > max.x ) max.x = g[i].x;
+        if ( g[i].y > max.y ) max.y = g[i].y;
     }
 
     qDebug() << "rectangle coords: (" << min.x << ',' << min.y << ") ; (" << max.x << "," << max.y;

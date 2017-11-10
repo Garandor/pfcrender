@@ -2,21 +2,8 @@
 
 #include<QSGFlatColorMaterial>
 #include<QSGGeometryNode>
-#include<QDebug>
 
 namespace ViewModel {
-
-void add_segment_to(QSGGeometry* g, unsigned int &offset, QSGGeometry::Point2D start, QSGGeometry::Point2D end)
-{
-//        qDebug() << "x" << ((g->vertexDataAsPoint2D()[offset]).x) << "y" << ((g->vertexDataAsPoint2D()[offset]).y);
-
-        g->vertexDataAsPoint2D()[offset]= start;
-//        qDebug() << "x" << ((g->vertexDataAsPoint2D()[offset]).x) << "y" << ((g->vertexDataAsPoint2D()[offset]).y);
-        offset++;
-        g->vertexDataAsPoint2D()[offset] = end;
-//        qDebug() << "x" << ((g->vertexDataAsPoint2D()[offset]).x) << "y" << ((g->vertexDataAsPoint2D()[offset]).y);
-        offset++;
-}
 
 QSGGeometryNode *ViewModelFactory::_createGeometry(const QString& curve)
 {
@@ -25,12 +12,20 @@ QSGGeometryNode *ViewModelFactory::_createGeometry(const QString& curve)
     //Count number of segments by counting occurrences of F in string to allocate correct size
 
     //Build curve geometry
-    auto geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), curve.size());
+    unsigned int segcount = 0;
+    for (QChar c : curve)
+        if(c == QChar('F'))segcount++;
+
+    //TODO: Go through string to find Fs so we only allocate a vertex for an actual segment
+    auto geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), segcount+1);
     geometry->setVertexDataPattern(QSGGeometry::StaticPattern);	//we won't touch the vertices after they have first been rendered. NOTE: if we do, mark_dirty
-    geometry->setDrawingMode(GL_LINES);
+    geometry->setDrawingMode(QSGGeometry::DrawLineStrip);	//Draw connected lines each vertex
     geometry->setLineWidth(3);
 
-    constexpr int seg_len =  10;
+    assert(segcount > 0);
+
+    //todo: segment size selectable
+    constexpr float seg_len =  10.0;
 
     //TODO: make interpretation of +- selectable
     enum class dir{
@@ -38,35 +33,39 @@ QSGGeometryNode *ViewModelFactory::_createGeometry(const QString& curve)
     };
     dir direc = dir::R;
 
-    unsigned int offset = 0;
+    QSGGeometry::Point2D* v = geometry->vertexDataAsPoint2D();
+    unsigned int offset = 1;
+//    add_segment_to(geometry,offset,{0,0},{0,0});
+    v[0] = {0.0f,0.0f};
 
-    add_segment_to(geometry,offset,{0,0},{0,0});
-
-    for ( int i=0; i < curve.length()-3 ; i++ )
+    for ( const QChar c : curve )
     {
-        //Quick and shitty implementation, this should be a Builder
-        switch(curve.at(i).toLatin1())
+        if(c.isNull())
+            break;
+
+        v[offset]=v[offset-1];
+
+        //TODO: Quick and shitty implementation, this should be a Builder
+        switch(c.toLatin1())
         {
         case 'F' :	//Add new line segment
         {
-            QSGGeometry::Point2D start(geometry->vertexDataAsPoint2D()[offset-1]),
-                    end(geometry->vertexDataAsPoint2D()[offset-1]);
             switch(direc)
             {
             case dir::R:
-                end.x += seg_len;
+                v[offset].x += seg_len;
                 break;
             case dir::L:
-                end.x -= seg_len;
+                v[offset].x -= seg_len;
                 break;
             case dir::D:
-                end.y -= seg_len;
+                v[offset].y += seg_len;
                 break;
             case dir::U:
-                end.y += seg_len;
+                v[offset].y -= seg_len;
                 break;
             }
-            add_segment_to(geometry,offset,start,end);
+            offset++;
             break;
         }
         case '+' : 	//change dir clockwise
@@ -106,6 +105,11 @@ QSGGeometryNode *ViewModelFactory::_createGeometry(const QString& curve)
         }
     }
     geometry->markVertexDataDirty();
+
+    for(int i=0;i<geometry->vertexCount();i++)
+        printf("%f:%f\t",v[i].x,v[i].y);
+    fflush(stdout);
+
 
     //Create Material
     QSGFlatColorMaterial* material = new QSGFlatColorMaterial();
