@@ -13,14 +13,16 @@ namespace ViewModel
 class CustomGeometryModel : public QQuickItem
 {
     Q_OBJECT
+    Q_PROPERTY(QSizeF vertexSize MEMBER m_vertexSize READ vertexSize NOTIFY orgSizeChanged)
 
     signals:
         void viewModelChanged();
-        void dimensionChanged();
+        void orgSizeChanged();
 
     public:
         CustomGeometryModel();
         ~CustomGeometryModel();
+        QSizeF vertexSize();
 
         void setGeometryNode(QSGGeometryNode* newNode);
 
@@ -31,6 +33,7 @@ class CustomGeometryModel : public QQuickItem
 
         void _setNewOuterDimensions();
         QSGNode* p_node;
+        QSizeF m_vertexSize;
 
 };
 
