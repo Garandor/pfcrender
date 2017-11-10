@@ -21,7 +21,7 @@ void PFCRender::onModelChanged(const QString& mdl)
     auto* mdlItem = qobject_cast<ViewModel::CustomGeometryModel*>(p_eng->rootObjects()[0]->findChild<QQuickItem*>(QStringLiteral("model")));
     if(mdlItem)
     {
-        mdlItem->setGeometryNode(std::move(ViewModel::createGeom(mdl)));
+        mdlItem->setGeometryNode(ViewModel::createGeom(mdl));
     }
 }
 

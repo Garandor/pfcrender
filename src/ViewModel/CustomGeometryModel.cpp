@@ -1,37 +1,42 @@
 #include<QDebug>
 #include<QSGSimpleRectNode>
+#include<algorithm>
 #include "CustomGeometryModel.h"
 namespace ViewModel
 {
 
 
-void CustomGeometryModel::setGeometryNode(std::unique_ptr<QSGGeometryNode> newNode)
+void CustomGeometryModel::setGeometryNode(QSGGeometryNode* newNode)
 {
 //    qDebug() << QStringLiteral("test") << QVariant((newNode != nullptr) ? true : false);
-    if(newNode != m_geometry)
-    {
-    m_geometry = std::move(newNode);
 
-    _setNewOuterDimensions();
+    //store the node reference so the render thread can get it later
+    p_node = newNode;
 
+    //do some processing on the node before addidng it to the scene
     //Normalize coordinates (make sure it has no negative coords)
 
-    _normalizeGeometry();
+    //fit to parent dimensions
+
+    //Set up the new properties of the quickitem according to its new geometry
+    _setNewOuterDimensions();
+
     qDebug() << "QQuickItem outer dimensions" << boundingRect();
 
+    //Schedule updating the paintNode
     update();
     emit viewModelChanged();
-    }
 }
 
 QSGNode* CustomGeometryModel::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* updatePaintNodeData)
 {
     Q_UNUSED(updatePaintNodeData);
-    //
-    if(m_geometry.get() != oldNode)
+    //if we have new geometry, load it
+    if(p_node != nullptr)
     {
-        m_geometry.get()->markDirty(QSGNode::DirtyNodeAdded | QSGNode::DirtyNodeRemoved);
-        return m_geometry.get();
+        auto ptemp = p_node;	//copy to temp ptr
+        p_node = nullptr;		//reset the quickitem held ptr (node now managed by scene graph)
+        return ptemp;
     }
     return oldNode;
 }
@@ -41,10 +46,11 @@ void CustomGeometryModel::_setNewOuterDimensions()
     //calculate new bounding box and update properties
     // min = minium coordinate of the box
     // max = maxium coordinate of the box
-    #define V m_geometry.get()->geometry()->vertexDataAsPoint2D()
+    auto g = (dynamic_cast<QSGGeometryNode*>(p_node))->geometry();
+    #define V g->vertexDataAsPoint2D()
     QSGGeometry::Point2D min = V[0];
     QSGGeometry::Point2D max = V[0];
-    for (int i = 1; i < m_geometry.get()->geometry()->vertexCount(); ++i)
+    for (int i = 1; i < g->vertexCount(); ++i)
     {
         if ( V[i].x < min.x ) min.x = V[i].x;
         if ( V[i].y < min.y ) min.y = V[i].y;
@@ -56,27 +62,29 @@ void CustomGeometryModel::_setNewOuterDimensions()
     this->setWidth(max.x - min.x);
     this->setHeight(max.y - min.y);
 
-    //Normalize coordinates to 0
-    setX(min.x < 0 ? -min.x : x());
-    setX(max.x < 0 ? -max.x : x());
+    //Normalize coordinates so they conform to item coordinates (0,0 = top of image) used by scenegraph
+    if(std::min<double>({min.x,max.x,min.y,max.y}) < 0)
+    {
+        QSGTransformNode* wrapNode = new QSGTransformNode;
+        //TODO: create matrix
+        QMatrix4x4 transform = wrapNode->matrix();
 
-    setY(min.y < 0 ? -min.y : y());
-    setY(max.y < 0 ? -max.y : y());
+        transform.translate(-std::min<double>({min.x,max.x,0.0}),-std::min<double>({min.y,max.y,0}),0);
+
+        wrapNode->setMatrix(transform);
+        wrapNode->appendChildNode(p_node);
+        wrapNode->markDirty(QSGNode::DirtyNodeAdded);
+        p_node = wrapNode;
+    }
 
     qDebug() << ": " << x()  << " " << y();
+    qDebug() << "bound: " << boundingRect().x()  << " " << boundingRect().y();
+    qDebug() << "bound: " << boundingRect().width()  << " " << boundingRect().height();
 
     qDebug() << "parent: " << parent()->property("height") << " " << parent()->property("width");
     emit dimensionChanged();
-
-//    setScale(0.5);
-}
-
-void CustomGeometryModel::_normalizeGeometry()
-{
-    //TODO: If boundingRect() is not equal to flickable size
-    //TODO: If is negative
-    //wrap geometry in a transform node
-    QSGTransformNode* tl = new QSGTransformNode();
+    setTransformOrigin(QQuickItem::TopLeft);
+//    setScale(2);
 }
 
 CustomGeometryModel::CustomGeometryModel() : QQuickItem()

@@ -17,19 +17,19 @@ Rectangle{
         PinchArea
         {
         anchors.fill: parent
-        objectName: "ModelContainer"
         enabled: true
         pinch.target : model
         onPinchUpdated:{
                 model.scale = 2
-                console.log("something")
+                console.log("pinch")
         }
         }
         MouseArea {
         anchors.fill: parent
         onWheel: {
             if (wheel.modifiers & Qt.ControlModifier) {
-            model.scale = 1+ (wheel.angleDelta.y / 120);
+//            model.scale = 1+ (wheel.angleDelta.y / 120);
+                console.log("wheel")
             }
         }
         }
@@ -41,8 +41,6 @@ Rectangle{
         }
 
         CustomGeometryModel {
-        width: 10
-        height: 20
         objectName: 'model'
         id: model
         }

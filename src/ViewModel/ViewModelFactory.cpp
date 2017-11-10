@@ -18,14 +18,15 @@ void add_segment_to(QSGGeometry* g, unsigned int &offset, QSGGeometry::Point2D s
         offset++;
 }
 
-std::unique_ptr<QSGGeometryNode> ViewModelFactory::_createGeometry(const QString& curve)
+QSGGeometryNode *ViewModelFactory::_createGeometry(const QString& curve)
 {
-    auto geom = std::make_unique<QSGGeometryNode>();
+    auto geom = new QSGGeometryNode; //As all QSG classes are managed by the scene graph, we need not worry about leaking memory / unique_ptrs / cleanup
 
     //Count number of segments by counting occurrences of F in string to allocate correct size
 
     //Build curve geometry
-    auto *geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), curve.size());
+    auto geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), curve.size());
+    geometry->setVertexDataPattern(QSGGeometry::StaticPattern);	//we won't touch the vertices after they have first been rendered. NOTE: if we do, mark_dirty
     geometry->setDrawingMode(GL_LINES);
     geometry->setLineWidth(3);
 
@@ -104,6 +105,7 @@ std::unique_ptr<QSGGeometryNode> ViewModelFactory::_createGeometry(const QString
             break;
         }
     }
+    geometry->markVertexDataDirty();
 
     //Create Material
     QSGFlatColorMaterial* material = new QSGFlatColorMaterial();
@@ -113,25 +115,19 @@ std::unique_ptr<QSGGeometryNode> ViewModelFactory::_createGeometry(const QString
     geom->setGeometry(geometry);
     geom->setMaterial(material);
 
-    //Make sure no automatic resource release is done on this object, the owner (=model) must release resources (guaranteed by smart_ptr)
-    geom->setFlag(QSGNode::OwnedByParent,false);
+    //Make sure the model releases resources when not needed anymore
+    geom->setFlag(QSGNode::OwnedByParent,true);
     //Set flags to make sure geometry and material are destroyed with the node
     geom->setFlag(QSGNode::OwnsGeometry);
     geom->setFlag(QSGNode::OwnsMaterial);
 
-
-
     return geom;
 }
 
-std::unique_ptr<QSGGeometryNode> createGeom(const QString & mdl)
+QSGGeometryNode *createGeom(const QString & mdl)
 {
     ViewModelFactory fac;
-
-
-
-
-    return std::move(fac._createGeometry(mdl) );
+    return fac._createGeometry(mdl);
 
 }
 

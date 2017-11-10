@@ -22,7 +22,7 @@ class CustomGeometryModel : public QQuickItem
         CustomGeometryModel();
         ~CustomGeometryModel();
 
-        void setGeometryNode(std::unique_ptr<QSGGeometryNode> newNode);
+        void setGeometryNode(QSGGeometryNode* newNode);
 
     protected:
         virtual QSGNode* updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* updatePaintNodeData) override final;
@@ -30,8 +30,7 @@ class CustomGeometryModel : public QQuickItem
     private:
 
         void _setNewOuterDimensions();
-        void _normalizeGeometry();
-        std::unique_ptr<QSGGeometryNode> m_geometry;
+        QSGNode* p_node;
 
 };
 
