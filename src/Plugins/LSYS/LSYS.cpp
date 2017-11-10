@@ -3,6 +3,8 @@
 //FXTLIB includes
 #include "stringsubst.h"
 
+#include<assert.h>
+
 namespace Plugins
 {
 namespace LSYS
@@ -48,26 +50,36 @@ LSYS::~LSYS()
 
 }
 
-std::unique_ptr<QString> LSYS::_computeLSYS(const QList<QString> definition, ulong iterate)
+std::unique_ptr<QString> LSYS::_computeLSYS(const QList<QString>& ruleList,const ulong iterates)
 {
-    QString axio(QStringLiteral("F")); //TODO: IGNORE PARAMETER FOR NOW, CHANGE LATER
+    assert(ruleList.count() >= 3); //need at least axiom and one rule
+    assert(ruleList.count() %2 != 0); //need even number of rules + 1 axiom
 
     //Build stringsubst object from passed params
-    string_subst lsys{iterate};	//levels == number of generations == iterates
-//    lsys.set_axiom(axio.toLatin1().data());
+    string_subst lsys{iterates};	//levels == number of generations == iterates
 
-    lsys.set_axiom("F");
 
-    const char *rules[10];
-    rules[0]="F";
-    rules[1]="F+F-F-F-F+F+F+F-F";
-    rules[2]="+";
-    rules[3]="+";
-    rules[4]="-";
-    rules[5]="-";
+    //Prepare parameters for stringsubst
+    //save c-string representations of unicode QString rule params in temp vector
+    //needed because toLatin1 creates only temporary objects
+    std::vector<QByteArray> rules{};
+    for(int i = 0; i < ruleList.count();i++)
+    {
+        rules.push_back(ruleList.at(i).toLatin1());
+    }
+    for (auto s: rules)
+        qDebug()<<s;
 
-    lsys.set_rules(rules,6);
+    //map c-string pointers in array
+    const char * r[rules.size()];
+    for (int i = 0; i < rules.size();i++)
+        r[i] = rules.data()[i];
 
+    //finally we can hand over a char **
+    lsys.set_axiom(r[0]);						//First rule is axiom
+    lsys.set_rules((r+1),ruleList.count()-1);	//other parameters are mappings
+
+    //Run stringsubst
     auto curve = std::make_unique<QString>();
     if(lsys.first())
     {

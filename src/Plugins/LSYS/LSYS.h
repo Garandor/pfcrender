@@ -22,7 +22,7 @@ class LSYS : public Import
     Q_PLUGIN_METADATA(IID "PFCRender.Plugins.Import.LSYS")
 
 private:
-    std::unique_ptr<QString> _computeLSYS(const QList<QString> definition, ulong iterate);
+    std::unique_ptr<QString> _computeLSYS( const QList<QString>& definition, const ulong iterate );
 
 public:
     //Plugin Interface Methods
