@@ -16,6 +16,8 @@ namespace Plugins
 {
 namespace LSYS
 {
+class Test_LSYS;	//Forward declare unit testing class
+
 class LSYS : public Import
 {
     Q_OBJECT
@@ -25,11 +27,9 @@ class LSYS : public Import
 private:
     std::unique_ptr<QString> _computeLSYS( const QList<QString>& definition, const ulong iterate );
     static QList<QCommandLineOption> m_cliopts;
+
 public:
-
     std::unique_ptr<QString> getModel(QList<QString> list, ulong it);
-
-
 
     //Plugin Interface Methods
     QList<QString> lookupServices() override;
@@ -43,6 +43,8 @@ public:
     std::unique_ptr<QString> getModel(const QCommandLineParser&) override;
 
     ~LSYS() override;
+
+    friend class ::Plugins::LSYS::Test_LSYS; //Unit Testrunner
 };
 
 }  // namespace LSYS
