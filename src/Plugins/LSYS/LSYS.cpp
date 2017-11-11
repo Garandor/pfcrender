@@ -92,8 +92,8 @@ std::unique_ptr<QString> LSYS::_computeLSYS(const QList<QString>& ruleList,const
     {
         rules.push_back(ruleList.at(i).toLatin1());
     }
-    for (auto s: rules)
-        qDebug() << s;
+//    for (auto s: rules)
+//        qDebug() << s;
 
     //map c-string pointers in array
     const char * r[rules.size()];
