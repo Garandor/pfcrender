@@ -8,6 +8,7 @@
 #include"Plugin.h"
 
 class QQuickItem;
+class QCommandLineParser;
 
 namespace Plugins
 {
@@ -23,7 +24,7 @@ public:
     * @return  A unique pointer to the QQuickItem to use as new model
     */
 
-    virtual std::unique_ptr<QString> getModel() = 0 ;
+    virtual std::unique_ptr<QString> getModel(const QCommandLineParser&) = 0 ;
 
     virtual ~Import() {}
 };
