@@ -54,6 +54,7 @@ set(INC
 
         "QtGUI/PFCRender.h"
 
+        "projectinfo.h.in"
 )
 
 #TODO: Split SRC and INC by common and GUI
