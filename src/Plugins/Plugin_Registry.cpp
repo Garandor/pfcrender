@@ -23,6 +23,7 @@ const QHash<QString, QString> &Plugin_Registry::getRegistry() const
 
 Plugin_Registry::Plugin_Registry() :  m_registered{}
 {
+    //TODO: Make some sort of plugin discovery system
     m_registered.insert("importLSYS",QString("libplugin_LSYS"));
 }
 

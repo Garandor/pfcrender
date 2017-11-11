@@ -17,10 +17,11 @@ class LSYSModel : public QObject
     Q_OBJECT
 
     signals:
-        void modelChanged(const QString&);
+        void modelChanged(const QString&) const;
 
     public:
         void setModel(std::unique_ptr<QString>);
+        QString const * const getModel() const;
 
     private:
         std::unique_ptr<QString> m_sModel;

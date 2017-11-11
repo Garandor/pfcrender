@@ -74,7 +74,6 @@ PFCRender::PFCRender(QQmlApplicationEngine* eng) : p_eng(eng)
             {
                 if(p_clip->getParser().isSet(opt))
                 {
-
                     //TODO: Architecture still not complete, how to handle different plugin types? Import/Export/Modify
                     QPluginLoader ldr(pluginsDir.absoluteFilePath(pname),this);
                     QObject* plugin = ldr.instance();
