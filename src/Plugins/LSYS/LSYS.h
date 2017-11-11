@@ -11,6 +11,8 @@
 
 #include "Import.h"
 
+class QCommandLineParser;
+
 namespace Plugins
 {
 namespace LSYS
@@ -23,7 +25,7 @@ class LSYS : public Import
 
 private:
     std::unique_ptr<QString> _computeLSYS( const QList<QString>& definition, const ulong iterate );
-
+    static QList<QCommandLineOption> m_cliopts;
 public:
     //Plugin Interface Methods
     QList<QString> lookupServices() override;
@@ -34,7 +36,7 @@ public:
 
     //Import Interface methods
     void* getParams() override;
-    std::unique_ptr<QString> getModel() override;
+    std::unique_ptr<QString> getModel(const QCommandLineParser&) override;
 
     ~LSYS() override;
 };

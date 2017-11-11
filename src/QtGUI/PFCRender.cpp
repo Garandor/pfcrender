@@ -48,15 +48,20 @@ PFCRender::PFCRender(QQmlApplicationEngine* eng) : p_eng(eng)
         QPluginLoader ldr(pluginsDir.absoluteFilePath(p),this);
         QObject* plugin = ldr.instance();
         if (plugin) {
-                ::Plugins::Plugin* pp = qobject_cast<::Plugins::Plugin *>(plugin);
-                if (pp)
-                {
-                    qDebug() << "Loaded Plugin " << p;
-                    p_clip->addOptions(pp->getCLIoptions());
-                }
-        ldr.unload();
+            ::Plugins::Plugin* pp = qobject_cast<::Plugins::Plugin *>(plugin);
+            if (pp)
+            {
+                qDebug() << "Loaded Plugin " << p;
+                p_clip->addOptions(pp->getCLIoptions(),p);
+            }
+            ldr.unload();
+            }
         }
-        }
+
+        //Parse CLI and invoke operations
+        p_clip->parse();
+
+        //TODO: Find how to invoke operations dynamically, without knowing which plugin supplied which cmdline option...
 
         //XXX: Invoke LSYS plugin manually for now
         QString pname(::Plugins::Plugin_Registry::getInstance()->getPlugin(QStringLiteral("importLSYS")));
@@ -69,7 +74,7 @@ PFCRender::PFCRender(QQmlApplicationEngine* eng) : p_eng(eng)
                 {
 
                     post_status("Running Import plugin");
-                    auto dataModel = importer->getModel();
+                    auto dataModel = importer->getModel(p_clip->getParser());
 
                     QObject::connect(&m_dMdl,SIGNAL(modelChanged(const QString&)),this,SLOT(onModelChanged(const QString&)));
 

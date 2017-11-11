@@ -4,11 +4,16 @@
 #include "stringsubst.h"
 
 #include<assert.h>
+#include<QCommandLineParser>
 
 namespace Plugins
 {
 namespace LSYS
 {
+    QList<QCommandLineOption> cliopts{
+    QCommandLineOption ("lsys", "Comma seperated list of LSYS axiom and rules for stringsubst", "string"),
+    QCommandLineOption ("it", "Number LSYS iterations to compute", "int")
+    };
 
 bool LSYS::hasService(QString name)
 {
@@ -17,10 +22,7 @@ bool LSYS::hasService(QString name)
 
 QList<QCommandLineOption> LSYS::getCLIoptions()
 {
-    return QList<QCommandLineOption> {
-    QCommandLineOption ("lsys", "Comma seperated list of LSYS axiom and rules for stringsubst", "string"),
-    QCommandLineOption ("it", "Number LSYS iterations to compute", "int")
-    };
+    return cliopts;
 }
 
 
@@ -46,9 +48,18 @@ void* LSYS::getParams()
     return nullptr;
 }
 
-std::unique_ptr<QString> LSYS::getModel()
+std::unique_ptr<QString> LSYS::getModel(const QCommandLineParser& parseArgs)
 {
-        //TODO: Make sure this uses move semantics
+    //TODO: Make sure this uses move semantics
+
+    if(parseArgs.isSet(cliopts.at(0))  && parseArgs.isSet(cliopts.at(1)))
+    {
+        QList<QString>list = parseArgs.value(cliopts.at(0)).split(QRegExp("\\b"));
+        auto ret = _computeLSYS( list , parseArgs.value(cliopts.at(1)).toULong() );
+        return ret;
+    }
+
+
     auto ret = _computeLSYS(QList<QString>{"F","F","F+F-F-F-F+F+F+F-F","+","+","-","-"}, 5 );
 
     return ret;

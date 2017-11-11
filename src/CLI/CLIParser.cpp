@@ -43,7 +43,7 @@ CLIParser * const CLIParser::getInstance()
     return instance;
 }
 
-void CLIParser::addOptions(const QList<QCommandLineOption> & optList)
+void CLIParser::addOptions(const QList<QCommandLineOption> & optList, QString pluginName)
 {
     for(auto o : optList)
     {
@@ -64,6 +64,11 @@ void CLIParser::parse()
 //    bool force = m_parser.isSet(forceOption);
 //    QString targetDir = m_parser.value(targetDirectoryOption);
 
+}
+
+const QCommandLineParser &CLIParser::getParser() const
+{
+    return m_parser;
 }
 
 }  // namespace CLI

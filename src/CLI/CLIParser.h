@@ -27,8 +27,11 @@ private:
 
 public:
     static CLIParser* const getInstance();
-    void addOptions(const QList<QCommandLineOption>& );
+    void addOptions(const QList<QCommandLineOption>&,QString pluginName );
     void parse();
+    const QCommandLineParser& getParser() const;
+
+
 
 
 };
