@@ -59,29 +59,29 @@ PFCRender::PFCRender(QQmlApplicationEngine* eng) : p_eng(eng)
         }
 
         //XXX: Invoke LSYS plugin manually for now
-//        QString pname(::Plugins::Plugin_Registry::getInstance()->getPlugin(QStringLiteral("importLSYS")));
+        QString pname(::Plugins::Plugin_Registry::getInstance()->getPlugin(QStringLiteral("importLSYS")));
 
-//        QPluginLoader ldr(pluginsDir.absoluteFilePath(Plugins::Plugin_Registry::getInstance()->getPlugin(QStringLiteral("importLSYS"))),this);
-//        QObject* plugin = ldr.instance();
-//        if (plugin) {
-//                ::Plugins::Import* importer = qobject_cast<::Plugins::Import *>(plugin);
-//                if (importer)
-//                {
+        QPluginLoader ldr(pluginsDir.absoluteFilePath(pname),this);
+        QObject* plugin = ldr.instance();
+        if (plugin) {
+                ::Plugins::Import* importer = qobject_cast<::Plugins::Import *>(plugin);
+                if (importer)
+                {
 
-//                    post_status("Running Import plugin");
-//                    auto dataModel = importer->getModel();
+                    post_status("Running Import plugin");
+                    auto dataModel = importer->getModel();
 
-//                    QObject::connect(&m_dMdl,SIGNAL(modelChanged(const QString&)),this,SLOT(onModelChanged(const QString&)));
+                    QObject::connect(&m_dMdl,SIGNAL(modelChanged(const QString&)),this,SLOT(onModelChanged(const QString&)));
 
-//                    m_dMdl.setModel(std::move(dataModel));
+                    m_dMdl.setModel(std::move(dataModel));
 
-//                }
-//        ldr.unload();
-//        }
-//        else
-//        {
-//            qWarning() << "Plugin Load failed with :" << ldr.errorString() ;
-//        }
+                }
+        ldr.unload();
+        }
+        else
+        {
+            qWarning() << "Plugin Load failed with :" << ldr.errorString() ;
+        }
 
 
 

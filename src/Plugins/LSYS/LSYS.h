@@ -18,7 +18,7 @@ namespace LSYS
 class LSYS : public Import
 {
     Q_OBJECT
-    Q_INTERFACES(Import)
+    Q_INTERFACES(Import Plugin)
     Q_PLUGIN_METADATA(IID "PFCRender.Plugins.Import.LSYS")
 
 private:
