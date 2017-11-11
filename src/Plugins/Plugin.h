@@ -5,6 +5,7 @@
 #include <QList>
 #include <QString>
 #include <QtPlugin>
+#include<QCommandLineOption>
 
 namespace Plugins
 {
@@ -16,6 +17,8 @@ public:
 
     //TODO:FIGURE OUT RETURN TYPES FOR THESE, AUTO doesnt work
     virtual void execService(QString name, QVariant params) =0 ;
+
+    virtual QList<QCommandLineOption> getCLIoptions() = 0;
 
     virtual void* getParams()=0 ;
 

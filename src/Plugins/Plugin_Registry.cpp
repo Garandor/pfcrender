@@ -16,6 +16,11 @@ const QString Plugin_Registry::getPlugin(const QString& serviceName) const
     return m_registered.value(serviceName);
 }
 
+const QHash<QString, QString> &Plugin_Registry::getRegistry() const
+{
+    return m_registered;
+}
+
 Plugin_Registry::Plugin_Registry() :  m_registered{}
 {
     m_registered.insert("importLSYS",QString("libplugin_LSYS"));

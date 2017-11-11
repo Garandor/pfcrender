@@ -15,6 +15,15 @@ bool LSYS::hasService(QString name)
     return false;
 }
 
+QList<QCommandLineOption> LSYS::getCLIoptions()
+{
+    return QList<QCommandLineOption> {
+    QCommandLineOption ("lsys", "Comma seperated list of LSYS axiom and rules for stringsubst", "string"),
+    QCommandLineOption ("it", "Number LSYS iterations to compute", "int")
+    };
+}
+
+
 void LSYS::execService(QString name, QVariant params)
 {
     if(!name.compare(QStringLiteral("LSYS")))

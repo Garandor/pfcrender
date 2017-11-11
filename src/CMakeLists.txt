@@ -28,6 +28,7 @@ if(COMPILE_GUI_SUPPORT)
 endif()
 
 set(SRC
+        "CLI/CLIParser.cpp"
         "PFCStart.cpp"
 
         "Plugins/Plugin_Registry.cpp"
@@ -42,6 +43,7 @@ set(SRC
 )
 
 set(INC 
+        "CLI/CLIParser.h"
 
         "Plugins/Plugin_Registry.h"
 

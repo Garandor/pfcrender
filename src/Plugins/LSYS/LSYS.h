@@ -29,6 +29,8 @@ public:
     QList<QString> lookupServices() override;
     void execService(QString name, QVariant params) override;
     bool hasService(QString name) override;
+    QList<QCommandLineOption> getCLIoptions() override;
+
 
     //Import Interface methods
     void* getParams() override;

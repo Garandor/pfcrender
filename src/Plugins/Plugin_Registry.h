@@ -27,6 +27,7 @@ private:
 public:
     static Plugin_Registry* const getInstance();
     const QString getPlugin(const QString& serviceName) const;
+    const QHash<QString,QString>& getRegistry() const;
 };
 
 }  // namespace Plugin
