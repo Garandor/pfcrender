@@ -1,13 +1,12 @@
 #ifndef PLUGIN_LSYS_LIB_L_S_Y_S_H
 #define PLUGIN_LSYS_LIB_L_S_Y_S_H
 
-#include<memory>
+#include <memory>
 
 #include <QList>
 #include <QObject>
-#include <QSGGeometryNode>
 #include <QString>
-#include<QtPlugin>
+#include <QtPlugin>
 
 #include "Import.h"
 
@@ -27,6 +26,11 @@ private:
     std::unique_ptr<QString> _computeLSYS( const QList<QString>& definition, const ulong iterate );
     static QList<QCommandLineOption> m_cliopts;
 public:
+
+    std::unique_ptr<QString> getModel(QList<QString> list, ulong it);
+
+
+
     //Plugin Interface Methods
     QList<QString> lookupServices() override;
     void execService(QString name, QVariant params) override;

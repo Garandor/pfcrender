@@ -1,10 +1,12 @@
 #include "LSYS.h"
 
 //FXTLIB includes
-#include "stringsubst.h"
+#include "fxt/stringsubst.h"
 
 #include<assert.h>
 #include<QCommandLineParser>
+#include<QVariant>
+#include<QDebug>
 
 namespace Plugins
 {
@@ -59,9 +61,12 @@ std::unique_ptr<QString> LSYS::getModel(const QCommandLineParser& parseArgs)
         auto ret = _computeLSYS( list , iterates );
         return ret;
     }
+}
 
-
-    auto ret = _computeLSYS(QList<QString>{"F","F","F+F-F-F-F+F+F+F-F","+","+","-","-"}, 5 );
+//for manual / testing invocation
+std::unique_ptr<QString> LSYS::getModel(QList<QString> list, ulong it)
+{
+    auto ret = _computeLSYS(list, it );
     return ret;
 }
 
@@ -88,7 +93,7 @@ std::unique_ptr<QString> LSYS::_computeLSYS(const QList<QString>& ruleList,const
         rules.push_back(ruleList.at(i).toLatin1());
     }
     for (auto s: rules)
-        qDebug()<<s;
+        qDebug() << s;
 
     //map c-string pointers in array
     const char * r[rules.size()];

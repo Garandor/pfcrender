@@ -3,8 +3,6 @@
 
 #include<memory>
 
-#include<QSGGeometryNode>
-
 #include"Plugin.h"
 
 class QQuickItem;
@@ -19,9 +17,9 @@ class Import : public Plugin
 public:
 
     /**
-    * @brief getModel to register in GUI
-    * Since Model is likely a very large QQuickItem, we hand it over as a unique pointer to force using move semantics
-    * @return  A unique pointer to the QQuickItem to use as new model
+    * @brief getModel to create model string from this plugin
+    * Since Model is likely a very large String, we hand it over as a unique pointer to force using move semantics
+    * @return  A unique pointer to the QString to use as new model
     */
 
     virtual std::unique_ptr<QString> getModel(const QCommandLineParser&) = 0 ;
