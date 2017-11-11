@@ -54,8 +54,9 @@ std::unique_ptr<QString> LSYS::getModel(const QCommandLineParser& parseArgs)
 
     if(parseArgs.isSet(cliopts.at(0))  && parseArgs.isSet(cliopts.at(1)))
     {
-        QList<QString>list = parseArgs.value(cliopts.at(0)).split(QRegExp("\\b"));
-        auto ret = _computeLSYS( list , parseArgs.value(cliopts.at(1)).toULong() );
+        QList<QString>list = parseArgs.value(cliopts.at(0)).split(" ");
+        ulong  iterates = parseArgs.value(cliopts.at(1)).toULong();
+        auto ret = _computeLSYS( list , iterates );
         return ret;
     }
 

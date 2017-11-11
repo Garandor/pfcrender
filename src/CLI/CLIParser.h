@@ -7,6 +7,7 @@
 #include <iostream>
 #include <assert.h>
 #include<QCommandLineParser>
+#include<QMultiMap>
 
 namespace CLI
 {
@@ -19,7 +20,9 @@ class CLIParser
 {
 private:
     static CLIParser* instance;
+
     QCommandLineParser m_parser;
+    QMultiMap<QString,QCommandLineOption> m_registry;
 
 private:
     CLIParser();
@@ -30,6 +33,7 @@ public:
     void addOptions(const QList<QCommandLineOption>&,QString pluginName );
     void parse();
     const QCommandLineParser& getParser() const;
+    const QMultiMap<QString,QCommandLineOption>& getRegistry() const;
 
 
 

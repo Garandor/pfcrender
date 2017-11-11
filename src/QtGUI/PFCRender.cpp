@@ -61,32 +61,51 @@ PFCRender::PFCRender(QQmlApplicationEngine* eng) : p_eng(eng)
         //Parse CLI and invoke operations
         p_clip->parse();
 
-        //TODO: Find how to invoke operations dynamically, without knowing which plugin supplied which cmdline option...
+        //TODO: Find how to set a priority / sequence for operation execution (mb have plugins define prerequisites?)
+        //Execute built-in commands
 
-        //XXX: Invoke LSYS plugin manually for now
-        QString pname(::Plugins::Plugin_Registry::getInstance()->getPlugin(QStringLiteral("importLSYS")));
 
-        QPluginLoader ldr(pluginsDir.absoluteFilePath(pname),this);
-        QObject* plugin = ldr.instance();
-        if (plugin) {
-                ::Plugins::Import* importer = qobject_cast<::Plugins::Import *>(plugin);
-                if (importer)
+        //Execute plugins
+        //BUG: key is in registry twice, idk why
+        //if any cmdline args of a plugin have been set, call its corresponding plugin once
+        for(const QString& pname : p_clip->getRegistry().keys())
+        {
+            for (const QCommandLineOption& opt : p_clip->getRegistry().values(pname))
+            {
+                if(p_clip->getParser().isSet(opt))
                 {
 
-                    post_status("Running Import plugin");
-                    auto dataModel = importer->getModel(p_clip->getParser());
+                    //TODO: Architecture still not complete, how to handle different plugin types? Import/Export/Modify
+                    QPluginLoader ldr(pluginsDir.absoluteFilePath(pname),this);
+                    QObject* plugin = ldr.instance();
+                    if (plugin) {
+                        ::Plugins::Import* importer = qobject_cast<::Plugins::Import *>(plugin);
+                        if (importer)
+                        {
 
-                    QObject::connect(&m_dMdl,SIGNAL(modelChanged(const QString&)),this,SLOT(onModelChanged(const QString&)));
+                            post_status(QString("Running plugin ").append(pname));
+                            auto dataModel = importer->getModel(p_clip->getParser());
 
-                    m_dMdl.setModel(std::move(dataModel));
+                            QObject::connect(&m_dMdl,SIGNAL(modelChanged(const QString&)),this,SLOT(onModelChanged(const QString&)));
 
+                            m_dMdl.setModel(std::move(dataModel));
+
+                        }
+                    ldr.unload();
+                    }
+                    else
+                    {
+                        qWarning() << "Plugin Load failed with :" << ldr.errorString() ;
+                    }
+
+                break; //move to next key
                 }
-        ldr.unload();
+
+            }
+
         }
-        else
-        {
-            qWarning() << "Plugin Load failed with :" << ldr.errorString() ;
-        }
+
+
 
 
 
