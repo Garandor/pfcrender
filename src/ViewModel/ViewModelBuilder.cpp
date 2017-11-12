@@ -28,7 +28,7 @@ public:
     PolarVector2D& next()
     {
         start.x += length * qCos(angle/180*M_PI);
-        start.y += length * qSin(angle/180*M_Pi);
+        start.y += length * qSin(angle/180*M_PI);
         return *(this);
     }
     const QSGGeometry::Point2D& getPoint()
@@ -84,7 +84,7 @@ QSGGeometryNode *ViewModelBuilder::_createGeometry(const QString& curve)
             v[offset++] = pos.next().getPoint();
             continue;
         }
-        if(c.isDigit())
+        if(c != '0' && c.isDigit())
         {
         // Direct strokes, e.g., for terdragon:
         // stringsubst 3 1 1 121 2 232 3 313 | tail -1 | ./bin 3 2 1 1 0.15 > tmp-pic.tex && make dotex #

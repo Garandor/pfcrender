@@ -14,7 +14,6 @@ public slots:
 private:
     QSGGeometryNode* _createGeometry(const QString& curve);
 public:
-    CustomGeometryModel generateVM();
 
  friend QSGGeometryNode* createGeom(const QString&);
 };

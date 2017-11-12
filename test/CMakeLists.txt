@@ -9,6 +9,7 @@ if(Qt5Test_FOUND)
 
         include_directories(
                 ${CMAKE_SOURCE_DIR}/src
+                ${CMAKE_SOURCE_DIR}/src/ViewModel
                 ${CMAKE_SOURCE_DIR}/src/Plugins
                 ${Qt5Core_INCLUDES}
                 ${Qt5Test_INCLUDES}
@@ -26,7 +27,10 @@ if(Qt5Test_FOUND)
         add_test(NAME Test_CLI COMMAND test_cli)
 
         #GUI Testing
-        add_executable(test_gui "Test_GUI.cpp")
+        add_executable(test_gui
+            "Test_GUI.cpp"
+            "../src/ViewModel/ViewModelBuilder.cpp"
+            )
 
         target_link_libraries(test_gui PRIVATE
             Qt5::Core
