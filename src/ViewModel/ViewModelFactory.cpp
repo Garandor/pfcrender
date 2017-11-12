@@ -3,17 +3,51 @@
 #include<QSGFlatColorMaterial>
 #include<QSGGeometryNode>
 
+#include<QtMath> //cos, sin
+#include<cmath> //fmod
+
 namespace ViewModel {
+
+/**
+ * @brief The PolarVector2D struct
+ * utility class for easy calculation of vertex coordinates,
+ * making sure it only gets instantiated once
+ */
+struct PolarVector2D{
+private:
+    QSGGeometry::Point2D start;
+
+public:
+    qreal angle;
+    qreal length;
+
+public:
+    PolarVector2D() : start({0.0,0.0}), angle(0.0), length(10.0){}
+    PolarVector2D& next()
+    {
+        start.x += length * qCos(angle);
+        start.y += length * qSin(angle);
+        return *(this);
+    }
+    const auto& getPoint(){
+        return start;
+    }
+    void addToAngle(qreal inc)
+    {
+        angle = fmod((angle + inc),360);
+    }
+};
 
 QSGGeometryNode *ViewModelFactory::_createGeometry(const QString& curve)
 {
     auto geom = new QSGGeometryNode; //As all QSG classes are managed by the scene graph, we need not worry about leaking memory / unique_ptrs / cleanup
 
-    //TODO: F is  hardcoded for now
-    //Count number of segments by counting occurrences of F in string to allocate correct size
+    QStack<PolarVector2D> stack{};
+
+    //Count number of segments by counting all letters in string to allocate correct size for the geometry
     unsigned int segcount = 0;
     for (QChar c : curve)
-        if(c == QChar('F'))segcount++;
+        if(c.isLetter())segcount++;
 
     //Build curve geometry
     auto geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), segcount+1);
@@ -23,90 +57,70 @@ QSGGeometryNode *ViewModelFactory::_createGeometry(const QString& curve)
 
     assert(segcount > 0);
 
-    //todo: segment size selectable
-    constexpr float seg_len =  10.0;
+    //todo: segment length and angle user selectable
+    constexpr qreal initialAngle = 0;
+    constexpr qreal angleIncrement = 0;
 
-    //TODO: make interpretation of +- selectable
-    enum class dir{
-       U,D,L,R
-    };
-    dir direc = dir::R;
+    constexpr qreal length = 10;
+
+    PolarVector2D pos{};
 
     QSGGeometry::Point2D* v = geometry->vertexDataAsPoint2D();
-    unsigned int offset = 1;
-    v[0] = {0.0f,0.0f};
 
+    v[0] = pos.getPoint();
+    unsigned int offset = 1;
+
+    //XXX: Maybe iterate over vertex array instead?
     for ( const QChar& c : curve )
     {
-        if(c.isNull())
+        if(c.isNull()) //String is guaranteed to be \0 terminated, this is our sign to stop
             break;
 
-        v[offset]=v[offset-1];
+        if(c.isLetter())	//Denotes drawing a line segment
+        {
+            v[offset++] = pos.next().getPoint();
+            continue;
+        }
+        if(c.isDigit())
+        {
+        // Direct strokes, e.g., for terdragon:
+        // stringsubst 3 1 1 121 2 232 3 313 | tail -1 | ./bin 3 2 1 1 0.15 > tmp-pic.tex && make dotex #
+                //TODO: bin mir nicht sicher, ob und wie wir diesen hack unterstuetzen wollen
+                qFatal("direct strokes not implemented");
+        }
 
-        //TODO: Quick and shitty implementation, this should be a Builder
         switch(c.toLatin1())
         {
-        case 'F' :	//Add new line segment
-        {
-            switch(direc)
-            {
-            case dir::R:
-                v[offset].x += seg_len;
-                break;
-            case dir::L:
-                v[offset].x -= seg_len;
-                break;
-            case dir::D:
-                v[offset].y += seg_len;
-                break;
-            case dir::U:
-                v[offset].y -= seg_len;
-                break;
-            }
-            offset++;
-            break;
-        }
         case '+' : 	//change dir clockwise
-            switch(direc)
-            {
-            case dir::R:
-                direc = dir::D;
-                break;
-            case dir::D:
-                direc = dir::L;
-                break;
-            case dir::L:
-                direc = dir::U;
-                break;
-            case dir::U:
-                direc = dir::R;
-                break;
-            }
-            break;
+            pos.addToAngle(angleIncrement);
+            continue;
         case '-' :	//change dir counterclockwise
-            switch(direc)
-            {
-            case dir::R:
-                direc = dir::U;
-                break;
-            case dir::U:
-                direc = dir::L;
-                break;
-            case dir::L:
-                direc = dir::D;
-                break;
-            case dir::D:
-                direc = dir::R;
-                break;
-            }
+            pos.addToAngle(-angleIncrement);
+            continue;
+        case '0':  // ignored (as symbol for "no turn")
+            continue;
+        case '[':  // push position and direction on stack
+            stack.push(pos);
+            continue;
+        case ']':  // pop position and direction from stack
+            pos = stack.pop();
+            continue;
+        case '~':  // special command:  previous color
+            qFatal("NOT IMPLEMENTED");
+            continue;
+        case '_':  // special command:  next color
+            qFatal("NOT IMPLEMENTED");
+            continue;
+        default:
+            qFatal("not recognized symbol " << c << " present in model");
             break;
         }
     }
     geometry->markVertexDataDirty();
 
-//    for(int i=0;i<geometry->vertexCount();i++)
-//        printf("%f:%f\t",v[i].x,v[i].y);
-//    fflush(stdout);
+    for(int i=0;i<geometry->vertexCount();i++)
+        printf("%f:%f\t",v[i].x,v[i].y);
+    fflush(stdout);
 
 
     //Create Material
