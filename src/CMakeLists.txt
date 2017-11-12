@@ -13,14 +13,11 @@ if(APPLE AND EXISTS /usr/local/opt/qt5)
         list(APPEND CMAKE_PREFIX_PATH "/usr/local/opt/qt5")
 endif()
 
-
 #Check for Qt5
-find_package(Qt5Core REQUIRED)
+find_package(Qt5 REQUIRED Core)
 
 if(COMPILE_GUI_SUPPORT)
-	find_package(Qt5Gui REQUIRED)
-	find_package(Qt5Qml REQUIRED)
-	find_package(Qt5Quick REQUIRED)
+        find_package(Qt5 REQUIRED Gui Qml Quick)
 
         #Add QtQuick resources
         qt5_add_resources(qml_QRC QtGUI/qml.qrc)

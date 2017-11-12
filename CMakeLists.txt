@@ -11,7 +11,15 @@ mark_as_advanced(VERSION_MAJOR VERSION_MINOR VERSION_PATCH)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_subdirectory(doc)
+option(GENERATE_UNITTESTS "Enable building and running of ctest unit testing files" ON)
+option(GENERATE_DOCS "Enable building and running of Doxygen doc creation" ON)
+
 add_subdirectory(src)
 
-add_subdirectory(test)
+if(GENERATE_UNITTESTS)
+        add_subdirectory(test)
+endif()
+
+if(GENERATE_DOCS)
+        add_subdirectory(doc)
+endif()

@@ -1,4 +1,4 @@
-find_package(Qt5 REQUIRED Core OPTIONAL_COMPONENTS Test)
+find_package(Qt5 REQUIRED Core)
 
 add_library(plugin_LSYS SHARED
 
@@ -24,8 +24,8 @@ target_link_libraries(plugin_LSYS PRIVATE
 target_link_libraries(plugin_LSYS INTERFACE plugin_ALL)
 
 #Add unit tests
-IF(Qt5Test_FOUND)
-
+if(GENERATE_UNITTESTS)
+        find_package(Qt5 REQUIRED Test)
         enable_testing()
 
         set(CMAKE_AUTOMOC ON)
@@ -40,5 +40,4 @@ IF(Qt5Test_FOUND)
             Qt5::Test)
 
         add_test(NAME Test_LSYS COMMAND test_lsys)
-
-        ENDIF()
+endif()
