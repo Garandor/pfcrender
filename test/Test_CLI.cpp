@@ -1,9 +1,7 @@
-#include<QtTest>
-#include<QString>
+#include <QString>
+#include <QtTest>
 
-
-class Test_CLI : public QObject
-{
+class Test_CLI : public QObject {
     Q_OBJECT
 
 private slots:

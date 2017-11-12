@@ -1,16 +1,15 @@
+#include <assert.h>
+#include <iostream>
+#include <list>
 #include <string>
 #include <vector>
-#include <list>
-#include <iostream>
-#include <assert.h>
 
 #include "PFCRender.h"
 
-namespace QtCLI
-{
+namespace QtCLI {
 
 int PFCRender::do_stuff()
 {
-	return 0;
+    return 0;
 }
-}  // namespace QtCLI
+} // namespace QtCLI
