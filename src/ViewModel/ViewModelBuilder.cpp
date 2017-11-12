@@ -1,6 +1,6 @@
 #include"ViewModelBuilder.h"
 
-#include<QSGFlatColorMaterial>
+#include<QSGVertexColorMaterial>
 #include<QSGGeometryNode>
 
 #include<QStack>
@@ -17,21 +17,27 @@ namespace ViewModel {
  * making sure it only gets instantiated once
  */
 class PolarVector2D{
-    QSGGeometry::Point2D start;
+    QSGGeometry::ColoredPoint2D start;
 
 public:
     qreal angle;
     qreal length;
 
 public:
-    PolarVector2D() : start{0.0,0.0}, angle{0},length{10}{}
+    PolarVector2D() : start{0.0,0.0,0,0,0,0}, angle{0},length{10}{
+        QColor c(Qt::black);
+        start.r = c.red();
+        start.g = c.green();
+        start.b = c.blue();
+        start.a = c.alpha();
+    }
     PolarVector2D& next()
     {
         start.x += length * qCos(angle/180*M_PI);
         start.y += length * qSin(angle/180*M_PI);
         return *(this);
     }
-    const QSGGeometry::Point2D& getPoint()
+    const QSGGeometry::ColoredPoint2D& getPoint()
     {
         return start;
     }
@@ -39,10 +45,33 @@ public:
     {
         angle = fmod((angle + inc),360);
     }
+    void setColor(const QColor& c){
+        start.set(start.x,start.y,c.red(),c.green(),c.blue(),c.alpha());
+    }
+    const QColor getColor() const{
+        return QColor(start.r,start.g,start.b,start.a);
+    }
 };
 
 QSGGeometryNode *ViewModelBuilder::_createGeometry(const QString& curve)
 {
+    //XXX: Very monolithic function, refactor
+    //TODO: Also this in not core functionality, should be a plugin
+    //Color list equivalent to how it was before
+    static const QList<QColor> colors({
+        QColor(Qt::black),
+        QColor(Qt::blue),
+        QColor(Qt::green),
+        QColor(Qt::red),
+        QColor(Qt::cyan),
+        QColor::fromCmykF(0.45,0.86,0,0),
+        QColor::fromCmykF(0,0.61,0.87,0),
+        QColor::fromCmykF(0,0.83,1,0.7),
+        QColor(Qt::magenta),
+        QColor::fromCmykF(0.86,0.91,0,0.04),
+        QColor::fromCmykF(0.5,0,1,0),
+        QColor::fromCmykF(0.64,0,0.95,0.4)
+    });
     auto geom = new QSGGeometryNode; //As all QSG classes are managed by the scene graph, we need not worry about leaking memory / unique_ptrs / cleanup
 
     QStack<ViewModel::PolarVector2D> stack{};
@@ -53,10 +82,10 @@ QSGGeometryNode *ViewModelBuilder::_createGeometry(const QString& curve)
         if(c.isLetter())segcount++;
 
     //Build curve geometry
-    auto geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), segcount+1);
+    auto geometry = new QSGGeometry(QSGGeometry::defaultAttributes_ColoredPoint2D(), segcount+1);
     geometry->setVertexDataPattern(QSGGeometry::StaticPattern);	//we won't touch the vertices after they have first been rendered. NOTE: if we do, mark_dirty
     geometry->setDrawingMode(QSGGeometry::DrawLineStrip);	//Draw connected lines each vertex
-    geometry->setLineWidth(3);
+    geometry->setLineWidth(4);	//TODO: User configable
 
     assert(segcount > 0);
 
@@ -68,7 +97,7 @@ QSGGeometryNode *ViewModelBuilder::_createGeometry(const QString& curve)
 
     PolarVector2D pos{};
 
-    QSGGeometry::Point2D* v = geometry->vertexDataAsPoint2D();
+    QSGGeometry::ColoredPoint2D* v = geometry->vertexDataAsColoredPoint2D();
 
     v[0] = pos.getPoint();
     unsigned int offset = 1;
@@ -92,6 +121,7 @@ QSGGeometryNode *ViewModelBuilder::_createGeometry(const QString& curve)
                 qFatal("direct strokes not implemented");
         }
 
+        static int idx=0; //XXX:
         switch(c.toLatin1())
         {
         case '+' : 	//change dir clockwise
@@ -108,11 +138,17 @@ QSGGeometryNode *ViewModelBuilder::_createGeometry(const QString& curve)
         case ']':  // pop position and direction from stack
             pos = stack.pop();
             continue;
-        case '~':  // special command:  previous color
-            qFatal("NOT IMPLEMENTED");
-            continue;
         case '_':  // special command:  next color
-            qFatal("NOT IMPLEMENTED");
+//            idx = colors.indexOf(pos.getColor())+1;
+            idx++;
+            if(idx >= colors.size()) idx=0;
+            pos.setColor(colors.at(idx));
+            continue;
+        case '~':  // special command:  previous color
+//            idx = colors.indexOf(pos.getColor())-1;
+            idx--;
+            if(idx < 0) idx=colors.size()-1;
+            pos.setColor(colors.at(idx));
             continue;
         default:
             qFatal(QString("not recognized symbol ").append(c).append(" present in model").toLatin1());
@@ -121,19 +157,18 @@ QSGGeometryNode *ViewModelBuilder::_createGeometry(const QString& curve)
     }
     geometry->markVertexDataDirty();
 
-    for(int i=0;i<geometry->vertexCount();i++)
-        printf("%f:%f\t",v[i].x,v[i].y);
-    fflush(stdout);
+//    for(int i=0;i<geometry->vertexCount();i++)
+//        printf("%f:%f\t",v[i].x,v[i].y);
+//    fflush(stdout);
 
 
     //Create Material
-    QSGFlatColorMaterial* material = new QSGFlatColorMaterial();
-    material->setColor(QColor(255, 0, 0));
+    QSGVertexColorMaterial* material = new QSGVertexColorMaterial;
+    material->setFlag(QSGMaterial::Blending,true);
 
     //Assign everything to the node
     geom->setGeometry(geometry);
     geom->setMaterial(material);
-
     //Make sure the model releases resources when not needed anymore
     geom->setFlag(QSGNode::OwnedByParent,true);
     //Set flags to make sure geometry and material are destroyed with the node

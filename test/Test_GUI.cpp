@@ -19,6 +19,7 @@ private slots:
 
     void createGeometry_90deg();
     void createGeometry_different_letters();
+    void createGeometry_6colors();
 };
 
 void Test_GUI::initTestCase()
@@ -40,19 +41,15 @@ void Test_GUI::createGeometry_90deg(){
    qreal angle = 90;
    int seglen = 10;
 
-    auto geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), segments+1);
-    geometry->setVertexDataPattern(QSGGeometry::StaticPattern);	//we won't touch the vertices after they have first been rendered. NOTE: if we do, mark_dirty
-    geometry->setDrawingMode(QSGGeometry::DrawLineStrip);	//Draw connected lines each vertex
-    geometry->setLineWidth(3);
-
     QSGGeometryNode* res = ViewModel::createGeom(resultString);
     QSGGeometry const * g = res->geometry();
+    const QSGGeometry::ColoredPoint2D* v = g->vertexDataAsColoredPoint2D();
 
-    QVERIFY(g->vertexDataAsPoint2D()[0].x == plist.at(0).x && g->vertexDataAsPoint2D()[0].y == plist.at(0).y );
-    QVERIFY(g->vertexDataAsPoint2D()[1].x == plist.at(1).x && g->vertexDataAsPoint2D()[1].y == plist.at(1).y );
-    QVERIFY(g->vertexDataAsPoint2D()[2].x == plist.at(2).x && g->vertexDataAsPoint2D()[2].y == plist.at(2).y );
-    QVERIFY(g->vertexDataAsPoint2D()[3].x == plist.at(3).x && g->vertexDataAsPoint2D()[3].y == plist.at(3).y );
-    QVERIFY(g->vertexDataAsPoint2D()[4].x == plist.at(4).x && g->vertexDataAsPoint2D()[4].y == plist.at(4).y );
+    QVERIFY(v[0].x == plist.at(0).x && v[0].y == plist.at(0).y );
+    QVERIFY(v[1].x == plist.at(1).x && v[1].y == plist.at(1).y );
+    QVERIFY(v[2].x == plist.at(2).x && v[2].y == plist.at(2).y );
+    QVERIFY(v[3].x == plist.at(3).x && v[3].y == plist.at(3).y );
+    QVERIFY(v[4].x == plist.at(4).x && v[4].y == plist.at(4).y );
 }
 
 void Test_GUI::createGeometry_different_letters(){
@@ -62,19 +59,33 @@ void Test_GUI::createGeometry_different_letters(){
    qreal angle = 90;
    int seglen = 10;
 
-    auto geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), segments+1);
-    geometry->setVertexDataPattern(QSGGeometry::StaticPattern);	//we won't touch the vertices after they have first been rendered. NOTE: if we do, mark_dirty
-    geometry->setDrawingMode(QSGGeometry::DrawLineStrip);	//Draw connected lines each vertex
-    geometry->setLineWidth(3);
+    QSGGeometryNode* res = ViewModel::createGeom(resultString);
+    QSGGeometry const * g = res->geometry();
+    const QSGGeometry::ColoredPoint2D* v = g->vertexDataAsColoredPoint2D();
+
+    QVERIFY(v[0].x == plist.at(0).x && v[0].y == plist.at(0).y );
+    QVERIFY(v[1].x == plist.at(1).x && v[1].y == plist.at(1).y );
+    QVERIFY(v[2].x == plist.at(2).x && v[2].y == plist.at(2).y );
+    QVERIFY(v[3].x == plist.at(3).x && v[3].y == plist.at(3).y );
+    QVERIFY(v[4].x == plist.at(4).x && v[4].y == plist.at(4).y );
+}
+
+void Test_GUI::createGeometry_6colors(){
+   QString resultString{"A_A_A_A_A_A"};
+   int segments = 6;
+   qreal angle = 90;
+   int seglen = 10;
 
     QSGGeometryNode* res = ViewModel::createGeom(resultString);
     QSGGeometry const * g = res->geometry();
+    const QSGGeometry::ColoredPoint2D* v = g->vertexDataAsColoredPoint2D();
 
-    QVERIFY(g->vertexDataAsPoint2D()[0].x == plist.at(0).x && g->vertexDataAsPoint2D()[0].y == plist.at(0).y );
-    QVERIFY(g->vertexDataAsPoint2D()[1].x == plist.at(1).x && g->vertexDataAsPoint2D()[1].y == plist.at(1).y );
-    QVERIFY(g->vertexDataAsPoint2D()[2].x == plist.at(2).x && g->vertexDataAsPoint2D()[2].y == plist.at(2).y );
-    QVERIFY(g->vertexDataAsPoint2D()[3].x == plist.at(3).x && g->vertexDataAsPoint2D()[3].y == plist.at(3).y );
-    QVERIFY(g->vertexDataAsPoint2D()[4].x == plist.at(4).x && g->vertexDataAsPoint2D()[4].y == plist.at(4).y );
+    //Verify the colors of subsequent vertices are different in at least one component
+    QVERIFY(v[0].r != v[1].x || v[0].g != v[1].g || v[0].b != v[1].b );
+    QVERIFY(v[1].r != v[2].x || v[1].g != v[2].g || v[1].b != v[2].b );
+    QVERIFY(v[2].r != v[3].x || v[2].g != v[3].g || v[2].b != v[3].b );
+    QVERIFY(v[3].r != v[4].x || v[3].g != v[4].g || v[3].b != v[4].b );
+    QVERIFY(v[4].r != v[5].x || v[4].g != v[5].g || v[4].b != v[5].b );
 }
 QTEST_MAIN(Test_GUI)
 #include "Test_GUI.moc"

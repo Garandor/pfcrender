@@ -41,8 +41,8 @@ void CustomGeometryModel::_setNewOuterDimensions()
     // min = minium coordinate of the box
     // max = maxium coordinate of the box
     auto n =  dynamic_cast<QSGGeometryNode*>(p_node);
-    auto g = n->geometry()->vertexDataAsPoint2D();
-    QSGGeometry::Point2D min = g[0],
+    auto g = n->geometry()->vertexDataAsColoredPoint2D();
+    QSGGeometry::ColoredPoint2D min = g[0],
                          max = g[0];
 
     for (int i = 1; i < n->geometry()->vertexCount(); ++i)
