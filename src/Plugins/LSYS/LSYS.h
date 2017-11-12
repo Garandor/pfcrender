@@ -16,7 +16,6 @@ namespace Plugins
 {
 namespace LSYS
 {
-class Test_LSYS;	//Forward declare unit testing class
 
 class LSYS : public Import
 {
@@ -43,8 +42,6 @@ public:
     std::unique_ptr<QString> getModel(const QCommandLineParser&) override;
 
     ~LSYS() override;
-
-    friend class ::Plugins::LSYS::Test_LSYS; //Unit Testrunner
 };
 
 }  // namespace LSYS

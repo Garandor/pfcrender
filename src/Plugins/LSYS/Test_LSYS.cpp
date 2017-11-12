@@ -20,10 +20,6 @@ private slots:
     void test_getModel();
     void test_getModel_data();
 
-    //Private API
-    void test_compute_LSYS();
-    void test_compute_LSYS_data();
-
 };
 
 void Test_LSYS::test_getModel(){
@@ -37,21 +33,6 @@ void Test_LSYS::test_getModel(){
 }
 
 void Test_LSYS::test_getModel_data()
-{
-   test_compute_LSYS_data(); //We use the same data as before
-}
-
-void Test_LSYS::test_compute_LSYS(){
-   QFETCH(QList<QString>, list);
-   QFETCH(ulong, iterates);
-   QFETCH(QString, resultString);
-
-    std::unique_ptr<QString> result = lsys._computeLSYS(list, iterates);
-
-    QCOMPARE(*(result.get()), resultString);
-}
-
-void Test_LSYS::test_compute_LSYS_data()
 {
     QTest::addColumn<QList<QString>>("list");
     QTest::addColumn<ulong>("iterates");
