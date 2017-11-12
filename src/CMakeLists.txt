@@ -32,7 +32,7 @@ set(SRC
 
         "Model/LSYSModel.cpp"
 
-        "ViewModel/ViewModelFactory.cpp"
+        "ViewModel/ViewModelBuilder.cpp"
         "ViewModel/CustomGeometryModel.cpp"
 
 
@@ -46,7 +46,7 @@ set(INC
 
         "Model/LSYSModel.h"
 
-        "ViewModel/ViewModelFactory.h"
+        "ViewModel/ViewModelBuilder.h"
         "ViewModel/CustomGeometryModel.h"
 
         "QtGUI/PFCRender.h"

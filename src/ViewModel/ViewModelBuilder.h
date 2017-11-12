@@ -3,7 +3,9 @@
 
 namespace ViewModel
 {
-class ViewModelFactory
+   class PolarVector2D;
+
+class ViewModelBuilder
 {
 public slots:
     void onModelChanged(const QString* const );
@@ -18,4 +20,5 @@ public:
 };
 
  QSGGeometryNode* createGeom(const QString&);
+
 }

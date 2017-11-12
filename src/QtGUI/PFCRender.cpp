@@ -11,7 +11,7 @@
 #include"Plugins/Plugin_Registry.h"
 #include"Plugins/Import.h"
 #include"ViewModel/CustomGeometryModel.h"
-#include"ViewModel/ViewModelFactory.h"
+#include"ViewModel/ViewModelBuilder.h"
 
 #include"CLI/CLIParser.h"
 

@@ -1,20 +1,22 @@
-#include"ViewModelFactory.h"
+#include"ViewModelBuilder.h"
 
 #include<QSGFlatColorMaterial>
 #include<QSGGeometryNode>
 
+#include<QStack>
+
 #include<QtMath> //cos, sin
 #include<cmath> //fmod
+#include<QDebug>
 
 namespace ViewModel {
 
 /**
- * @brief The PolarVector2D struct
+ * @brief The PolarVector2D class
  * utility class for easy calculation of vertex coordinates,
  * making sure it only gets instantiated once
  */
-struct PolarVector2D{
-private:
+class PolarVector2D{
     QSGGeometry::Point2D start;
 
 public:
@@ -22,14 +24,15 @@ public:
     qreal length;
 
 public:
-    PolarVector2D() : start({0.0,0.0}), angle(0.0), length(10.0){}
+    PolarVector2D() : start{0.0,0.0}, angle{0},length{10}{}
     PolarVector2D& next()
     {
-        start.x += length * qCos(angle);
-        start.y += length * qSin(angle);
+        start.x += length * qCos(angle/180*M_PI);
+        start.y += length * qSin(angle/180*M_Pi);
         return *(this);
     }
-    const auto& getPoint(){
+    const QSGGeometry::Point2D& getPoint()
+    {
         return start;
     }
     void addToAngle(qreal inc)
@@ -38,11 +41,11 @@ public:
     }
 };
 
-QSGGeometryNode *ViewModelFactory::_createGeometry(const QString& curve)
+QSGGeometryNode *ViewModelBuilder::_createGeometry(const QString& curve)
 {
     auto geom = new QSGGeometryNode; //As all QSG classes are managed by the scene graph, we need not worry about leaking memory / unique_ptrs / cleanup
 
-    QStack<PolarVector2D> stack{};
+    QStack<ViewModel::PolarVector2D> stack{};
 
     //Count number of segments by counting all letters in string to allocate correct size for the geometry
     unsigned int segcount = 0;
@@ -58,10 +61,10 @@ QSGGeometryNode *ViewModelFactory::_createGeometry(const QString& curve)
     assert(segcount > 0);
 
     //todo: segment length and angle user selectable
-    constexpr qreal initialAngle = 0;
-    constexpr qreal angleIncrement = 0;
+//    constexpr qreal initialAngle = 0;
+    constexpr qreal angleIncrement = 90;
 
-    constexpr qreal length = 10;
+//    constexpr qreal length = 10;
 
     PolarVector2D pos{};
 
@@ -112,7 +115,7 @@ QSGGeometryNode *ViewModelFactory::_createGeometry(const QString& curve)
             qFatal("NOT IMPLEMENTED");
             continue;
         default:
-            qFatal("not recognized symbol " << c << " present in model");
+            qFatal(QString("not recognized symbol ").append(c).append(" present in model").toLatin1());
             break;
         }
     }
@@ -142,7 +145,7 @@ QSGGeometryNode *ViewModelFactory::_createGeometry(const QString& curve)
 
 QSGGeometryNode *createGeom(const QString & mdl)
 {
-    ViewModelFactory fac;
+    ViewModelBuilder fac;
     return fac._createGeometry(mdl);
 
 }
