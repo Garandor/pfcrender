@@ -58,7 +58,7 @@ Rectangle{
         onScaleChanged: {
             width = vertexSize.width * scale;
             height = vertexSize.height * scale;
-            parent.returnToBounds()
+            parent.returnToBounds
         }
         }
     }
