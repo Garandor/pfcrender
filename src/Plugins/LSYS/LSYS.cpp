@@ -86,7 +86,7 @@ namespace LSYS {
         //        qDebug() << s;
 
         //map c-string pointers in array
-        const char* r[rules.size()];
+        const char* r[rules.size()];		//FIXME: MSBuild keeps croaking on this because it doesn support dynamically sized arrays. refactor to constant size
         for (int i = 0; i < rules.size(); i++)
             r[i] = rules.data()[i];
 
