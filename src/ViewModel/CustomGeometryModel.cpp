@@ -1,7 +1,9 @@
 #include "CustomGeometryModel.h"
 #include <QDebug>
-#include <QSGSimpleRectNode>
+#include <QSGGeometryNode>
+#include <QSGNode>
 #include <algorithm>
+
 namespace ViewModel {
 
 void CustomGeometryModel::setGeometryNode(QSGGeometryNode* newNode)
@@ -26,7 +28,7 @@ QSGNode* CustomGeometryModel::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeD
     //if we have new geometry, load it
     if (p_node != nullptr) {
         auto ptemp = p_node; //copy to temp ptr
-        p_node = nullptr; //reset the quickitem held ptr (node now managed by scene graph)
+        p_node = nullptr; //reset the quickitem held ptr (node will now be managed by scene graph)
         return ptemp;
     }
     return oldNode;

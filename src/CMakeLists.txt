@@ -22,10 +22,11 @@ if(COMPILE_GUI_SUPPORT)
         #Add QtQuick resources
         qt5_add_resources(qml_QRC QtGUI/qml.qrc)
 
+else()
+    add_definitions(-DNOGUI)
 endif()
 
 set(SRC
-        "CLI/CLIParser.cpp"
         "PFCStart.cpp"
 
         "Plugins/Plugin_Registry.cpp"
@@ -36,11 +37,12 @@ set(SRC
         "ViewModel/CustomGeometryModel.cpp"
 
 
+        "CLI/CLIParser.cpp"
+        "QtCLI/PFCRender.cpp"
         "QtGUI/PFCRender.cpp"
 )
 
 set(INC 
-        "CLI/CLIParser.h"
 
         "Plugins/Plugin_Registry.h"
 
@@ -49,6 +51,8 @@ set(INC
         "ViewModel/ViewModelBuilder.h"
         "ViewModel/CustomGeometryModel.h"
 
+        "CLI/CLIParser.h"
+        "QtCLI/PFCRender.h"
         "QtGUI/PFCRender.h"
 
         "projectinfo.h.in"

@@ -1,12 +1,11 @@
 #include <QCoreApplication>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <QQuickItem>
 #include <QString>
 #include <QUrl>
 
-#include "Model/LSYSModel.h"
 #include "Plugins/Plugin_Registry.h"
+#include "QtCLI/PFCRender.h"
 #include "QtGUI/PFCRender.h"
 #include "ViewModel/CustomGeometryModel.h"
 
@@ -20,11 +19,10 @@ int main(int argc, char** argv)
 
 //populate registry
 
-//XXX: For now, let's not mess with CLI mode
-#if 1
-    QGuiApplication app(argc, argv);
-#else
+#if NOGUI
     QCoreApplication app(argc, argv);
+#else
+    QGuiApplication app(argc, argv);
 #endif
     //Set Version Information
     app.setApplicationVersion(VERSION_STRING);
@@ -32,7 +30,9 @@ int main(int argc, char** argv)
     //Register custom QML Types
     qmlRegisterType<ViewModel::CustomGeometryModel>("sci.pfcrender.customModel", 1, 0, "CustomGeometryModel");
 
-#if 1
+#if NOGUI
+    QtCLI::PFCRender desktop_obj();
+#else
     QQmlApplicationEngine qeng(QUrl(QStringLiteral("qrc:///main.qml")));
     QtGUI::PFCRender desktop_obj(&qeng);
 #endif

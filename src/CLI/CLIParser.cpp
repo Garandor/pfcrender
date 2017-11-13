@@ -1,9 +1,3 @@
-#include <assert.h>
-#include <iostream>
-#include <list>
-#include <string>
-#include <vector>
-
 #include "CLIParser.h"
 #include <QDebug>
 
@@ -35,7 +29,7 @@ CLIParser::CLIParser()
     //    m_parser.addOption(targetDirectoryOption);
 }
 
-CLIParser* const CLIParser::getInstance()
+CLIParser* CLIParser::getInstance()
 {
     if (instance == NULL)
         instance = new CLIParser;

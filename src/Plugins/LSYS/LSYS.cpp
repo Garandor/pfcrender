@@ -1,4 +1,5 @@
 #include "LSYS.h"
+#include <gsl/gsl>
 
 //FXTLIB includes
 #include "fxt/stringsubst.h"
@@ -6,7 +7,6 @@
 #include <QCommandLineParser>
 #include <QDebug>
 #include <QVariant>
-#include <assert.h>
 
 namespace Plugins {
 namespace LSYS {
@@ -17,16 +17,13 @@ namespace LSYS {
 
     bool LSYS::hasService(QString name)
     {
+        qFatal("NOT IMPLEMENTED");
         return false;
-    }
-
-    QList<QCommandLineOption> LSYS::getCLIoptions()
-    {
-        return cliopts;
     }
 
     void LSYS::execService(QString name, QVariant params)
     {
+        qFatal("NOT IMPLEMENTED");
         if (!name.compare(QStringLiteral("LSYS"))) {
             //        return getModel();
         } else {
@@ -36,13 +33,19 @@ namespace LSYS {
 
     QList<QString> LSYS::lookupServices()
     {
+        qFatal("NOT IMPLEMENTED");
         return QList<QString>{ "asd", "as" };
     }
 
     void* LSYS::getParams()
     {
-        QList<QString> myParams{};
+        qFatal("NOT IMPLEMENTED");
         return nullptr;
+    }
+
+    QList<QCommandLineOption> LSYS::getCLIoptions()
+    {
+        return cliopts;
     }
 
     std::unique_ptr<QString> LSYS::getModel(const QCommandLineParser& parseArgs)
@@ -64,14 +67,10 @@ namespace LSYS {
         return ret;
     }
 
-    LSYS::~LSYS()
-    {
-    }
-
     std::unique_ptr<QString> LSYS::_computeLSYS(const QList<QString>& ruleList, const ulong iterates)
     {
-        assert(ruleList.count() >= 3); //need at least axiom and one rule
-        assert(ruleList.count() % 2 != 0); //need even number of rules + 1 axiom
+        Expects(ruleList.count() >= 3); //need at least axiom and one rule
+        Expects(ruleList.count() % 2 != 0); //need even number of rules + 1 axiom
 
         //Build stringsubst object from passed params
         string_subst lsys{ iterates }; //levels == number of generations == iterates
