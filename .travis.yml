@@ -58,6 +58,12 @@ install:
   - if [[ $TRAVIS_OS_NAME == 'osx' ]] ; then brew install qt5 ; fi
 #  - if [[ $TRAVIS_OS_NAME == 'osx' ]] ; then brew link --force qt5 && ln -s /usr/local/Cellar/qt5/5.9.1/mkspecs /usr/local/mkspecs && ln -s /usr/local/Cellar/qt5/5.9.1/plugins /usr/local/plugins ; fi
 
+#emulate x server to run the gui on linux - necessary for testing 
+before_script:
+  - if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then export DISPLAY=:99.0 ; fi
+  - if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then sh -e /etc/init.d/xvfb start ; fi
+  - if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then sleep 3 ; fi # give xvfb some time to start
+
 script: 
   - if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then cd bin && cmake -DCMAKE_C_COMPILER=gcc-5 -DCMAKE_CXX_COMPILER=g++-5 .. && make && ctest -V ; fi
   - if [[ $TRAVIS_OS_NAME == 'osx' ]] ; then cd bin && cmake .. && make && ctest -V ; fi

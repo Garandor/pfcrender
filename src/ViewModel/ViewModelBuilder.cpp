@@ -147,7 +147,10 @@ ViewModelBuilder::_createGeometry(const QString& curve)
             stack.push(pos);
             continue;
         case ']': // pop position and direction from stack
-            pos = stack.pop();
+            if(stack.isEmpty())
+                qWarning("Tried to pop from empty stack. Ignoring this character");
+            else
+                pos = stack.pop();
             continue;
         case '_': // special command:  next color
             //            idx = colors.indexOf(pos.getColor())+1;
