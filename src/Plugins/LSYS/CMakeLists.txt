@@ -26,7 +26,6 @@ target_link_libraries(plugin_LSYS INTERFACE plugin_ALL)
 #Add unit tests
 if(GENERATE_UNITTESTS)
         find_package(Qt5 REQUIRED Test)
-        enable_testing()
 
         set(CMAKE_AUTOMOC ON)
 

@@ -14,10 +14,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 option(GENERATE_UNITTESTS "Enable building and running of ctest unit testing files" ON)
 option(GENERATE_DOCS "Enable building and running of Doxygen doc creation" ON)
 
+
 INCLUDE_DIRECTORIES("lib/GSL/include")
 add_subdirectory(src)
 
 if(GENERATE_UNITTESTS)
+        enable_testing()
         add_subdirectory(test)
 endif()
 
