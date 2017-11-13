@@ -4,6 +4,7 @@ find_package(Qt5 REQUIRED Core Test OPTIONAL_COMPONENTS Quick)
 if(Qt5Test_FOUND)
         enable_testing()
 
+        set(CMAKE_INCLUDE_CURRENT_DIR ON)
         set(CMAKE_AUTOMOC ON)
 
 
