@@ -59,8 +59,8 @@ install:
 #  - if [[ $TRAVIS_OS_NAME == 'osx' ]] ; then brew link --force qt5 && ln -s /usr/local/Cellar/qt5/5.9.1/mkspecs /usr/local/mkspecs && ln -s /usr/local/Cellar/qt5/5.9.1/plugins /usr/local/plugins ; fi
 
 script: 
-  - if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then cd bin && cmake -DCMAKE_C_COMPILER=gcc-5 -DCMAKE_CXX_COMPILER=g++-5 .. && make && make test ; fi
-  - if [[ $TRAVIS_OS_NAME == 'osx' ]] ; then cd bin && cmake .. && make && make test ; fi
+  - if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then cd bin && cmake -DCMAKE_C_COMPILER=gcc-5 -DCMAKE_CXX_COMPILER=g++-5 .. && make && ctest -V ; fi
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]] ; then cd bin && cmake .. && make && ctest -V ; fi
 
 #On successful build of master branch regenerate doxygen docs and publish on Github Pages 
 after_success:
