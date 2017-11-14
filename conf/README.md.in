@@ -1,4 +1,4 @@
-PFCRender v0.5.0
+PFCRender v@VERSION_MAJOR@.@VERSION_MINOR@.@VERSION_PATCH@
 =========================================================
 
 # Build Status
