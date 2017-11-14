@@ -32,7 +32,9 @@ if(GENERATE_UNITTESTS)
         add_executable(test_lsys
             Test_LSYS.cpp)
         target_include_directories(test_lsys PRIVATE
-            "${PLUGIN_DIR}")
+            "${CMAKE_CURRENT_SOURCE_DIR}"
+            "${PLUGIN_DIR}"
+            )
         target_link_libraries(test_lsys PRIVATE
             plugin_LSYS
             Qt5::Core
