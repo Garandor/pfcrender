@@ -4,9 +4,11 @@
 //FXTLIB includes
 #include "fxt/stringsubst.h"
 
+#include <QByteArray>
 #include <QCommandLineParser>
 #include <QDebug>
 #include <QVariant>
+#include <vector>
 
 namespace Plugins {
 namespace LSYS {
@@ -82,17 +84,15 @@ namespace LSYS {
         for (int i = 0; i < ruleList.count(); i++) {
             rules.push_back(ruleList.at(i).toLatin1());
         }
-        //    for (auto s: rules)
-        //        qDebug() << s;
 
-        //map c-string pointers in array
-        const char* r[rules.size()];		//FIXME: MSBuild keeps croaking on this because it doesn support dynamically sized arrays. refactor to constant size
-        for (int i = 0; i < rules.size(); i++)
-            r[i] = rules.data()[i];
+        //now create a ptr vector to those strings to hand to stringsubst
+        std::vector<const char*> vs;
+        for (QByteArray& rr : rules)
+            vs.push_back(rr.constData());
 
         //finally we can hand over a char **
-        lsys.set_axiom(r[0]); //First rule is axiom
-        lsys.set_rules((r + 1), ruleList.count() - 1); //other parameters are mappings
+        lsys.set_axiom(vs[0]); //First rule is axiom
+        lsys.set_rules((vs.data() + 1), vs.size() - 1); //other parameters are mappings
 
         //Run stringsubst
         auto curve = std::make_unique<QString>();
