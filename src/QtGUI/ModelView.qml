@@ -20,6 +20,8 @@ Rectangle{
     }
     }
 
+
+
     Flickable{
         clip: true
         anchors.fill: parent
@@ -30,8 +32,7 @@ Rectangle{
         Rectangle
         {
             border.color: "#00ec37"
-            anchors.fill: parent
-        }
+            anchors.fill: parent }
 
         MouseArea {
         anchors.fill: parent
@@ -63,5 +64,10 @@ Rectangle{
         }
         }
     }
-
+    BusyIndicator{
+        running: model.loading
+        anchors.centerIn: parent
+        height: parent /10
+        width: parent/10
+    }
 }

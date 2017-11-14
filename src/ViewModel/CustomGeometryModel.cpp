@@ -85,6 +85,9 @@ void CustomGeometryModel::_setNewOuterDimensions()
 
 CustomGeometryModel::CustomGeometryModel()
     : QQuickItem()
+    , m_loading(false)
+    , p_node(nullptr)
+    , m_vertexSize(0.0, 0.0)
 {
     setFlags(QQuickItem::ItemHasContents);
 }
@@ -102,4 +105,14 @@ QSizeF CustomGeometryModel::vertexSize()
     return m_vertexSize;
 }
 
+bool CustomGeometryModel::loading()
+{
+    return m_loading;
+}
+
+void CustomGeometryModel::onNewGeometry(const QSGGeometryNode* const newNode)
+{
+    setGeometryNode(newNode);
+    m_loading = false;
+}
 } // namespace Model
