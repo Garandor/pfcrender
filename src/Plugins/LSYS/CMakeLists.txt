@@ -1,7 +1,6 @@
 find_package(Qt5 REQUIRED Core)
 
-add_library(plugin_LSYS SHARED
-
+set (LSYS_SRC
     #XXX: This might break once we get more than 1 plugin because of MOC. Might need to refactor interfaces into their own library
     "${PLUGIN_DIR}/Plugin.h"
     "${PLUGIN_DIR}/Import.h"
@@ -11,6 +10,8 @@ add_library(plugin_LSYS SHARED
     "LSYS.cpp"
     "LSYS.h"
     )
+
+add_library(plugin_LSYS SHARED ${LSYS_SRC} )
 
 target_include_directories(plugin_LSYS PRIVATE
     ${PLUGIN_DIR}
@@ -30,13 +31,14 @@ if(GENERATE_UNITTESTS)
         set(CMAKE_AUTOMOC ON)
 
         add_executable(test_lsys
-            Test_LSYS.cpp)
+            Test_LSYS.cpp
+            ${LSYS_SRC}
+            )
         target_include_directories(test_lsys PRIVATE
             "${CMAKE_CURRENT_SOURCE_DIR}"
             "${PLUGIN_DIR}"
             )
         target_link_libraries(test_lsys PRIVATE
-            plugin_LSYS
             Qt5::Core
             Qt5::Test)
 

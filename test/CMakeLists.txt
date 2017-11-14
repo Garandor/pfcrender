@@ -5,7 +5,6 @@ if(Qt5Test_FOUND)
         set(CMAKE_INCLUDE_CURRENT_DIR ON)
         set(CMAKE_AUTOMOC ON)
 
-
         include_directories(
                 ${CMAKE_SOURCE_DIR}/src
                 ${CMAKE_SOURCE_DIR}/src/ViewModel
