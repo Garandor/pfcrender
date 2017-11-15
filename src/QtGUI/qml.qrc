@@ -1,9 +1,8 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>res/eucalyptus.jpg</file>
         <file>ModelView.qml</file>
-        <file>CreatePFC.qml</file>
         <file>CreatePFCForm.ui.qml</file>
+        <file>res/dummy.jpg</file>
     </qresource>
 </RCC>

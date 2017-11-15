@@ -7,6 +7,7 @@ Rectangle{
     id : modelviewport
     border.color: "blue"
     anchors.fill: parent
+//    anchors.centerIn: parent
 
     PinchArea
     {
