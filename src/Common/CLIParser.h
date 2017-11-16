@@ -1,10 +1,12 @@
 #ifndef CLI_C_L_I_PARSER_H
 #define CLI_C_L_I_PARSER_H
 
+#include <QCommandLineOption>
 #include <QCommandLineParser>
-#include <QMultiMap>
+#include <QString>
+#include <QVector>
 
-namespace CLI {
+namespace Common {
 /**
  * @brief The CLIParser class
  * This class gathers commandline options from all plugins and executes on the
@@ -15,7 +17,7 @@ private:
     static CLIParser* instance;
 
     QCommandLineParser m_parser;
-    QMultiMap<QString, QCommandLineOption> m_registry;
+    QHash<QString, QCommandLineOption> m_optlist;
 
 private:
     CLIParser();
@@ -23,11 +25,12 @@ private:
 
 public:
     static CLIParser* getInstance();
-    void addOptions(const QList<QCommandLineOption>&, QString pluginName);
+    void addOption(const QString& optName, const QCommandLineOption& option);
+    void addOption(const QPair<QString, QCommandLineOption>&);
     void parse();
     const QCommandLineParser& getParser() const;
-    const QMultiMap<QString, QCommandLineOption>& getRegistry() const;
+    const QHash<QString, QCommandLineOption>& getOptlist() const;
 };
 
-} // namespace CLI
+} // namespace Common
 #endif

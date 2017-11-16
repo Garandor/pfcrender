@@ -16,6 +16,7 @@ add_library(plugin_LSYS SHARED ${LSYS_SRC} )
 target_include_directories(plugin_LSYS PRIVATE
     ${PLUGIN_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/fxt
+    ${CMAKE_SOURCE_DIR}/src
     )
 
 target_link_libraries(plugin_LSYS PRIVATE

@@ -7,13 +7,12 @@
 #include <QQmlApplicationEngine>
 #include <QQuickItem>
 
+#include "Common/Config_Registry.h"
+#include "Common/Plugin_Registry.h"
 #include "PFCRender.h"
 #include "Plugins/Import.h"
-#include "Plugins/Plugin_Registry.h"
 #include "ViewModel/CustomGeometryModel.h"
 #include "ViewModel/ViewModelBuilder.h"
-
-#include "CLI/CLIParser.h"
 
 namespace QtGUI {
 
@@ -38,7 +37,7 @@ PFCRender::PFCRender(QQmlApplicationEngine* eng)
     pluginsDir.cd("../plugins"); //XXX : THIS WILL BREAK ON DEPLOYMENT
 
     //get CLI options
-    ::CLI::CLIParser* p_clip = ::CLI::CLIParser::getInstance();
+    ::Common::CLIParser* p_clip = ::Common::CLIParser::getInstance();
 
     //Iterate through all registered plugins, load them, get their info (XXX: inefficient)
     for (const QString& p : Plugins::Plugin_Registry::getInstance()->getRegistry().values()) {

@@ -6,16 +6,19 @@
 #ifndef PLUGIN_PLUGIN__REGISTRY_H
 #define PLUGIN_PLUGIN__REGISTRY_H
 
-#include <QMultiHash>
+#include <QHash>
 #include <QString>
 
-class Plugin;
-
 namespace Plugins {
+class Plugin;
+}
+
+namespace Common {
+
 class Plugin_Registry {
 private:
     static Plugin_Registry* instance;
-    QMultiHash<QString, Plugin&> m_registered;
+    QHash<QString, Plugins::Plugin*> m_registered;
 
 private:
     Plugin_Registry();
@@ -23,9 +26,9 @@ private:
 
 public:
     static const Plugin_Registry* getInstance();
-    const Plugin& getPlugin(const QString& serviceName) const;
-    const QHash<QString, Plugin&>& getRegistry() const;
+    Plugins::Plugin* getPlugin(const QString& pluginName) const;
+    QList<Plugins::Plugin*> getPlugins() const;
 };
 
-} // namespace Plugin
+} // namespace Common
 #endif

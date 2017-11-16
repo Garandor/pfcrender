@@ -8,108 +8,93 @@
 #include <QCommandLineParser>
 #include <QDebug>
 #include <QVariant>
+
+#include "Common/Config_Registry.h"
+
 #include <vector>
 
 namespace Plugins {
 namespace LSYS {
-    QList<QCommandLineOption> cliopts{
-        QCommandLineOption("lsys", "Comma seperated list of LSYS axiom and rules for stringsubst", "string"),
-        QCommandLineOption("it", "Number LSYS iterations to compute", "int")
-    };
 
-    bool LSYS::hasService(QString name)
-    {
-        qFatal("NOT IMPLEMENTED");
-        return false;
-    }
-
-    void LSYS::execService(QString name, QVariant params)
-    {
-        qFatal("NOT IMPLEMENTED");
-        if (!name.compare(QStringLiteral("LSYS"))) {
-            //        return getModel();
-        } else {
-            //        return nullptr;
-        }
-    }
-
-    QList<QString> LSYS::lookupServices()
-    {
-        qFatal("NOT IMPLEMENTED");
-        return QList<QString>{ "asd", "as" };
-    }
-
-    void* LSYS::getParams()
-    {
-        qFatal("NOT IMPLEMENTED");
-        return nullptr;
-    }
-
-    QList<QCommandLineOption> LSYS::getCLIoptions()
+    //TODO: Make this a QHash of unique Option Name and QCommandlineOption
+    QVector<QPair<QString, QCommandLineOption>> LSYS::getCLIoptions()
     {
         return cliopts;
     }
 
-    std::unique_ptr<QString> LSYS::getModel(const QCommandLineParser& parseArgs)
+    const QString& LSYS::getName() const
+    {
+        return QString("LSYS");
+    }
+
+    std::unique_ptr<QString> LSYS::getModel()
     {
         //TODO: Make sure this uses move semantics
+        auto cr = Common::Config_Registry::getInstance();
 
-        if (parseArgs.isSet(cliopts.at(0)) && parseArgs.isSet(cliopts.at(1))) {
-            QList<QString> list = parseArgs.value(cliopts.at(0)).split(" ");
-            ulong iterates = parseArgs.value(cliopts.at(1)).toULong();
-            auto ret = _computeLSYS(list, iterates);
-            return ret;
-        }
-    }
+        //Check if all opts are set
+        for (auto p : cliopts)
+            if (cr->getOpt(p.left()) == "")
+                qFatal() << "NOT ALL OPTIONS WERE SET: " << p.left() << " is empty";
 
-    //for manual / testing invocation
-    std::unique_ptr<QString> LSYS::getModel(QList<QString> list, ulong it)
-    {
-        auto ret = _computeLSYS(list, it);
+        //CCreate the model
+        QList<QString> list = cr->getOpt(cliopts[0].left()).split(" ");
+        ulong iterates = cr->getOpt(cliopts[1].left()).toULong();
+        auto ret = _computeLSYS(list, iterates);
+
+        Ensures(ret.get() != nullptr);
         return ret;
     }
+}
 
-    std::unique_ptr<QString> LSYS::_computeLSYS(const QList<QString>& ruleList, const ulong iterates)
-    {
-        Expects(ruleList.count() >= 3); //need at least axiom and one rule
-        Expects(ruleList.count() % 2 != 0); //need even number of rules + 1 axiom
+//for manual / testing invocation
+std::unique_ptr<QString> LSYS::getModel(QList<QString> list, ulong it)
+{
+    auto ret = _computeLSYS(list, it);
+    return ret;
+}
 
-        //Build stringsubst object from passed params
-        string_subst lsys{ iterates }; //levels == number of generations == iterates
+std::unique_ptr<QString> LSYS::_computeLSYS(const QList<QString>& ruleList, const ulong iterates)
+{
+    Expects(ruleList.count() >= 3); //need at least axiom and one rule
+    Expects(ruleList.count() % 2 != 0); //need even number of rules + 1 axiom
 
-        //Prepare parameters for stringsubst
-        //save c-string representations of unicode QString rule params in temp vector
-        //needed because toLatin1 creates only temporary objects
-        std::vector<QByteArray> rules{};
-        for (int i = 0; i < ruleList.count(); i++) {
-            rules.push_back(ruleList.at(i).toLatin1());
-        }
+    //Build stringsubst object from passed params
+    string_subst lsys{ iterates }; //levels == number of generations == iterates
 
-        //now create a ptr vector to those strings to hand to stringsubst
-        std::vector<const char*> vs;
-        for (QByteArray& rr : rules)
-            vs.push_back(rr.constData());
-
-        //finally we can hand over a char **
-        lsys.set_axiom(vs[0]); //First rule is axiom
-        lsys.set_rules((vs.data() + 1), vs.size() - 1); //other parameters are mappings
-
-        //Run stringsubst
-        auto curve = std::make_unique<QString>();
-        if (lsys.first()) {
-            lsys.print_rules();
-
-            ulong ct = 0;
-            char c;
-            while ((c = lsys.current()) != '\0') {
-                curve->append(c);
-                lsys.next();
-            }
-        }
-
-        //Magic has been worked, return our result
-        return curve;
+    //Prepare parameters for stringsubst
+    //save c-string representations of unicode QString rule params in temp vector
+    //needed because toLatin1 creates only temporary objects
+    std::vector<QByteArray> rules{};
+    for (int i = 0; i < ruleList.count(); i++) {
+        rules.push_back(ruleList.at(i).toLatin1());
     }
+
+    //now create a ptr vector to those strings to hand to stringsubst
+    std::vector<const char*> vs;
+    for (QByteArray& rr : rules)
+        vs.push_back(rr.constData());
+
+    //finally we can hand over a char **
+    lsys.set_axiom(vs[0]); //First rule is axiom
+    lsys.set_rules((vs.data() + 1), vs.size() - 1); //other parameters are mappings
+
+    //Run stringsubst
+    auto curve = std::make_unique<QString>();
+    if (lsys.first()) {
+        lsys.print_rules();
+
+        ulong ct = 0;
+        char c;
+        while ((c = lsys.current()) != '\0') {
+            curve->append(c);
+            lsys.next();
+        }
+    }
+
+    //Magic has been worked, return our result
+    return curve;
+}
 
 } // namespace LSYS
 } // namespace Plugin

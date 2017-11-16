@@ -4,7 +4,9 @@
 #include <QString>
 #include <QUrl>
 
-#include "Plugins/Plugin_Registry.h"
+#include "Common/Config_Registry.h"
+#include "Common/Plugin_Registry.h"
+
 #include "QtCLI/PFCRender.h"
 #include "QtGUI/PFCRender.h"
 #include "ViewModel/CustomGeometryModel.h"
@@ -13,11 +15,9 @@
 
 int main(int argc, char** argv)
 {
-    Plugins::Plugin_Registry* plugins = Plugins::Plugin_Registry::getInstance();
-
-//open config file
-
-//populate registry
+    //populate registries
+    auto pr = Common::Plugin_Registry::getInstance();
+    auto cr = Common::Config_Registry::getInstance(); //Note: pr should be initialised before cr because it adds plugin specific CLI options
 
 #if NOGUI
     QCoreApplication app(argc, argv);

@@ -1,12 +1,12 @@
 #include "CLIParser.h"
 #include <QDebug>
 
-namespace CLI {
+namespace Common {
 CLIParser* CLIParser::instance = NULL;
 
 CLIParser::CLIParser()
     : m_parser{}
-    , m_registry{}
+    , m_optlist{}
 {
     m_parser.setApplicationDescription("pfcrender"); //TODO: Append version string
     m_parser.addHelpOption();
@@ -36,13 +36,17 @@ CLIParser* CLIParser::getInstance()
     return instance;
 }
 
-void CLIParser::addOptions(const QList<QCommandLineOption>& optList, QString pluginName)
+void CLIParser::addOption(const QString& optName, const QCommandLineOption& option)
 {
-    for (auto o : optList) {
-        m_parser.addOption(o);
-        m_registry.insert(pluginName, o);
-        qDebug() << "Added " << o.description();
-    }
+    m_parser.addOption(option);
+    m_optlist.insert(optName, option);
+
+    qDebug() << "Added option " << optName << " : " << o.description();
+}
+
+void CLIParser::addOption(const QPair<QString, QCommandLineOption>& p)
+{
+    CLIParser::addOption(p.first, p.second);
 }
 
 void CLIParser::parse()
@@ -63,9 +67,4 @@ const QCommandLineParser& CLIParser::getParser() const
     return m_parser;
 }
 
-const QMultiMap<QString, QCommandLineOption>& CLIParser::getRegistry() const
-{
-    return m_registry;
-}
-
-} // namespace CLI
+} // namespace Common

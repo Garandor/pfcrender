@@ -27,33 +27,33 @@ else()
 endif()
 
 set(SRC
+
+        "Common/Config_Registry.cpp"
+        "Common/Plugin_Registry.cpp"
+        "Common/CLIParser.cpp"
+
         "PFCStart.cpp"
 
-        "Plugins/Plugin_Registry.cpp"
 
         "Model/LSYSModel.cpp"
 
         "ViewModel/ViewModelBuilder.cpp"
         "ViewModel/CustomGeometryModel.cpp"
 
-
-        "Common/Config_Registry.cpp"
-        "CLI/CLIParser.cpp"
         "QtCLI/PFCRender.cpp"
         "QtGUI/PFCRender.cpp"
 )
 
 set(INC 
         "Common/Config_Registry.h"
-
-        "Plugins/Plugin_Registry.h"
+        "Common/Plugin_Registry.h"
+        "Common/CLIParser.h"
 
         "Model/LSYSModel.h"
 
         "ViewModel/ViewModelBuilder.h"
         "ViewModel/CustomGeometryModel.h"
 
-        "CLI/CLIParser.h"
         "QtCLI/PFCRender.h"
         "QtGUI/PFCRender.h"
 
@@ -79,6 +79,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 
 #Link with Qt
 target_link_libraries(${PROJECT_NAME} Qt5::Core)
+
+#make CMake drop the main exe into the root bin folder
+set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 if(COMPILE_GUI_SUPPORT)
 	target_link_libraries(${PROJECT_NAME} Qt5::Gui Qt5::Qml Qt5::Quick)
