@@ -18,7 +18,7 @@ const Config_Registry* Config_Registry::getInstance()
 
 const QString Config_Registry::getOpt(const QString& optName) const
 {
-    return m_registered.value(optName);
+    return m_options.value(optName);
 }
 
 void Config_Registry::setOpt(const QPair<QString, QString>& p)
@@ -26,14 +26,29 @@ void Config_Registry::setOpt(const QPair<QString, QString>& p)
     Config_Registry::setOpt(p.first, p.second);
 }
 
+void Config_Registry::addToSequence(const QString& name)
+{
+    m_sequence.append(name);
+}
+
+void Config_Registry::clearSequence()
+{
+    m_sequence.clear();
+}
+
+const QVector<QString> Config_Registry::getSequence() const
+{
+    return m_sequence;
+}
+
 void Config_Registry::setOpt(const QString& optName, const QString& optValue)
 {
-    m_registered.insert(optName, optValue);
+    m_options.insert(optName, optValue);
     qDebug() << "inserted " << optName << " with " << optValue;
 }
 
 Config_Registry::Config_Registry()
-    : m_registered{}
+    : m_options{}
 {
     //TODO: Populate from Config File
 

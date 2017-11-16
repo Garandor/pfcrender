@@ -1,9 +1,15 @@
 #include "PFCRender.h"
-
+#include "Common/Sequence_Walker.h"
 namespace QtCLI {
 
-int PFCRender::do_stuff()
+PFCRender::PFCRender()
 {
-    return 0;
+    //Instantiate everything from the provided sequence
+    Common::Sequence_Walker walker;
+
+    walker.execute(this);
+
+    Qt.quit();
 }
+
 } // namespace QtCLI

@@ -2,20 +2,23 @@
 #define QTCLI_P_F_C_RENDER_H
 
 #include <QCoreApplication>
+#include <QObject>
+#include <QString>
+
+#include "Model/LSYSModel.h"
+#include "ViewModel/CustomGeometryModel.h"
 
 namespace QtCLI {
-/**
- * Project pfcrender 
- * 
- * @author Adam Reif
- * 
- * 
- * 
- * @version 0.1
- */
-class PFCRender : public QCoreApplication {
+
+class PFCRender : public QObject {
+    Q_OBJECT
+
 public:
-    int do_stuff();
+    PFCRender();
+
+public:
+    Model::LSYSModel m_mdl;
+    ViewModel::CustomGeometryModel m_vm;
 };
 
 } // namespace QtCLI

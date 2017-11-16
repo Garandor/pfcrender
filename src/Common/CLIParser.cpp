@@ -51,6 +51,7 @@ void CLIParser::addOption(const QPair<QString, QCommandLineOption>& p)
 
 void CLIParser::parse()
 {
+    m_parser.setOptionsAfterPositionalArgumentsMode(QCommandLineParser::ParseAsOptions);
     // Process the actual command line arguments given by the user
     m_parser.process(*(qApp->instance()));
 

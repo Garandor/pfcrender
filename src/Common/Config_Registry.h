@@ -8,12 +8,14 @@
 
 #include <QHash>
 #include <QString>
+#include <QVector>
 
 namespace Common {
 class Config_Registry {
 private:
     static Config_Registry* instance;
-    QHash<QString, QString> m_registered;
+    QHash<QString, QString> m_options;
+    QVector<QString> m_sequence;
 
 private:
     Config_Registry();
@@ -24,6 +26,10 @@ public:
     const QString getOpt(const QString& optName) const;
     void setOpt(const QString& optName, const QString& optValue);
     void setOpt(const QPair<QString, QString>&);
+
+    void addToSequence(const QString& name);
+    void clearSequence();
+    const QVector<QString> getSequence() const;
 };
 
 } // namespace Common

@@ -2,29 +2,30 @@
 #define QTGUI_P_F_C_RENDER_H
 
 #include <QObject>
-#include <QString>
 #include <QQmlApplicationEngine>
+#include <QString>
+
 #include "Model/LSYSModel.h"
+#include "ViewModel/CustomGeometryModel.h"
 
-namespace QtGUI
-{
+namespace QtGUI {
 
-class PFCRender : public QObject
-{
+class PFCRender : public QObject {
     Q_OBJECT
 
-    public slots:
-        void onModelChanged(const QString&);
+public slots:
+    void onModelChanged(const QString&);
 
-    public:
-        PFCRender(QQmlApplicationEngine*);
+public:
+    PFCRender(QQmlApplicationEngine*);
 
-        void post_status(const QString &what);
+    void post_status(const QString& what);
 
-private:
-        Model::LSYSModel m_dMdl;
-        QQmlApplicationEngine* p_eng;
-    };
+public:
+    Model::LSYSModel m_mdl;
+    ViewModel::CustomGeometryModel m_vm;
+    QQmlApplicationEngine* p_eng;
+};
 
-}  // namespace QtGUI
+} // namespace QtGUI
 #endif
