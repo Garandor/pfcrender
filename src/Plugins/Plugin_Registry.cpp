@@ -3,7 +3,7 @@
 namespace Plugins {
 Plugin_Registry* Plugin_Registry::instance = NULL;
 
-Plugin_Registry* const Plugin_Registry::getInstance()
+const Plugin_Registry* Plugin_Registry::getInstance()
 {
     if (instance == NULL)
         instance = new Plugin_Registry();

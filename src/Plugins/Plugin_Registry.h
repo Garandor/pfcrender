@@ -3,32 +3,29 @@
 *
 **/
 
-
 #ifndef PLUGIN_PLUGIN__REGISTRY_H
 #define PLUGIN_PLUGIN__REGISTRY_H
 
-#include <QHash>
+#include <QMultiHash>
 #include <QString>
-#include <QFile>
 
-namespace Plugins
-{
-class Plugin_Registry
-{
+class Plugin;
+
+namespace Plugins {
+class Plugin_Registry {
 private:
-	static Plugin_Registry* instance;
-    QHash<QString,QString> m_registered;
+    static Plugin_Registry* instance;
+    QMultiHash<QString, Plugin&> m_registered;
 
 private:
-	Plugin_Registry();
+    Plugin_Registry();
     Q_DISABLE_COPY(Plugin_Registry)
 
-
 public:
-    static Plugin_Registry* const getInstance();
-    const QString getPlugin(const QString& serviceName) const;
-    const QHash<QString,QString>& getRegistry() const;
+    static const Plugin_Registry* getInstance();
+    const Plugin& getPlugin(const QString& serviceName) const;
+    const QHash<QString, Plugin&>& getRegistry() const;
 };
 
-}  // namespace Plugin
+} // namespace Plugin
 #endif

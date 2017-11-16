@@ -37,12 +37,14 @@ set(SRC
         "ViewModel/CustomGeometryModel.cpp"
 
 
+        "Common/Config_Registry.cpp"
         "CLI/CLIParser.cpp"
         "QtCLI/PFCRender.cpp"
         "QtGUI/PFCRender.cpp"
 )
 
 set(INC 
+        "Common/Config_Registry.h"
 
         "Plugins/Plugin_Registry.h"
 
