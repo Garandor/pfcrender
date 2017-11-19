@@ -25,7 +25,7 @@ private:
     Q_DISABLE_COPY(Plugin_Registry)
 
 public:
-    static const Plugin_Registry* getInstance();
+    static Plugin_Registry* getInstance();
     Plugins::Plugin* getPlugin(const QString& pluginName) const;
     QList<Plugins::Plugin*> getPlugins() const;
 };

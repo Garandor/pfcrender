@@ -1,7 +1,11 @@
 find_package(Qt5 REQUIRED Core)
 
 set (LSYS_SRC
-    #XXX: This might break once we get more than 1 plugin because of MOC. Might need to refactor interfaces into their own library
+
+    "${CMAKE_SOURCE_DIR}/src/Common/Plugin_Registry.cpp"
+    "${CMAKE_SOURCE_DIR}/src/Common/Config_Registry.cpp"
+    "${CMAKE_SOURCE_DIR}/src/Common/CLIParser.cpp"
+
     "${PLUGIN_DIR}/Plugin.h"
     "${PLUGIN_DIR}/Import.h"
 
@@ -9,6 +13,9 @@ set (LSYS_SRC
 
     "LSYS.cpp"
     "LSYS.h"
+
+    "LSYSModelFactory.cpp"
+    "LSYSModelFactory.h"
     )
 
 add_library(plugin_LSYS SHARED ${LSYS_SRC} )
@@ -37,6 +44,7 @@ if(GENERATE_UNITTESTS)
             )
         target_include_directories(test_lsys PRIVATE
             "${CMAKE_CURRENT_SOURCE_DIR}"
+            "${CMAKE_SOURCE_DIR}/src"
             "${PLUGIN_DIR}"
             )
         target_link_libraries(test_lsys PRIVATE

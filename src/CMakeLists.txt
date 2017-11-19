@@ -51,6 +51,7 @@ set(INC
         "Common/CLIParser.h"
         "Common/Sequence_Walker.cpp"
 
+        "Model/ModelFactory.h"
         "Model/LSYSModel.h"
 
         "ViewModel/ViewModelBuilder.h"

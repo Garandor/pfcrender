@@ -22,7 +22,7 @@ private:
     Q_DISABLE_COPY(Config_Registry)
 
 public:
-    static const Config_Registry* getInstance();
+    static Config_Registry* getInstance();
     const QString getOpt(const QString& optName) const;
     void setOpt(const QString& optName, const QString& optValue);
     void setOpt(const QPair<QString, QString>&);

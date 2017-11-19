@@ -10,7 +10,7 @@
 namespace Common {
 Plugin_Registry* Plugin_Registry::instance = NULL;
 
-const Plugin_Registry* Plugin_Registry::getInstance()
+Plugin_Registry* Plugin_Registry::getInstance()
 {
     if (instance == NULL)
         instance = new Plugin_Registry();
@@ -44,8 +44,9 @@ Plugin_Registry::Plugin_Registry()
         if (plInstance) {
             ::Plugins::Plugin* plug = qobject_cast<::Plugins::Plugin*>(plInstance);
             if (plug) {
-                qDebug() << "inserting plugin " << plug->getName();
-                m_registered.insert(plug->getName(), plug);
+                qDebug() << "inserting plugin " << plug->getInfo().name;
+                m_registered.insert(plug->getInfo().name, plug);
+                assert(plug == plug->getInfo().plugin);
             }
         } else {
             qWarning() << "Loading of Plugin " << f.fileName() << " failed with :" << ldr.errorString();

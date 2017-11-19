@@ -41,7 +41,7 @@ void CLIParser::addOption(const QString& optName, const QCommandLineOption& opti
     m_parser.addOption(option);
     m_optlist.insert(optName, option);
 
-    qDebug() << "Added option " << optName << " : " << o.description();
+    qDebug() << "Added option " << optName << " : " << option.description();
 }
 
 void CLIParser::addOption(const QPair<QString, QCommandLineOption>& p)
@@ -66,6 +66,11 @@ void CLIParser::parse()
 const QCommandLineParser& CLIParser::getParser() const
 {
     return m_parser;
+}
+
+const QHash<QString, QCommandLineOption>& CLIParser::getOptlist() const
+{
+    return m_optlist;
 }
 
 } // namespace Common

@@ -14,7 +14,7 @@ option(GENERATE_UNITTESTS "Enable building and running of ctest unit testing fil
 option(GENERATE_DOCS "Enable building and running of Doxygen doc creation" ON)
 
 
-INCLUDE_DIRECTORIES("lib/GSL/include")
+include_directories("lib/GSL/include")
 add_subdirectory(src)
 
 if(GENERATE_UNITTESTS)

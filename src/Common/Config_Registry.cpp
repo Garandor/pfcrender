@@ -1,17 +1,18 @@
-#include "Config_Registry.h"
-#include "Common/CLIParser.h"
-#include "Common/Plugin_Registry.h"
 #include <QDebug>
 #include <QPair>
 
+#include "Common/CLIParser.h"
+#include "Common/Plugin_Registry.h"
 #include "Plugins/Plugin.h"
 
-namespace Common {
-Config_Registry* Config_Registry::instance = NULL;
+#include "Config_Registry.h"
 
-const Config_Registry* Config_Registry::getInstance()
+namespace Common {
+Config_Registry* Config_Registry::instance = nullptr;
+
+Config_Registry* Config_Registry::getInstance()
 {
-    if (instance == NULL)
+    if (instance == nullptr)
         instance = new Config_Registry();
     return instance;
 }
@@ -52,11 +53,11 @@ Config_Registry::Config_Registry()
 {
     //TODO: Populate from Config File
 
-    //TODO::Populate from CLI Parameters
+    //TODO: Populate from CLI Parameters
     auto p_clip = CLIParser::getInstance();
     for (auto p : Plugin_Registry::getInstance()->getPlugins()) {
-        for (QPair<QString, QCommandLineOption> pair : p->getCLIoptions())
-            p_clip->addOption(pair);
+        for (auto opt : p->getInfo().co.keys())
+            p_clip->addOption(opt, p->getInfo().co.value(opt, QCommandLineOption("wat")));
     }
     //Parse all known commandline options
     p_clip->parse();
@@ -64,6 +65,7 @@ Config_Registry::Config_Registry()
     //Add all options that have been set to the global config store
     QHashIterator<QString, QCommandLineOption> it(p_clip->getOptlist());
     while (it.hasNext()) {
+        it.next();
         if (p_clip->getParser().isSet(it.key()))
             setOpt(it.key(), p_clip->getParser().value(it.value()));
     }

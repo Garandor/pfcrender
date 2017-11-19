@@ -1,8 +1,7 @@
 #ifndef PLUGIN_IMPORT_H
 #define PLUGIN_IMPORT_H
 
-#include <memory>
-
+#include "Model/ModelFactory.h"
 #include "Plugin.h"
 
 class QQuickItem;
@@ -14,11 +13,10 @@ class Import : public Plugin {
 
 public:
     /**
-    * @brief getModel to create model string from this plugin
-    * Since Model is likely a very large String, we hand it over as a unique pointer to force using move semantics
-    * @return  A unique pointer to the QString to use as new model
-    */
-    virtual std::unique_ptr<QString> getModel(const QCommandLineParser&) = 0;
+     * @brief getFactory
+     * @return A model factory object
+     */
+    virtual std::unique_ptr<Model::ModelFactory> getFactory() const = 0;
 
     virtual ~Import() {}
 };

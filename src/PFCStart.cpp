@@ -22,10 +22,10 @@ int main(int argc, char** argv)
 #if NOGUI
     QCoreApplication app(argc, argv);
 #else
-    if (cr->getOpt("batch") == "true")
-        QCoreApplication app(argc, argv);
-    else
-        QGuiApplication app(argc, argv);
+    //    if (cr->getOpt("batch") == "true")
+    //        QCoreApplication app(argc, argv);
+    //    else
+    QGuiApplication app(argc, argv);
 #endif
     //Set Version Information
     app.setApplicationVersion(VERSION_STRING);
@@ -33,7 +33,7 @@ int main(int argc, char** argv)
 #if NOGUI
     QtCLI::PFCRender desktop_obj();
 #else
-    if (cr->getOpt("batch") == "false") {
+    if (cr->getOpt("batch").isEmpty()) {
         //Register custom QML Types
         qmlRegisterType<ViewModel::CustomGeometryModel>("sci.pfcrender.customModel", 1, 0, "CustomGeometryModel");
 
