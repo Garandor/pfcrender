@@ -29,7 +29,18 @@ void Config_Registry::setOpt(const QPair<QString, QString>& p)
 
 void Config_Registry::addToSequence(const QString& name)
 {
-    m_sequence.append(name);
+    bool found{ false };
+    for (auto p : Common::Plugin_Registry::getInstance()->getPlugins()) {
+        if (0 == name.compare(p->getInfo().name, Qt::CaseInsensitive)) //If a plugin exists with the name of the passed arg
+        {
+            m_sequence.append(p->getInfo().name);
+            qDebug() << "Appended plugin" << p->getInfo().name << " to sequence for step " << name;
+
+            break;
+        }
+    }
+    if (!found)
+        qCritical() << "No plugin found for supplied positional commandline argument" << name;
 }
 
 void Config_Registry::clearSequence()
@@ -57,7 +68,7 @@ Config_Registry::Config_Registry()
     auto p_clip = CLIParser::getInstance();
     for (auto p : Plugin_Registry::getInstance()->getPlugins()) {
         for (auto opt : p->getInfo().co.keys())
-            p_clip->addOption(opt, p->getInfo().co.value(opt, QCommandLineOption("wat")));
+            p_clip->addOption(opt, p->getInfo().co.value(opt, QCommandLineOption("wat"))); //TODO: Handle default case
     }
     //Parse all known commandline options
     p_clip->parse();
@@ -66,9 +77,13 @@ Config_Registry::Config_Registry()
     QHashIterator<QString, QCommandLineOption> it(p_clip->getOptlist());
     while (it.hasNext()) {
         it.next();
-        if (p_clip->getParser().isSet(it.key()))
+        if (p_clip->getParser().isSet(it.value()))
             setOpt(it.key(), p_clip->getParser().value(it.value()));
     }
+
+    //populate sequence
+    for (auto arg : p_clip->getParser().positionalArguments())
+        addToSequence(arg);
 }
 
 } // namespace Common

@@ -9,11 +9,11 @@
 
 namespace QtGUI {
 
-void PFCRender::onModelChanged(const QString& mdl)
+void PFCRender::onModelChanged()
 {
     auto* mdlItem = qobject_cast<ViewModel::CustomGeometryModel*>(p_eng->rootObjects()[0]->findChild<QQuickItem*>(QStringLiteral("model")));
     if (mdlItem) {
-        auto vm = ViewModel::createGeom(mdl);
+        auto vm = ViewModel::createGeom(*(m_mdl.getModel()));
         mdlItem->setGeometryNode(vm);
     }
 }
@@ -34,10 +34,10 @@ PFCRender::PFCRender(QQmlApplicationEngine* eng)
     post_status(QString(walker.m_stepNames.count()));
 
     walker.execute(m_mdl, m_vm);
+    onModelChanged();
 
+    //we should now have a model and viewmodel in place
     //now that everything is in place, connect all necessary signals so we can resume normal GUI operation
-    // QObject::connect(&m_dMdl, SIGNAL(modelChanged(const QString&)), &m_vm, SLOT(onModelChanged(const QString&)));
-    //                        m_dMdl.setModel(std::move(dataModel));
 }
 
 } // namespace QtGUI

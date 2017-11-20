@@ -15,10 +15,6 @@
 
 int main(int argc, char** argv)
 {
-    //populate registries
-    auto pr = Common::Plugin_Registry::getInstance();
-    auto cr = Common::Config_Registry::getInstance(); //Note: pr should be initialised before cr because it adds plugin specific CLI options
-
 #if NOGUI
     QCoreApplication app(argc, argv);
 #else
@@ -29,6 +25,10 @@ int main(int argc, char** argv)
 #endif
     //Set Version Information
     app.setApplicationVersion(VERSION_STRING);
+
+    //populate registries
+    auto pr = Common::Plugin_Registry::getInstance();
+    auto cr = Common::Config_Registry::getInstance(); //Note: pr should be initialised before cr because it adds plugin specific CLI options
 
 #if NOGUI
     QtCLI::PFCRender desktop_obj();

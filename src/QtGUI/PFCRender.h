@@ -14,7 +14,7 @@ class PFCRender : public QObject {
     Q_OBJECT
 
 public slots:
-    void onModelChanged(const QString&);
+    void onModelChanged();
 
 public:
     PFCRender(QQmlApplicationEngine*);

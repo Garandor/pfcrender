@@ -41,7 +41,7 @@ void CLIParser::addOption(const QString& optName, const QCommandLineOption& opti
     m_parser.addOption(option);
     m_optlist.insert(optName, option);
 
-    qDebug() << "Added option " << optName << " : " << option.description();
+    qDebug() << "Added option " << optName << " : " << option.names() << " ! " << option.description();
 }
 
 void CLIParser::addOption(const QPair<QString, QCommandLineOption>& p)

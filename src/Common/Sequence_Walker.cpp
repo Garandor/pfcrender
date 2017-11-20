@@ -1,3 +1,5 @@
+#include <QDebug>
+
 #include "Sequence_Walker.h"
 
 #include "Common/Config_Registry.h"
@@ -32,9 +34,8 @@ void Common::Sequence_Walker::addStep(const QString& stepName)
 void Common::Sequence_Walker::execute(Model::LSYSModel& mod, ViewModel::CustomGeometryModel& vm)
 {
     auto pr = Plugin_Registry::getInstance();
-    auto sequence = Config_Registry::getInstance()->getSequence();
 
-    for (auto step : sequence) {
+    for (auto step : m_stepNames) {
         //going by plugin type, execute get factory
         auto plugin = pr->getPlugin(step);
 
