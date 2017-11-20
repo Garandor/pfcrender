@@ -87,6 +87,8 @@ ViewModelBuilder::_createGeometry(const QString& curve)
         if (c.isLetter())
             segcount++;
 
+    Expects(segcount > 0);
+
     // Build curve geometry
     auto geometry = new QSGGeometry(
         QSGGeometry::defaultAttributes_ColoredPoint2D(), segcount + 1);
@@ -97,8 +99,6 @@ ViewModelBuilder::_createGeometry(const QString& curve)
     geometry->setDrawingMode(
         QSGGeometry::DrawLineStrip); // Draw connected lines each vertex
     geometry->setLineWidth(4); // TODO: User configable
-
-    assert(segcount > 0);
 
     // todo: segment length and angle user selectable
     //    constexpr qreal initialAngle = 0;
@@ -115,8 +115,7 @@ ViewModelBuilder::_createGeometry(const QString& curve)
 
     // XXX: Maybe iterate over vertex array instead?
     for (const QChar& c : curve) {
-        if (c.isNull()) // String is guaranteed to be \0 terminated, this is our
-            // sign to stop
+        if (c.isNull()) // String is \0 terminated, end loop
             break;
 
         if (c.isLetter()) // Denotes drawing a line segment
@@ -147,7 +146,7 @@ ViewModelBuilder::_createGeometry(const QString& curve)
             stack.push(pos);
             continue;
         case ']': // pop position and direction from stack
-            if(stack.isEmpty())
+            if (stack.isEmpty())
                 qWarning("Tried to pop from empty stack. Ignoring this character");
             else
                 pos = stack.pop();

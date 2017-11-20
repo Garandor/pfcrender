@@ -23,7 +23,7 @@ namespace LSYS {
         };
         m_info.co = {
             { "Plugins.LSYS.rules", QCommandLineOption("rules", "Comma seperated list of LSYS axiom and rules for stringsubst", "string") },
-            { "Plugins.LSYS.it", QCommandLineOption("it", "Number LSYS iterations to compute", "int") }
+            { "Plugins.LSYS.it", QCommandLineOption("it", "Number LSYS iterations to compute", "int") },
         },
         m_info.plugin = this;
     }

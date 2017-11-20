@@ -18,7 +18,7 @@ int main(int argc, char** argv)
 #if NOGUI
     QCoreApplication app(argc, argv);
 #else
-    //    if (cr->getOpt("batch") == "true")
+    //    if (cr->getOpt("batch") == "true") //TODO: Handle batch mode
     //        QCoreApplication app(argc, argv);
     //    else
     QGuiApplication app(argc, argv);
@@ -33,13 +33,13 @@ int main(int argc, char** argv)
 #if NOGUI
     QtCLI::PFCRender desktop_obj();
 #else
-    if (cr->getOpt("batch").isEmpty()) {
-        //Register custom QML Types
-        qmlRegisterType<ViewModel::CustomGeometryModel>("sci.pfcrender.customModel", 1, 0, "CustomGeometryModel");
+    //    if (cr->getOpt("batch").isEmpty()) { //TODO: Handle batch mode
+    //Register custom QML Types
+    qmlRegisterType<ViewModel::CustomGeometryModel>("sci.pfcrender.customModel", 1, 0, "CustomGeometryModel");
 
-        QQmlApplicationEngine qeng(QUrl(QStringLiteral("qrc:///main.qml")));
-        QtGUI::PFCRender desktop_obj(&qeng);
-    }
+    QQmlApplicationEngine qeng(QUrl(QStringLiteral("qrc:///main.qml")));
+    QtGUI::PFCRender desktop_obj(&qeng);
+//    }
 #endif
 
     return app.exec();
