@@ -10,11 +10,11 @@
 
 namespace QtCLI {
 
-class PFCRender : public QObject {
+class PFCRenderCLI : public QObject {
     Q_OBJECT
 
 public:
-    PFCRender();
+    PFCRenderCLI();
 
 public:
     Model::LSYSModel m_mdl;

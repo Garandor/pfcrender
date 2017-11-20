@@ -7,8 +7,8 @@
 #include "Common/Config_Registry.h"
 #include "Common/Plugin_Registry.h"
 
-#include "QtCLI/PFCRender.h"
-#include "QtGUI/PFCRender.h"
+#include "QtCLI/PFCRenderCLI.h"
+#include "QtGUI/PFCRenderGUI.h"
 #include "ViewModel/CustomGeometryModel.h"
 
 #include "projectinfo.h"
@@ -31,14 +31,14 @@ int main(int argc, char** argv)
     auto cr = Common::Config_Registry::getInstance(); //Note: pr should be initialised before cr because it adds plugin specific CLI options
 
 #if NOGUI
-    QtCLI::PFCRender desktop_obj();
+    QtCLI::PFCRender_CLI desktop_obj();
 #else
     //    if (cr->getOpt("batch").isEmpty()) { //TODO: Handle batch mode
     //Register custom QML Types
     qmlRegisterType<ViewModel::CustomGeometryModel>("sci.pfcrender.customModel", 1, 0, "CustomGeometryModel");
 
     QQmlApplicationEngine qeng(QUrl(QStringLiteral("qrc:///main.qml")));
-    QtGUI::PFCRender desktop_obj(&qeng);
+    QtGUI::PFCRenderGUI desktop_obj(&qeng);
 //    }
 #endif
 

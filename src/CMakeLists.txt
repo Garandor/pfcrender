@@ -41,8 +41,8 @@ set(SRC
         "ViewModel/ViewModelBuilder.cpp"
         "ViewModel/CustomGeometryModel.cpp"
 
-        "QtCLI/PFCRender.cpp"
-        "QtGUI/PFCRender.cpp"
+        "QtCLI/PFCRenderCLI.cpp"
+        "QtGUI/PFCRenderGUI.cpp"
 )
 
 set(INC 
@@ -57,8 +57,8 @@ set(INC
         "ViewModel/ViewModelBuilder.h"
         "ViewModel/CustomGeometryModel.h"
 
-        "QtCLI/PFCRender.h"
-        "QtGUI/PFCRender.h"
+        "QtCLI/PFCRenderCLI.h"
+        "QtGUI/PFCRenderGUI.h"
 
         "projectinfo.h.in"
 )

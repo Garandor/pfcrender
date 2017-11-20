@@ -1,11 +1,11 @@
-#include "PFCRender.h"
 #include "Common/Sequence_Walker.h"
 #include "Model/LSYSModel.h"
+#include "PFCRenderCLI.h"
 #include "ViewModel/CustomGeometryModel.h"
 
 namespace QtCLI {
 
-PFCRender::PFCRender()
+PFCRenderCLI::PFCRenderCLI()
     : m_mdl()
     , m_vm()
 {

@@ -10,14 +10,14 @@
 
 namespace QtGUI {
 
-class PFCRender : public QObject {
+class PFCRenderGUI : public QObject {
     Q_OBJECT
 
 public slots:
     void onModelChanged();
 
 public:
-    PFCRender(QQmlApplicationEngine*);
+    PFCRenderGUI(QQmlApplicationEngine*);
 
     void post_status(const QString& what);
 

@@ -4,12 +4,12 @@
 
 #include "Common/Sequence_Walker.h"
 
-#include "PFCRender.h"
+#include "PFCRenderGUI.h"
 #include "ViewModel/ViewModelBuilder.h"
 
 namespace QtGUI {
 
-void PFCRender::onModelChanged()
+void PFCRenderGUI::onModelChanged()
 {
     auto* mdlItem = qobject_cast<ViewModel::CustomGeometryModel*>(p_eng->rootObjects()[0]->findChild<QQuickItem*>(QStringLiteral("model")));
     if (mdlItem) {
@@ -18,12 +18,12 @@ void PFCRender::onModelChanged()
     }
 }
 
-void PFCRender::post_status(const QString& what)
+void PFCRenderGUI::post_status(const QString& what)
 {
     p_eng->rootObjects()[0]->findChild<QQuickItem*>(QStringLiteral("status"))->setProperty("text", what);
 }
 
-PFCRender::PFCRender(QQmlApplicationEngine* eng)
+PFCRenderGUI::PFCRenderGUI(QQmlApplicationEngine* eng)
     : p_eng(eng)
     , m_mdl()
     , m_vm()
