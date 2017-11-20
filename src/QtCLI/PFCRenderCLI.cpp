@@ -1,7 +1,8 @@
 #include "Common/Sequence_Walker.h"
 #include "Model/LSYSModel.h"
-#include "PFCRenderCLI.h"
 #include "ViewModel/CustomGeometryModel.h"
+
+#include "PFCRenderCLI.h"
 
 namespace QtCLI {
 

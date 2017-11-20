@@ -62,7 +62,7 @@ namespace LSYS {
         //Run stringsubst
         auto curve = std::make_unique<QString>();
         if (lsys.first()) {
-            lsys.print_rules();
+            //            lsys.print_rules();
 
             ulong ct = 0;
             char c;
