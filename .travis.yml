@@ -30,7 +30,7 @@ addons:
                 #build
                 - cmake
 
-language: generic
+language: C++
 compiler:
         - gcc
         - clang++
