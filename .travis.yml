@@ -66,7 +66,7 @@ before_script:
 
 script: 
   - if [[ $TRAVIS_OS_NAME == 'linux' && $CXX != 'g++' ]] ; then cd bin && cmake .. && make && ctest -V ; fi
-  - if [[ $TRAVIS_OS_NAME == 'linux' && $CXX == 'g++' ]] ; then cmake -DCMAKE_BUILD_TYPE=Coverage -DCMAKE_C_COMPILER=gcc-5 -DCMAKE_CXX_COMPILER=g++-5 .. && make VERBOSE=1 && ctest -V ; fi
+  - if [[ $TRAVIS_OS_NAME == 'linux' && $CXX == 'g++' ]] ; then cd bin && cmake -DCMAKE_BUILD_TYPE=Coverage -DCMAKE_C_COMPILER=gcc-5 -DCMAKE_CXX_COMPILER=g++-5 .. && make VERBOSE=1 && ctest -V ; fi
   - if [[ $TRAVIS_OS_NAME == 'osx' ]] ; then cd bin && cmake .. && make && ctest -V ; fi
 
 #On successful build of master branch regenerate doxygen docs and publish on Github Pages, upload gcov results to coveralls
