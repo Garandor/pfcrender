@@ -12,6 +12,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(GENERATE_UNITTESTS "Enable building and running of ctest unit testing files" ON)
 option(GENERATE_DOCS "Enable building and running of Doxygen doc creation" ON)
+option(GENERATE_COVERAGE "Enable generation of test suite code coverage with gcov" ON)
 
 
 include_directories("lib/GSL/include")
@@ -24,6 +25,10 @@ endif()
 
 if(GENERATE_DOCS)
         add_subdirectory(doc)
+endif()
+
+if(GENERATE_COVERAGE)
+	LIST(APPEND CMAKE_CXX_FLAGS "-O0 -Wall -fprofile-arcs -ftest-coverage")
 endif()
 
 #update version in all relevant files
