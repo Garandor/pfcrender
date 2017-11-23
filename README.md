@@ -6,6 +6,8 @@ PFCRender v0.5.0
 | __[master](https://github.com/Garandor/pfcrender/tree/master)__     | [![Linux Build Status](https://travis-ci.org/Garandor/pfcrender.svg?branch=master)](https://travis-ci.org/Garandor/pfcrender)   | [![Windows Build status](https://ci.appveyor.com/api/projects/status/sj2a1l3akbe4v2pt/branch/master?svg=true)](https://ci.appveyor.com/project/Garandor/pfcrender/branch/master)|
 | __[testing](https://github.com/Garandor/pfcrender/tree/testing)__   | [![Linux Build Status](https://travis-ci.org/Garandor/pfcrender.svg?branch=testing)](https://travis-ci.org/Garandor/pfcrender)  | [![Windows Build Status](https://ci.appveyor.com/api/projects/status/sj2a1l3akbe4v2pt/branch/testing?svg=true)](https://ci.appveyor.com/project/Garandor/pfcrender/branch/testing) |
 
+[![Coverage Status](https://coveralls.io/repos/github/Garandor/pfcrender/badge.svg?branch=feat%2Fcommon%2FCodeCoverage)](https://coveralls.io/github/Garandor/pfcrender)
+
 # Commands for testing (Curve generation per CLI only atm)
 [bindir]/src/pfcrender lsys --it 5 --rules "F_+F_+F_+F_ F F+F+F-F-F + + - - _ _"
 
