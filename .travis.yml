@@ -9,30 +9,30 @@ sudo: require
 
 #blacklist
 branches:
-        except:
-          - gh-pages
+  except:
+  - gh-pages
 
 env:
-        global:
-          - GITHUB_REPO: pfcrender
+  global:
+  - GITHUB_REPO: pfcrender
 
 
 #additional deps
 addons:
-        apt:
-		sources:
-		    - ubuntu-toolchain-r-test
-		packages:
-		    #docs
-		    - doxygen
-		    - doxygen-doc
-		    - doxygen-latex
-		    - doxygen
-		    - graphviz
-		    #build
-		    - cmake
-		    #coverage
-		    - lcov
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    #docs
+    - doxygen
+    - doxygen-doc
+    - doxygen-latex
+    - doxygen
+    - graphviz
+    #build
+    - cmake
+    #coverage
+    - lcov
 
 language: C++
 compiler:
