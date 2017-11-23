@@ -75,7 +75,7 @@ script:
 #On successful build of master branch regenerate doxygen docs and publish on Github Pages, upload gcov results to coveralls
 after_success:
   - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash $TRAVIS_BUILD_DIR/doc/deploy-doxygen-to-gh-pages.sh
-  - if [[ $TRAVIS_OS_NAME == 'linux' && $CXX == 'g++' ]] ; then cd bin && lcov --directory . --capture --no-externals --exclude \*_autogen\* --output-file coverage.info && lcov --list coverage.info && bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports" ; fi
+  - if [[ $TRAVIS_OS_NAME == 'linux' && $CXX == 'g++' ]] ; then lcov --directory . --capture --no-externals --exclude \*_autogen\* --output-file coverage.info && lcov --list coverage.info && bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports" ; fi
 
 
 
