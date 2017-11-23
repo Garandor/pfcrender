@@ -13,7 +13,7 @@ configuration:
 
 # specify custom environment variables
 environment:
-  QTDIR: 'C:\Qt\5.9.1\msvc2015_64'
+  QTDIR: 'C:\Qt\5.9\msvc2015_64'
   MSVC_DEFAULT_OPTIONS: ON
   matrix:
     - GENERATOR: "Visual Studio 14 2015"
