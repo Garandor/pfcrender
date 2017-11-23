@@ -15,7 +15,7 @@ class Config_Registry {
 private:
     static Config_Registry* instance;
     QHash<QString, QString> m_options;
-    QVector<QString> m_sequence;
+    QVector<QString> m_sequence; //XXX: Having sequence in the config store seems dirty
 
 private:
     Config_Registry();

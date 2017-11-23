@@ -45,6 +45,7 @@ before_install:
   #Qt5.9
   - if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then travis_retry sudo add-apt-repository ppa:beineri/opt-qt592-trusty -y ; fi
   - if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then travis_retry sudo apt-get update -qq ; fi
+  - if [[ $TRAVIS_OS_NAME == 'linux' && $CXX == 'g++' ]] ; then pip install --user cpp-coveralls; fi
 
 install:
   # C++14
@@ -65,9 +66,11 @@ before_script:
   - if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then sleep 3 ; fi # give xvfb some time to start
 
 script: 
-  - if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then cd bin && cmake -DCMAKE_C_COMPILER=gcc-5 -DCMAKE_CXX_COMPILER=g++-5 .. && make && ctest -V ; fi
+  - if [[ $TRAVIS_OS_NAME == 'linux' && $CXXX != 'g++' ]] ; then cd bin && cmake .. && make && ctest -V ; fi
+  - if [[ $TRAVIS_OS_NAME == 'linux' && $CXX == 'g++' ]] ; then cmake -DCMAKE_BUILD_TYPE=Coverage -DCMAKE_C_COMPILER=gcc-5 -DCMAKE_CXX_COMPILER=g++-5 .. && make && ctest -V ; fi
   - if [[ $TRAVIS_OS_NAME == 'osx' ]] ; then cd bin && cmake .. && make && ctest -V ; fi
 
-#On successful build of master branch regenerate doxygen docs and publish on Github Pages 
+#On successful build of master branch regenerate doxygen docs and publish on Github Pages, upload gcov results to coveralls
 after_success:
         - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && bash $TRAVIS_BUILD_DIR/doc/deploy-doxygen-to-gh-pages.sh
+  	- if [[ $TRAVIS_OS_NAME == 'linux' && $CXX == 'g++' ]]  coveralls --exclude lib --exclude test --gcov-options '\-lp'
