@@ -54,8 +54,8 @@ void Test_GUI::createGeometry_90deg()
 
 void Test_GUI::createGeometry_different_letters()
 {
-    QString resultString{ "b+G-N0c" };
-    QList<QSGGeometry::Point2D> plist{ { 0.0, 0.0 }, { 10.0, 0.0 }, { 10.0, 10.0 }, { 20.0, 10.0 }, { 30.0, 10.0 } }; //Should give valid result
+    QString resultString{ "bGNc" };
+    QList<QSGGeometry::Point2D> plist{ { 0.0, 0.0 }, { 10.0, 0.0 }, { 20.0, 0.0 }, { 30.0, 0.0 }, { 40.0, 0.0 } }; //Should give valid result
     int segments = 4;
     qreal angle = 90;
     int seglen = 10;
