@@ -57,6 +57,19 @@ public:
     }
 };
 
+void ViewModelBuilder::parse_config(QString opt_name, std::function<void(double)> fnc)
+{
+    if (!(Common::Config_Registry::getInstance()->getOpt(opt_name).isEmpty())) {
+        bool ok = false;
+        qreal temp = Common::Config_Registry::getInstance()->getOpt(opt_name).toDouble(&ok);
+        if (!ok)
+            qCritical() << "Failed converting passed config option for " << opt_name << " to qreal. Passed string: " << Common::Config_Registry::getInstance()->getOpt(opt_name);
+        else
+            fnc(temp);
+    } else
+        qDebug() << "No option given for " << opt_name << ", using default";
+}
+
 QSGGeometryNode*
 ViewModelBuilder::_createGeometry(const QString& curve)
 {
@@ -108,51 +121,16 @@ ViewModelBuilder::_createGeometry(const QString& curve)
     //Read user supplied config options, this could be greatly simplified with std::optional
 
     //Line Rendering Width
-    QString opt_name{ "ViewModel.SegmentWidth" };
-    if (!(Common::Config_Registry::getInstance()->getOpt(opt_name).isEmpty())) {
-        bool ok = false;
-        qreal temp = Common::Config_Registry::getInstance()->getOpt(opt_name).toDouble(&ok);
-        if (!ok)
-            qCritical() << "Failed converting passed config option for " << opt_name << " to qreal. Passed string: " << Common::Config_Registry::getInstance()->getOpt(opt_name);
-        else
-            geometry->setLineWidth(temp);
-    }
+    parse_config("ViewModel.SegmentWidth", [&](double param) { geometry->setLineWidth(param); });
 
     //Initial Angle
-    opt_name = "ViewModel.InitialAngle";
-    if (!(Common::Config_Registry::getInstance()->getOpt(opt_name).isEmpty())) {
-        bool ok = false;
-        qreal temp = Common::Config_Registry::getInstance()->getOpt(opt_name).toDouble(&ok);
-        if (!ok)
-            qCritical() << "Failed converting passed config option for " << opt_name << " to qreal. Passed string: " << Common::Config_Registry::getInstance()->getOpt(opt_name);
-        else
-            pos.angle = temp;
-    } else
-        qDebug() << "No option given for " << opt_name;
+    parse_config("ViewModel.InitialAngle", [&](double param) { pos.angle = param; });
 
     //Angle per segment
-    opt_name = "ViewModel.Angle";
-    if (!(Common::Config_Registry::getInstance()->getOpt(opt_name).isEmpty())) {
-        bool ok = false;
-        qreal temp = Common::Config_Registry::getInstance()->getOpt(opt_name).toDouble(&ok);
-        if (!ok)
-            qCritical() << "Failed converting passed config option for " << opt_name << " to qreal. Passed string: " << Common::Config_Registry::getInstance()->getOpt(opt_name);
-        else
-            angleIncrement = temp;
-    } else
-        qDebug() << "No option given for " << opt_name;
+    parse_config("ViewModel.Angle", [&](double param) { angleIncrement = param; });
 
     //Segment Length
-    opt_name = "ViewModel.SegmentLength";
-    if (!(Common::Config_Registry::getInstance()->getOpt(opt_name).isEmpty())) {
-        bool ok = false;
-        qreal temp = Common::Config_Registry::getInstance()->getOpt(opt_name).toDouble(&ok);
-        if (!ok)
-            qCritical() << "Failed converting passed config option for " << opt_name << " to qreal. Passed string: " << Common::Config_Registry::getInstance()->getOpt(opt_name);
-        else
-            pos.length = temp;
-    } else
-        qDebug() << "No option given for " << opt_name;
+    parse_config("ViewModel.SegmentLength", [&](double param) { pos.length = param; });
 
     QSGGeometry::ColoredPoint2D* v = geometry->vertexDataAsColoredPoint2D();
 

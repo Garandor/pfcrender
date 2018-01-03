@@ -1,5 +1,6 @@
 #include "CustomGeometryModel.h"
 #include "Model/LSYSModel.h"
+#include <functional>
 
 namespace ViewModel {
 
@@ -11,6 +12,8 @@ public slots:
 
 private:
     QSGGeometryNode* _createGeometry(const QString& curve);
+
+    void parse_config(QString opt_name, std::function<void(double)> fnc);
 
 public:
     friend QSGGeometryNode* createGeom(const QString&);
