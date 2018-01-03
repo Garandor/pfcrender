@@ -31,6 +31,7 @@ set(SRC
         "Common/Config_Registry.cpp"
         "Common/Plugin_Registry.cpp"
         "Common/CLIParser.cpp"
+        "Common/CLIOptions.h"
         "Common/Sequence_Walker.cpp"
 
         "PFCStart.cpp"

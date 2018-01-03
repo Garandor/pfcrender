@@ -7,6 +7,7 @@
 
 #include <gsl/gsl>
 
+#include "Common/Config_Registry.h"
 #include <QDebug>
 #include <QtMath> //cos, sin
 #include <cmath> //fmod
@@ -100,13 +101,58 @@ ViewModelBuilder::_createGeometry(const QString& curve)
         QSGGeometry::DrawLineStrip); // Draw connected lines each vertex
     geometry->setLineWidth(4); // TODO: User configable
 
-    // todo: segment length and angle user selectable
-    //    constexpr qreal initialAngle = 0;
-    constexpr qreal angleIncrement = 90;
-
-    //    constexpr qreal length = 10;
-
+    //Create initial vector for rendering the curve
     PolarVector2D pos{};
+    qreal angleIncrement = 90;
+
+    //Read user supplied config options, this could be greatly simplified with std::optional
+
+    //Line Rendering Width
+    QString opt_name{ "ViewModel.SegmentWidth" };
+    if (!(Common::Config_Registry::getInstance()->getOpt(opt_name).isEmpty())) {
+        bool ok = false;
+        qreal temp = Common::Config_Registry::getInstance()->getOpt(opt_name).toDouble(&ok);
+        if (!ok)
+            qCritical() << "Failed converting passed config option for " << opt_name << " to qreal. Passed string: " << Common::Config_Registry::getInstance()->getOpt(opt_name);
+        else
+            geometry->setLineWidth(temp);
+    }
+
+    //Initial Angle
+    opt_name = "ViewModel.InitialAngle";
+    if (!(Common::Config_Registry::getInstance()->getOpt(opt_name).isEmpty())) {
+        bool ok = false;
+        qreal temp = Common::Config_Registry::getInstance()->getOpt(opt_name).toDouble(&ok);
+        if (!ok)
+            qCritical() << "Failed converting passed config option for " << opt_name << " to qreal. Passed string: " << Common::Config_Registry::getInstance()->getOpt(opt_name);
+        else
+            pos.angle = temp;
+    } else
+        qDebug() << "No option given for " << opt_name;
+
+    //Angle per segment
+    opt_name = "ViewModel.Angle";
+    if (!(Common::Config_Registry::getInstance()->getOpt(opt_name).isEmpty())) {
+        bool ok = false;
+        qreal temp = Common::Config_Registry::getInstance()->getOpt(opt_name).toDouble(&ok);
+        if (!ok)
+            qCritical() << "Failed converting passed config option for " << opt_name << " to qreal. Passed string: " << Common::Config_Registry::getInstance()->getOpt(opt_name);
+        else
+            angleIncrement = temp;
+    } else
+        qDebug() << "No option given for " << opt_name;
+
+    //Segment Length
+    opt_name = "ViewModel.SegmentLength";
+    if (!(Common::Config_Registry::getInstance()->getOpt(opt_name).isEmpty())) {
+        bool ok = false;
+        qreal temp = Common::Config_Registry::getInstance()->getOpt(opt_name).toDouble(&ok);
+        if (!ok)
+            qCritical() << "Failed converting passed config option for " << opt_name << " to qreal. Passed string: " << Common::Config_Registry::getInstance()->getOpt(opt_name);
+        else
+            pos.length = temp;
+    } else
+        qDebug() << "No option given for " << opt_name;
 
     QSGGeometry::ColoredPoint2D* v = geometry->vertexDataAsColoredPoint2D();
 
@@ -129,7 +175,7 @@ ViewModelBuilder::_createGeometry(const QString& curve)
             // tmp-pic.tex && make dotex #
             // TODO: bin mir nicht sicher, ob und wie wir diesen hack unterstuetzen
             // wollen
-            qFatal("direct strokes not implemented");
+            qCritical("direct strokes not implemented");
         }
 
         static int idx = 0; // XXX:
@@ -166,10 +212,10 @@ ViewModelBuilder::_createGeometry(const QString& curve)
             pos.setColor(colors.at(idx));
             continue;
         default:
-            qFatal(QString("not recognized symbol ")
-                       .append(c)
-                       .append(" present in model")
-                       .toLatin1());
+            qCritical(QString("not recognized symbol ")
+                          .append(c)
+                          .append(" present in model")
+                          .toLatin1());
             break;
         }
     }

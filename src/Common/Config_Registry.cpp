@@ -1,6 +1,7 @@
 #include <QDebug>
 #include <QPair>
 
+#include "Common/CLIOptions.h"
 #include "Common/CLIParser.h"
 #include "Common/Plugin_Registry.h"
 #include "Plugins/Plugin.h"
@@ -17,6 +18,12 @@ Config_Registry* Config_Registry::getInstance()
     return instance;
 }
 
+//Enhancement: When using C++17 is possible this should become a std::optional
+/**
+ * @brief Config_Registry::getOpt
+ * @param optName
+ * @return the value passed to this option, or an empty string
+ */
 const QString Config_Registry::getOpt(const QString& optName) const
 {
     return m_options.value(optName);
@@ -62,15 +69,23 @@ void Config_Registry::setOpt(const QString& optName, const QString& optValue)
 Config_Registry::Config_Registry()
     : m_options{}
 {
-    //TODO: Populate from Config File
+    //Get of create an instance of the CLI parser to populate with options
+    auto p_clip = CLIParser::getInstance();
+
+    //TODO: Read Config File
+
+    //TODO: Read built-in options
+    for (auto o : Common::builtin_opts) //add config key and cmdline option
+        p_clip->addOption(o); //add pairs of config variables and their cmdlineoptions
 
     //TODO: Populate from CLI Parameters
-    auto p_clip = CLIParser::getInstance();
     for (auto p : Plugin_Registry::getInstance()->getPlugins()) {
         for (auto opt : p->getInfo().co.keys())
-            p_clip->addOption(opt, p->getInfo().co.value(opt, QCommandLineOption("wat"))); //TODO: Handle default case
+            p_clip->addOption(opt, p->getInfo().co.value(opt, QCommandLineOption("wat"))); //add config key and cmdline option
+        //TODO: Handle default case
     }
-    //Parse all known commandline options
+
+    //Population of CLI Parser options finished, parse all known commandline options
     p_clip->parse();
 
     //Add all options that have been set to the global config store
