@@ -7,3 +7,4 @@ add_library(plugin_ALL INTERFACE )
 
 #add subdirectories of each plugin to be built
 add_subdirectory(LSYS)
+add_subdirectory(SVG)
