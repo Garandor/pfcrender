@@ -7,57 +7,81 @@ Item {
     height: 400
     property alias listView: listView
 
-    Flickable {
-        id: flickable
-        anchors.top: row.bottom
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
+    ListView {
+        id: listView
+        x: 0
+        y: -355
+        anchors.rightMargin: 0
+        anchors.bottomMargin: 0
+        anchors.leftMargin: 0
         anchors.topMargin: 0
-
-        ListView {
-            id: listView
-            anchors.fill: parent
-            model: ListModel {
-                ListElement {
-                    name: "Grey"
-                    colorCode: "grey"
-                }
-
-                ListElement {
-                    name: "Red"
-                    colorCode: "red"
-                }
-
-                ListElement {
-                    name: "Blue"
-                    colorCode: "blue"
-                }
-
-                ListElement {
-                    name: "Green"
-                    colorCode: "green"
-                }
+        anchors.fill: parent
+        model: ListModel {
+            ListElement {
+                name: "Grey"
+                colorCode: "grey"
             }
-            delegate: Item {
-                x: 5
-                width: 80
-                height: 40
-                Row {
-                    id: row1
-                    spacing: 10
-                    Rectangle {
-                        width: 40
-                        height: 40
-                        color: colorCode
-                    }
 
-                    Text {
-                        text: name
-                        anchors.verticalCenter: parent.verticalCenter
-                        font.bold: true
+            ListElement {
+                name: "Red"
+                colorCode: "red"
+            }
+
+            ListElement {
+                name: "Blue"
+                colorCode: "blue"
+            }
+
+            ListElement {
+                name: "Green"
+                colorCode: "green"
+            }
+        }
+        delegate: Item {
+            x: 5
+            width: 80
+            height: 40
+            Row {
+                id: row1
+                width: 415
+                height: 48
+                spacing: 10
+                Button {
+                    id: bDel
+                    width: 40
+                    height: parent.Button
+                    text: "del"
+                    Image {
+                        source: "res/dummy.jpg"
                     }
                 }
+                Button {
+                    id: bUp
+                    width: 40
+                    height: parent.height
+                    text: "up"
+                    Image {
+                        source: "res/dummy.jpg"
+                    }
+                }
+                Button {
+                    id: bDown
+                    width: 40
+                    height: parent.height
+                    text: "down"
+                    Image {
+                        source: "res/dummy.jpg"
+                    }
+                }
+                Item {
+                    id: item1
+                    height: 200
+                    anchors.right: parent.right
+                    anchors.rightMargin: 20
+                    anchors.left: bDown.right
+                    anchors.leftMargin: 10
+                }
+
             }
         }
     }
@@ -65,12 +89,14 @@ Item {
     Row {
         id: row
         x: 0
-        y: 0
+        y: -355
         width: 400
         height: 45
+        anchors.top: parent.top
+        anchors.topMargin: 0
 
         Button {
-            id: button
+            id: bImport
             width: 94
             height: 22
             text: qsTr("import")
@@ -79,13 +105,13 @@ Item {
         }
 
         Button {
-            id: button1
+            id: bModify
             width: 94
             height: 22
             text: qsTr("modify")
         }
         Button {
-            id: button2
+            id: bExport
             width: 94
             height: 22
             text: qsTr("export")

@@ -29,16 +29,16 @@ ApplicationWindow
                      }
             }
             ToolButton {
-                width: 10
-                height: 10
+                width: 100
+                height: 100
                 id: btnModify
                 text: "modify"
 //				iconSource: "res/dummy.jpg"
                      }
             ToolButton {
                 id: b_export
-                width: 10
-                height: 10
+                width: 100
+                height: 100
                 text: "export"
 //                iconSource: "res/dummy.jpg"
                      }
