@@ -9,7 +9,7 @@
 
 #include "SVG.h"
 
-#include <QSVGGenerator>
+#include <QSvgGenerator>
 
 namespace Plugins {
 namespace SVG {
@@ -43,7 +43,7 @@ namespace SVG {
     void SVG::exportViewModel(const ViewModel::CustomGeometryModel& mdl) const
     {
         auto cr = Common::Config_Registry::getInstance();
-        Expects(!(cr->getOpt("ofile").isEmpty()));
+        Expects(!(cr->getOpt("Plugins.SVG.outfile").isEmpty()));
 
         qFatal("SVG export from ModelString is not implemented");
     }

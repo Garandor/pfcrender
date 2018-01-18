@@ -21,7 +21,7 @@ target_include_directories(plugin_SVG PRIVATE
     ${CMAKE_SOURCE_DIR}/src
     )
 
-target_link_libraries(plugin_SVG PRIVATE
+target_link_libraries(plugin_SVG PUBLIC
             Qt5::Core
             Qt5::Gui
             Qt5::Quick
@@ -49,6 +49,7 @@ if(GENERATE_UNITTESTS)
             Qt5::Core
             Qt5::Gui
             Qt5::Quick
+            Qt5::Svg
             Qt5::Test)
 
         add_test(NAME Test_SVG COMMAND test_SVG)
