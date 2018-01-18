@@ -15,6 +15,8 @@ private:
 
     void parse_config(QString opt_name, std::function<void(double)> fnc);
 
+    void draw_curve(QString curve, QPaintDevice& onto);
+
 public:
     friend QSGGeometryNode* createGeom(const QString&);
 };

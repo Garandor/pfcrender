@@ -9,6 +9,8 @@
 
 #include "Common/Config_Registry.h"
 #include <QDebug>
+#include <QPainter>
+#include <QPixmap>
 #include <QtMath> //cos, sin
 #include <cmath> //fmod
 
@@ -51,10 +53,13 @@ public:
             gsl::narrow<uchar>(c.blue()),
             gsl::narrow<uchar>(c.alpha()));
     }
+
     const QColor getColor() const
     {
         return QColor(start.r, start.g, start.b, start.a);
     }
+
+    operator QPointF() { return QPointF(start.x, start.y); }
 };
 
 void ViewModelBuilder::parse_config(QString opt_name, std::function<void(double)> fnc)
@@ -70,9 +75,123 @@ void ViewModelBuilder::parse_config(QString opt_name, std::function<void(double)
         qDebug() << "No option given for " << opt_name << ", using default";
 }
 
+void ViewModelBuilder::draw_curve(QString curve, QPaintDevice& onto)
+{
+    static const QList<QColor> colors({ QColor(Qt::black),
+        QColor(Qt::blue),
+        QColor(Qt::green),
+        QColor(Qt::red),
+        QColor(Qt::cyan),
+        QColor::fromCmykF(0.45, 0.86, 0, 0),
+        QColor::fromCmykF(0, 0.61, 0.87, 0),
+        QColor::fromCmykF(0, 0.83, 1, 0.7),
+        QColor(Qt::magenta),
+        QColor::fromCmykF(0.86, 0.91, 0, 0.04),
+        QColor::fromCmykF(0.5, 0, 1, 0),
+        QColor::fromCmykF(0.64, 0, 0.95, 0.4) });
+
+    double lineWidth = Common::Config_Registry::getInstance()->getOpt("ViewModel.SegmentWidth").toDouble(nullptr);
+    double initialAngle = Common::Config_Registry::getInstance()->getOpt("ViewModel.InitialAngle").toDouble(nullptr); //Initial Angle
+    double angle = Common::Config_Registry::getInstance()->getOpt("ViewModel.Angle").toDouble(nullptr); //Angle per segment
+    double seglen = Common::Config_Registry::getInstance()->getOpt("ViewModel.SegmentLength").toDouble(nullptr); //Segment Length
+    double rounding = Common::Config_Registry::getInstance()->getOpt("ViewModel.Rounding").toDouble(nullptr); //Segment Length
+
+    QPixmap pmap(4000, 4000);
+    pmap.fill();
+    QPainter painter(&w);
+    //    QPainter pen(onto);
+    if (!painter.isActive())
+        abort();
+
+    QPen pen(colors.first());
+    pen.setWidth(lineWidth);
+    painter.setPen(pen);
+
+    QStack<ViewModel::PolarVector2D> stack{};
+    PolarVector2D pos{};
+    // XXX: Maybe iterate over vertex array instead?
+    for (const QChar& c : curve) {
+        if (c.isNull()) // String is \0 terminated, end loop
+            break;
+
+        if (c.isLetter()) // Denotes drawing a line segment
+        {
+            if (rounding == 0)
+                painter.drawLine(pos, pos.next());
+            else {
+                QPainterPath a(pos);
+                a.cubicTo(pos, pos, pos.next());
+                painter.drawPath(a);
+            }
+            continue;
+        }
+        if (c != '0' && c.isDigit()) {
+            // Direct strokes, e.g., for terdragon:
+            // stringsubst 3 1 1 121 2 232 3 313 | tail -1 | ./bin 3 2 1 1 0.15 >
+            // tmp-pic.tex && make dotex #
+            // TODO: bin mir nicht sicher, ob und wie wir diesen hack unterstuetzen
+            // wollen
+            qCritical("direct strOkes not implemented");
+        }
+
+        static int idx = 0; // XXX:
+        switch (c.toLatin1()) {
+        case '+': // change dir clockwise
+            pos.addToAngle(angle);
+            continue;
+        case '-': // change dir counterclockwise
+            pos.addToAngle(-angle);
+            continue;
+        case '0': // ignored (as symbol for "no turn")
+            continue;
+        case '[': // push position and direction on stack
+            stack.push(pos);
+            continue;
+        case ']': // pop position and direction from stack
+            if (stack.isEmpty())
+                qWarning("Tried to pop from empty stack. Ignoring this character");
+            else
+                pos = stack.pop();
+            continue;
+        case '_': // special command:  next color
+            //            idx = colors.indexOf(pos.getColor())+1;
+            idx++;
+            if (idx >= colors.size())
+                idx = 0;
+            pen.setColor(colors.at(idx));
+            painter.setPen(pen);
+            pos.setColor(colors.at(idx));
+            continue;
+        case '~': // special command:  previous color
+            //            idx = colors.indexOf(pos.getColor())-1;
+            idx--;
+            if (idx < 0)
+                idx = colors.size() - 1;
+            pen.setColor(colors.at(idx));
+            painter.setPen(pen);
+            pos.setColor(colors.at(idx));
+            continue;
+        default:
+            qCritical(QString("not recognized symbol ")
+                          .append(c)
+                          .append(" present in model")
+                          .toLatin1());
+            break;
+        }
+    }
+
+    painter.end();
+    pmap.save(QString("test.png"), nullptr, 100);
+    painter.end();
+}
+
 QSGGeometryNode*
 ViewModelBuilder::_createGeometry(const QString& curve)
 {
+
+    QPixmap a;
+    draw_curve(curve, a);
+
     // XXX: Very monolithic function, refactor
     // TODO: Also this in not core functionality, should be a plugin
     // Color list equivalent to how it was before
