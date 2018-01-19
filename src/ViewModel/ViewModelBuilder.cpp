@@ -98,13 +98,15 @@ void ViewModelBuilder::draw_curve(QString curve, QPaintDevice& onto)
 
     QPixmap pmap(4000, 4000);
     pmap.fill();
-    QPainter painter(&w);
+    QPainter painter(&pmap);
     //    QPainter pen(onto);
     if (!painter.isActive())
         abort();
 
     QPen pen(colors.first());
     pen.setWidth(lineWidth);
+    pen.setWidth(4);
+    painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setPen(pen);
 
     QStack<ViewModel::PolarVector2D> stack{};
@@ -116,11 +118,15 @@ void ViewModelBuilder::draw_curve(QString curve, QPaintDevice& onto)
 
         if (c.isLetter()) // Denotes drawing a line segment
         {
+            rounding = 0.3;
+            QPointF p1 = pos;
+            QPointF p2 = pos.next();
             if (rounding == 0)
-                painter.drawLine(pos, pos.next());
+                painter.drawLine(p1, p2);
             else {
-                QPainterPath a(pos);
-                a.cubicTo(pos, pos, pos.next());
+                QPainterPath a(p1);
+                a.moveTo(p1);
+                a.quadTo((1 - rounding) * p1.x() + rounding * p2.x(), (1 - rounding) * p1.y() + rounding * p2.y(), p2.x(), p2.y());
                 painter.drawPath(a);
             }
             continue;
@@ -131,7 +137,7 @@ void ViewModelBuilder::draw_curve(QString curve, QPaintDevice& onto)
             // tmp-pic.tex && make dotex #
             // TODO: bin mir nicht sicher, ob und wie wir diesen hack unterstuetzen
             // wollen
-            qCritical("direct strOkes not implemented");
+            qCritical("direct strokes not implemented");
         }
 
         static int idx = 0; // XXX:
@@ -182,7 +188,6 @@ void ViewModelBuilder::draw_curve(QString curve, QPaintDevice& onto)
 
     painter.end();
     pmap.save(QString("test.png"), nullptr, 100);
-    painter.end();
 }
 
 QSGGeometryNode*
