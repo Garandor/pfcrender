@@ -4,7 +4,7 @@
 namespace ViewModel {
 
 class ModelStringParser {
-public:
+protected:
     //Commands to be implemented by format specific child class
     virtual void add_segment() = 0;
     virtual void next_color() = 0;
@@ -15,8 +15,9 @@ public:
     virtual void stackPop() = 0;
 
     //common parsing code
-    virtual void parse_model_string(const QString&) final;
+    void parse_model_string(const QString&);
 
-    virtual ~ModelStringParser();
+public:
+    virtual ~ModelStringParser() {}
 };
 }

@@ -11,6 +11,7 @@ class PolarVector2D;
 class ViewModelBuilder : public ModelStringParser {
 public slots:
     void onModelChanged(const QString* const);
+    friend QSGGeometryNode* createGeom(const QString&);
 
 private:
     QSGGeometryNode* _createGeometry(const QString& curve);
@@ -19,8 +20,14 @@ private:
 
     void draw_curve(QString curve, QPaintDevice& onto);
 
-public:
-    friend QSGGeometryNode* createGeom(const QString&);
+private:
+    void add_segment() override;
+    void next_color() override;
+    void prev_color() override;
+    void incAngle() override;
+    void decAngle() override;
+    void stackPush() override;
+    void stackPop() override;
 };
 
 QSGGeometryNode* createGeom(const QString&);

@@ -190,6 +190,47 @@ void ViewModelBuilder::draw_curve(QString curve, QPaintDevice& onto)
     pmap.save(QString("test.png"), nullptr, 100);
 }
 
+void ViewModelBuilder::add_segment()
+{
+
+    qFatal("not implemented");
+}
+
+void ViewModelBuilder::next_color()
+{
+
+    qFatal("not implemented");
+}
+
+void ViewModelBuilder::prev_color()
+{
+
+    qFatal("not implemented");
+}
+
+void ViewModelBuilder::incAngle()
+{
+
+    qFatal("not implemented");
+}
+
+void ViewModelBuilder::decAngle()
+{
+
+    qFatal("not implemented");
+}
+
+void ViewModelBuilder::stackPush()
+{
+
+    qFatal("not implemented");
+}
+
+void ViewModelBuilder::stackPop()
+{
+    qFatal("not implemented");
+}
+
 QSGGeometryNode*
 ViewModelBuilder::_createGeometry(const QString& curve)
 {
@@ -347,6 +388,7 @@ QSGGeometryNode*
 createGeom(const QString& mdl)
 {
     ViewModelBuilder fac;
+    fac.parse_model_string(mdl);
     return fac._createGeometry(mdl);
 }
 }
