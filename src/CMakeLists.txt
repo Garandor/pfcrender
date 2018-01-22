@@ -39,6 +39,7 @@ set(SRC
 
         "Model/LSYSModel.cpp"
 
+        "ViewModel/ModelStringParser.cpp"
         "ViewModel/ViewModelBuilder.cpp"
         "ViewModel/CustomGeometryModel.cpp"
 
@@ -55,6 +56,7 @@ set(INC
         "Model/ModelFactory.h"
         "Model/LSYSModel.h"
 
+        "ViewModel/ModelStringParser.h"
         "ViewModel/ViewModelBuilder.h"
         "ViewModel/CustomGeometryModel.h"
 

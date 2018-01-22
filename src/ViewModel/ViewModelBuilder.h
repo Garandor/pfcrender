@@ -1,12 +1,14 @@
+#pragma once
 #include "CustomGeometryModel.h"
 #include "Model/LSYSModel.h"
+#include "ModelStringParser.h"
 #include <functional>
 
 namespace ViewModel {
 
 class PolarVector2D;
 
-class ViewModelBuilder {
+class ViewModelBuilder : public ModelStringParser {
 public slots:
     void onModelChanged(const QString* const);
 
