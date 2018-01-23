@@ -190,43 +190,37 @@ void ViewModelBuilder::draw_curve(QString curve, QPaintDevice& onto)
     pmap.save(QString("test.png"), nullptr, 100);
 }
 
-void ViewModelBuilder::add_segment()
+inline void ViewModelBuilder::add_segment()
 {
-
     qFatal("not implemented");
 }
 
-void ViewModelBuilder::next_color()
+inline void ViewModelBuilder::next_color()
 {
-
     qFatal("not implemented");
 }
 
-void ViewModelBuilder::prev_color()
+inline void ViewModelBuilder::prev_color()
 {
-
     qFatal("not implemented");
 }
 
-void ViewModelBuilder::incAngle()
+inline void ViewModelBuilder::incAngle()
 {
-
     qFatal("not implemented");
 }
 
-void ViewModelBuilder::decAngle()
+inline void ViewModelBuilder::decAngle()
 {
-
     qFatal("not implemented");
 }
 
-void ViewModelBuilder::stackPush()
+inline void ViewModelBuilder::stackPush()
 {
-
     qFatal("not implemented");
 }
 
-void ViewModelBuilder::stackPop()
+inline void ViewModelBuilder::stackPop()
 {
     qFatal("not implemented");
 }

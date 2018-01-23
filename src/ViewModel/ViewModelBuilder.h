@@ -21,13 +21,13 @@ private:
     void draw_curve(QString curve, QPaintDevice& onto);
 
 private:
-    void add_segment() override;
-    void next_color() override;
-    void prev_color() override;
-    void incAngle() override;
-    void decAngle() override;
-    void stackPush() override;
-    void stackPop() override;
+    virtual void add_segment() final override;
+    virtual void next_color() final override;
+    virtual void prev_color() final override;
+    virtual void incAngle() final override;
+    virtual void decAngle() final override;
+    virtual void stackPush() final override;
+    virtual void stackPop() final override;
 };
 
 QSGGeometryNode* createGeom(const QString&);
