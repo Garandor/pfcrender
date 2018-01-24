@@ -18,8 +18,6 @@ private:
 
     void parse_config(QString opt_name, std::function<void(double)> fnc);
 
-    void draw_curve(QString curve, QPaintDevice& onto);
-
 private:
     virtual void add_segment() final override;
     virtual void next_color() final override;
@@ -28,6 +26,7 @@ private:
     virtual void decAngle() final override;
     virtual void stackPush() final override;
     virtual void stackPop() final override;
+    virtual void parse_model_string(const QString& mdl) final override { ModelStringParser::parse_model_string(mdl); }
 };
 
 QSGGeometryNode* createGeom(const QString&);

@@ -15,7 +15,7 @@ protected:
     virtual void stackPop() = 0;
 
     //common parsing code
-    void parse_model_string(const QString&);
+    virtual void parse_model_string(const QString&);
 
 public:
     virtual ~ModelStringParser() {}
