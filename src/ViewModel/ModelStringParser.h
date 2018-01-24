@@ -1,23 +1,47 @@
-#pragma once
-#include "Model/LSYSModel.h"
+#define LSYS_STRING_PARSE_FUNC_DECL void parse_model_string(const QString& curve);
 
-namespace ViewModel {
-
-class ModelStringParser {
-protected:
-    //Commands to be implemented by format specific child class
-    virtual void add_segment() = 0;
-    virtual void next_color() = 0;
-    virtual void prev_color() = 0;
-    virtual void incAngle() = 0;
-    virtual void decAngle() = 0;
-    virtual void stackPush() = 0;
-    virtual void stackPop() = 0;
-
-    //common parsing code
-    virtual void parse_model_string(const QString&);
-
-public:
-    virtual ~ModelStringParser() {}
-};
-}
+#define LSYS_STRING_PARSE_FUNC_DEF(CLASSNAME)                \
+    void CLASSNAME::parse_model_string(const QString& curve) \
+    {                                                        \
+        for (const QChar& c : curve) {                       \
+            if (c.isNull())                                  \
+                break;                                       \
+                                                             \
+            if (c.isLetter()) {                              \
+                add_segment();                               \
+                continue;                                    \
+            }                                                \
+            if (c != '0' && c.isDigit()) {                   \
+                qCritical("direct strokes not implemented"); \
+            }                                                \
+                                                             \
+            switch (c.toLatin1()) {                          \
+            case '+':                                        \
+                incAngle();                                  \
+                continue;                                    \
+            case '-':                                        \
+                decAngle();                                  \
+                continue;                                    \
+            case '0':                                        \
+                continue;                                    \
+            case '[':                                        \
+                stackPush();                                 \
+                continue;                                    \
+            case ']':                                        \
+                stackPop();                                  \
+                continue;                                    \
+            case '_':                                        \
+                next_color();                                \
+                continue;                                    \
+            case '~':                                        \
+                prev_color();                                \
+                continue;                                    \
+            default:                                         \
+                qCritical(QString("not recognized symbol ")  \
+                              .append(c)                     \
+                              .append(" present in model")   \
+                              .toLatin1());                  \
+                break;                                       \
+            }                                                \
+        }                                                    \
+    }

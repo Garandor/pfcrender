@@ -13,7 +13,7 @@
 #include <QPixmap>
 #include <QtMath> //cos, sin
 #include <cmath> //fmod
-#import <iostream>
+#include <iostream>
 
 namespace ViewModel {
 
@@ -75,6 +75,8 @@ void ViewModelBuilder::parse_config(QString opt_name, std::function<void(double)
     } else
         qDebug() << "No option given for " << opt_name << ", using default";
 }
+
+LSYS_STRING_PARSE_FUNC_DEF(ViewModelBuilder)
 
 inline void ViewModelBuilder::add_segment()
 {
@@ -266,6 +268,7 @@ createGeom(const QString& mdl)
 {
     ViewModelBuilder fac;
     fac.parse_model_string(mdl);
+    abort();
     return fac._createGeometry(mdl);
 }
 }

@@ -8,7 +8,7 @@ namespace ViewModel {
 
 class PolarVector2D;
 
-class ViewModelBuilder : public ModelStringParser {
+class ViewModelBuilder {
 public slots:
     void onModelChanged(const QString* const);
     friend QSGGeometryNode* createGeom(const QString&);
@@ -19,14 +19,14 @@ private:
     void parse_config(QString opt_name, std::function<void(double)> fnc);
 
 private:
-    virtual void add_segment() final override;
-    virtual void next_color() final override;
-    virtual void prev_color() final override;
-    virtual void incAngle() final override;
-    virtual void decAngle() final override;
-    virtual void stackPush() final override;
-    virtual void stackPop() final override;
-    virtual void parse_model_string(const QString& mdl) final override { ModelStringParser::parse_model_string(mdl); }
+    void add_segment();
+    void next_color();
+    void prev_color();
+    void incAngle();
+    void decAngle();
+    void stackPush();
+    void stackPop();
+    LSYS_STRING_PARSE_FUNC_DECL
 };
 
 QSGGeometryNode* createGeom(const QString&);

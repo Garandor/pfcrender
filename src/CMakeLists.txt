@@ -39,7 +39,6 @@ set(SRC
 
         "Model/LSYSModel.cpp"
 
-        "ViewModel/ModelStringParser.cpp"
         "ViewModel/ViewModelBuilder.cpp"
         "ViewModel/CustomGeometryModel.cpp"
 
