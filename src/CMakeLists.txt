@@ -39,6 +39,7 @@ set(SRC
 
         "Model/LSYSModel.cpp"
 
+        "ViewModel/ModelStringParser.cpp"
         "ViewModel/ViewModelBuilder.cpp"
         "ViewModel/CustomGeometryModel.cpp"
 
@@ -50,11 +51,13 @@ set(INC
         "Common/Config_Registry.h"
         "Common/Plugin_Registry.h"
         "Common/CLIParser.h"
-        "Common/Sequence_Walker.cpp"
+        "Common/Sequence_Walker.h"
 
+        "util/PolarVector2D.h"
         "Model/ModelFactory.h"
         "Model/LSYSModel.h"
 
+        "ViewModel/ModelStringParser.h"
         "ViewModel/ViewModelBuilder.h"
         "ViewModel/CustomGeometryModel.h"
 

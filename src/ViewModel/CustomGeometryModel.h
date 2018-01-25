@@ -2,6 +2,7 @@
 #define MODEL_CUSTOM_GEOMETRY_MODEL_H
 
 #include <QQuickItem>
+#include <QRectF>
 
 class QSGNode;
 class QSGGeometryNode;
@@ -20,13 +21,13 @@ public:
     ~CustomGeometryModel();
     QSizeF vertexSize();
 
-    void setGeometryNode(QSGGeometryNode* newNode);
+    void setGeometryNode(std::pair<QSGGeometryNode*, QRectF> vm);
 
 protected:
     virtual QSGNode* updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* updatePaintNodeData) override final;
 
 private:
-    void _setNewOuterDimensions();
+    void _normalizeGeometry(QRectF& boundingBox);
     QSGNode* p_node;
     QSizeF m_vertexSize;
 };

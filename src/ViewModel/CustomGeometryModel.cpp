@@ -1,19 +1,19 @@
 #include "CustomGeometryModel.h"
 #include <QDebug>
+#include <QMatrix>
 #include <QSGGeometryNode>
 #include <QSGNode>
 #include <algorithm>
 
 namespace ViewModel {
 
-void CustomGeometryModel::setGeometryNode(QSGGeometryNode* newNode)
+void CustomGeometryModel::setGeometryNode(std::pair<QSGGeometryNode*, QRectF> vm)
 {
     //store the node reference so the render thread can get it later
-    p_node = newNode;
+    p_node = vm.first;
 
-    //do some processing on the node before addidng it to the scene
-    //Set up the new properties of the quickitem according to its new geometry
-    _setNewOuterDimensions();
+    //process the node to normalize to Qt coordiantes
+    _normalizeGeometry(vm.second);
 
     //Schedule updating the paintNode
     update();
@@ -34,40 +34,21 @@ QSGNode* CustomGeometryModel::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeD
     return oldNode;
 }
 
-void CustomGeometryModel::_setNewOuterDimensions()
+void CustomGeometryModel::_normalizeGeometry(QRectF& boundingBox)
 {
-    //calculate new bounding box and update properties
-    // min = minium coordinate of the box
-    // max = maxium coordinate of the box
-    auto n = dynamic_cast<QSGGeometryNode*>(p_node);
-    auto g = n->geometry()->vertexDataAsColoredPoint2D();
-    QSGGeometry::ColoredPoint2D min = g[0],
-                                max = g[0];
-
-    for (int i = 1; i < n->geometry()->vertexCount(); ++i) {
-        if (g[i].x < min.x)
-            min.x = g[i].x;
-        if (g[i].y < min.y)
-            min.y = g[i].y;
-        if (g[i].x > max.x)
-            max.x = g[i].x;
-        if (g[i].y > max.y)
-            max.y = g[i].y;
-    }
-
-    qDebug() << "rectangle coords: (" << min.x << ',' << min.y << ") ; (" << max.x << "," << max.y;
-
-    m_vertexSize.setWidth(max.x - min.x);
-    m_vertexSize.setHeight(max.y - min.y);
-    this->setSize(vertexSize());
+    m_vertexSize.setWidth(boundingBox.width());
+    m_vertexSize.setHeight(boundingBox.height());
+    this->setSize(boundingBox.size());
 
     //Normalize coordinates so they conform to item coordinates (0,0 = top of image) used by scenegraph
-    if (std::min<double>({ min.x, max.x, min.y, max.y }) < 0) {
+    QRectF normalized = boundingBox.normalized();
+    normalized.moveTo(0, 0);
+    if (normalized != boundingBox) {
         QSGTransformNode* wrapNode = new QSGTransformNode;
         //TODO: create matrix
-        QMatrix4x4 transform = wrapNode->matrix();
+        auto transform = wrapNode->matrix().toAffine();
 
-        transform.translate(-std::min<double>({ min.x, max.x, 0.0 }), -std::min<double>({ min.y, max.y, 0 }), 0);
+        transform.translate(normalized.left() - boundingBox.left(), normalized.bottom() - boundingBox.bottom());
 
         wrapNode->setMatrix(transform);
         wrapNode->appendChildNode(p_node);
@@ -76,11 +57,6 @@ void CustomGeometryModel::_setNewOuterDimensions()
     }
 
     setTransformOrigin(QQuickItem::TopLeft);
-
-    //initially fit to parent
-    //    const float FAC = std::min(parent()->height() / height(), parent()->width() / width());
-    //    setScale(FAC);
-    //    setSize(QSizeF(width() * FAC,height() * FAC));
 }
 
 CustomGeometryModel::CustomGeometryModel()

@@ -4,6 +4,9 @@
  * \sa https://github.com/Garandor/pfcrender/issues/14 for why this is needed
  * This map is created when the CLIParser runs and extended by options exported from plugins
  */
+#ifndef CLIOPTS_H
+#define CLIOPTS_H
+
 #include <QCommandLineOption>
 #include <QPair>
 
@@ -18,3 +21,5 @@ const std::vector<QPair<QString, QCommandLineOption>> builtin_opts{
     { "ViewModel.SegmentWidth", QCommandLineOption("sw", "stroke width for segment rendering in pixels", "integer") }
 };
 }
+
+#endif
