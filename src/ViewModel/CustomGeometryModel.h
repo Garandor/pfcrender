@@ -27,7 +27,7 @@ protected:
     virtual QSGNode* updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* updatePaintNodeData) override final;
 
 private:
-    void _setNewOuterDimensions(QRectF& boundingBox);
+    void _normalizeGeometry(QRectF& boundingBox);
     QSGNode* p_node;
     QSizeF m_vertexSize;
 };

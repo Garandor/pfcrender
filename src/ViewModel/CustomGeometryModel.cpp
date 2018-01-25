@@ -13,7 +13,7 @@ void CustomGeometryModel::setGeometryNode(std::pair<QSGGeometryNode*, QRectF> vm
     p_node = vm.first;
 
     //process the node to normalize to Qt coordiantes
-    _setNewOuterDimensions(vm.second);
+    _normalizeGeometry(vm.second);
 
     //Schedule updating the paintNode
     update();
@@ -34,7 +34,7 @@ QSGNode* CustomGeometryModel::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeD
     return oldNode;
 }
 
-void CustomGeometryModel::_setNewOuterDimensions(QRectF& boundingBox)
+void CustomGeometryModel::_normalizeGeometry(QRectF& boundingBox)
 {
     m_vertexSize.setWidth(boundingBox.width());
     m_vertexSize.setHeight(boundingBox.height());
@@ -42,7 +42,7 @@ void CustomGeometryModel::_setNewOuterDimensions(QRectF& boundingBox)
 
     //Normalize coordinates so they conform to item coordinates (0,0 = top of image) used by scenegraph
     QRectF normalized = boundingBox.normalized();
-
+    normalized.moveTo(0, 0);
     if (normalized != boundingBox) {
         QSGTransformNode* wrapNode = new QSGTransformNode;
         //TODO: create matrix
@@ -57,11 +57,6 @@ void CustomGeometryModel::_setNewOuterDimensions(QRectF& boundingBox)
     }
 
     setTransformOrigin(QQuickItem::TopLeft);
-
-    //initially fit to parent
-    //    const float FAC = std::min(parent()->height() / height(), parent()->width() / width());
-    //    setScale(FAC);
-    //    setSize(QSizeF(width() * FAC,height() * FAC));
 }
 
 CustomGeometryModel::CustomGeometryModel()
