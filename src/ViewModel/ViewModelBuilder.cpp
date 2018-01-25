@@ -15,6 +15,8 @@ ViewModelBuilder::ViewModelBuilder()
     : stack{}
     , m_geo(new QSGGeometryNode) //XXX: not exception safe. Will get freed by the QSGScenegraph memory management
     , pos{}
+    , min{}
+    , max{}
     , current_segment(1)
     , colors({ QColor(Qt::black),
           QColor(Qt::blue),
@@ -49,7 +51,18 @@ LSYS_STRING_PARSE_FUNC_DEF(ViewModelBuilder)
 
 inline void ViewModelBuilder::add_segment()
 {
-    m_g->vertexDataAsColoredPoint2D()[current_segment++] = pos.next().getPoint();
+    auto p = pos.next().getPoint();
+    m_g->vertexDataAsColoredPoint2D()[current_segment++] = p;
+
+    //Pick up bounding box along the way
+    if (p.x < min.x())
+        min.setX(p.x);
+    else if (p.x > max.x())
+        max.setX(p.x);
+    if (p.y < min.y())
+        min.setY(p.y);
+    else if (p.y > max.y())
+        max.setY(p.y);
 }
 
 inline void ViewModelBuilder::next_color()
@@ -94,7 +107,7 @@ inline void ViewModelBuilder::stackPop()
         qWarning("Tried to pop from empty stack. Ignoring this character");
 }
 
-inline void ViewModelBuilder::parsing_finalize(const int vertexcount)
+inline void ViewModelBuilder::parsing_finalize(const unsigned int vertexcount)
 {
 
     m_g->allocate(vertexcount); //Make sure Geometry gets realloc'd to its final size
@@ -142,7 +155,7 @@ inline void ViewModelBuilder::parsing_preamble(const QString& mdl)
     v[0] = pos.getPoint();
 }
 
-QSGGeometryNode*
+std::pair<QSGGeometryNode*, QRectF&&>
 createGeom(const QString& mdl)
 {
     ViewModelBuilder fac;
@@ -151,6 +164,6 @@ createGeom(const QString& mdl)
     const unsigned int segcount = fac.parse_model_string(mdl);
     fac.parsing_finalize(segcount);
 
-    return fac.m_geo;
+    return std::make_pair(fac.m_geo, QRectF(fac.min, fac.max));
 }
 }

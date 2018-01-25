@@ -8,6 +8,7 @@
 #include <QStack>
 #include <Qt>
 #include <functional>
+#include <utility>
 
 #include "util/PolarVector2D.h"
 
@@ -33,7 +34,7 @@ private:
     void stackPush();
     void stackPop();
 
-    void parsing_finalize(const int vertexcount);
+    void parsing_finalize(const unsigned int vertexcount);
 
     QSGGeometryNode* m_geo;
     QSGGeometry* m_g;
@@ -47,8 +48,10 @@ private:
 
     double angle_increment;
 
-    friend QSGGeometryNode* createGeom(const QString&);
+    QPointF min, max;
+
+    friend std::pair<QSGGeometryNode*, QRectF&&> createGeom(const QString&);
 };
 
-QSGGeometryNode* createGeom(const QString&);
+std::pair<QSGGeometryNode*, QRectF&&> createGeom(const QString&);
 }

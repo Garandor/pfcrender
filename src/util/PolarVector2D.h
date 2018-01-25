@@ -29,7 +29,7 @@ public:
     }
     PolarVector2D& next()
     {
-        start.x += length * qCos(angle / 180 * M_PI);
+        start.x += length * qCos(angle / 180 * M_PI); //TODO: #17 about half the cycles of model building are spent on sin/cos functions. maybe approximate?
         start.y += length * qSin(angle / 180 * M_PI);
         return *(this);
     }
