@@ -34,6 +34,15 @@ ViewModelBuilder::ViewModelBuilder()
 {
 }
 
+std::pair<QSGGeometryNode*, QRectF> ViewModelBuilder::build(const QString& mdl)
+{
+    parsing_preamble(mdl);
+    const unsigned int segcount = parse_model_string(mdl);
+    parsing_finalize(segcount);
+
+    return std::make_pair(m_geo, QRectF(min, max));
+}
+
 void ViewModelBuilder::parse_config(QString opt_name, std::function<void(double)> fnc)
 {
     if (!(Common::Config_Registry::getInstance()->getOpt(opt_name).isEmpty())) {
@@ -155,15 +164,8 @@ inline void ViewModelBuilder::parsing_preamble(const QString& mdl)
     v[0] = pos.getPoint();
 }
 
-std::pair<QSGGeometryNode*, QRectF&&>
-createGeom(const QString& mdl)
+std::pair<QSGGeometryNode*, QRectF> createGeom(const QString& mdl)
 {
-    ViewModelBuilder fac;
-
-    fac.parsing_preamble(mdl);
-    const unsigned int segcount = fac.parse_model_string(mdl);
-    fac.parsing_finalize(segcount);
-
-    return std::make_pair(fac.m_geo, QRectF(fac.min, fac.max));
+    return ViewModelBuilder().build(mdl);
 }
 }

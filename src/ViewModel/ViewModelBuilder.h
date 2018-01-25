@@ -6,6 +6,7 @@
 #include <QList>
 #include <QListIterator>
 #include <QStack>
+#include <QString>
 #include <Qt>
 #include <functional>
 #include <utility>
@@ -20,6 +21,7 @@ public slots:
 
 public:
     ViewModelBuilder();
+    std::pair<QSGGeometryNode*, QRectF> build(const QString& mdl);
 
 private:
     void parse_config(QString opt_name, std::function<void(double)> fnc);
@@ -49,9 +51,7 @@ private:
     double angle_increment;
 
     QPointF min, max;
-
-    friend std::pair<QSGGeometryNode*, QRectF&&> createGeom(const QString&);
 };
 
-std::pair<QSGGeometryNode*, QRectF&&> createGeom(const QString&);
+std::pair<QSGGeometryNode*, QRectF> createGeom(const QString&);
 }
