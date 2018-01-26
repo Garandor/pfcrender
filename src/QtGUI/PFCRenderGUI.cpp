@@ -34,7 +34,7 @@ PFCRenderGUI::PFCRenderGUI(QQmlApplicationEngine* eng)
     post_status(QString(walker.m_stepNames.count()));
 
     walker.execute(m_mdl, m_vm);
-    onModelChanged();
+    onModelChanged(); //XXX: This shouldnt be here
 
     //we should now have a model and viewmodel in place
     //now that everything is in place, connect all necessary signals so we can resume normal GUI operation

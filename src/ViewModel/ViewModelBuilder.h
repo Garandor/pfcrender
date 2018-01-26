@@ -38,7 +38,7 @@ private:
 
     void parsing_finalize(const unsigned int vertexcount);
 
-    QSGGeometryNode* m_geo;
+    QSGGeometryNode* p_geo;
     QSGGeometry* m_g;
     util::PolarVector2D pos;
     QStack<util::PolarVector2D> stack;

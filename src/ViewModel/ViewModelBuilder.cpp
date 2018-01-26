@@ -13,7 +13,7 @@ namespace ViewModel {
 
 ViewModelBuilder::ViewModelBuilder()
     : stack{}
-    , m_geo(new QSGGeometryNode) //XXX: not exception safe. Will get freed by the QSGScenegraph memory management
+    , p_geo(new QSGGeometryNode) //XXX: not exception safe. Will get freed by the QSGScenegraph memory management
     , pos{}
     , min{}
     , max{}
@@ -40,7 +40,7 @@ std::pair<QSGGeometryNode*, QRectF> ViewModelBuilder::build(const QString& mdl)
     const unsigned int segcount = parse_model_string(mdl);
     parsing_finalize(segcount);
 
-    return std::make_pair(m_geo, QRectF(min, max));
+    return std::make_pair(p_geo, QRectF(min, max));
 }
 
 void ViewModelBuilder::parse_config(QString opt_name, std::function<void(double)> fnc)
@@ -127,13 +127,13 @@ inline void ViewModelBuilder::parsing_finalize(const unsigned int vertexcount)
     material->setFlag(QSGMaterial::Blending, true);
 
     // Assign everything to the node
-    m_geo->setGeometry(m_g);
-    m_geo->setMaterial(material);
+    p_geo->setGeometry(m_g);
+    p_geo->setMaterial(material);
     // Make sure the model releases resources when not needed anymore
-    m_geo->setFlag(QSGNode::OwnedByParent, true);
+    p_geo->setFlag(QSGNode::OwnedByParent, true);
     // Set flags to make sure geometry and material are destroyed with the node
-    m_geo->setFlag(QSGNode::OwnsGeometry);
-    m_geo->setFlag(QSGNode::OwnsMaterial);
+    p_geo->setFlag(QSGNode::OwnsGeometry);
+    p_geo->setFlag(QSGNode::OwnsMaterial);
 }
 
 inline void ViewModelBuilder::parsing_preamble(const QString& mdl)
