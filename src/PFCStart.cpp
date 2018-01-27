@@ -8,8 +8,8 @@
 #include "Common/Plugin_Registry.h"
 
 #include "QtCLI/PFCRenderCLI.h"
+#include "QtGUI/CustomGeometryModel.h"
 #include "QtGUI/PFCRenderGUI.h"
-#include "ViewModel/CustomGeometryModel.h"
 
 #include "projectinfo.h"
 

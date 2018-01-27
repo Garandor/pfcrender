@@ -31,37 +31,37 @@ set(SRC
         "Common/Config_Registry.cpp"
         "Common/Plugin_Registry.cpp"
         "Common/CLIParser.cpp"
-        "Common/CLIOptions.h"
         "Common/Sequence_Walker.cpp"
-
-        "PFCStart.cpp"
-
 
         "Model/LSYSModel.cpp"
 
-        "ViewModel/ViewModelBuilder.cpp"
-        "ViewModel/CustomGeometryModel.cpp"
+        "PFCStart.cpp"
 
         "QtCLI/PFCRenderCLI.cpp"
+
         "QtGUI/PFCRenderGUI.cpp"
+        "QtGUI/ViewModelBuilder.cpp"
+        "QtGUI/CustomGeometryModel.cpp"
 )
 
 set(INC 
         "Common/Config_Registry.h"
         "Common/Plugin_Registry.h"
-        "Common/CLIParser.h"
         "Common/Sequence_Walker.h"
+        "Common/CLIParser.h"
+        "Common/CLIOptions.h"
 
         "util/PolarVector2D.h"
+
+        "Model/ModelStringParser.h"
         "Model/ModelFactory.h"
         "Model/LSYSModel.h"
 
-        "ViewModel/ModelStringParser.h"
-        "ViewModel/ViewModelBuilder.h"
-        "ViewModel/CustomGeometryModel.h"
-
         "QtCLI/PFCRenderCLI.h"
+
         "QtGUI/PFCRenderGUI.h"
+        "QtGUI/ViewModelBuilder.h"
+        "QtGUI/CustomGeometryModel.h"
 
         "projectinfo.h.in"
 )

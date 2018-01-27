@@ -27,7 +27,7 @@ if(Qt5Test_FOUND)
         #GUI Testing
         add_executable(test_gui
             "Test_GUI.cpp"
-            "../src/ViewModel/ViewModelBuilder.cpp"
+            "../src/QtGUI/ViewModelBuilder.cpp"
             )
 
         target_link_libraries(test_gui PRIVATE

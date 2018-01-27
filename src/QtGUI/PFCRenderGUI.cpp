@@ -5,7 +5,7 @@
 #include "Common/Sequence_Walker.h"
 
 #include "PFCRenderGUI.h"
-#include "ViewModel/ViewModelBuilder.h"
+#include "QtGUI/ViewModelBuilder.h"
 
 namespace QtGUI {
 

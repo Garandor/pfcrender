@@ -1,7 +1,7 @@
 #pragma once
 #include "CustomGeometryModel.h"
 #include "Model/LSYSModel.h"
-#include "ModelStringParser.h"
+#include "Model/ModelStringParser.h"
 #include <QColor>
 #include <QList>
 #include <QListIterator>

@@ -5,7 +5,7 @@
 #include <QSGGeometry>
 #include <QSGGeometryNode>
 
-#include "ViewModel/ViewModelBuilder.h"
+#include "QtGUI/ViewModelBuilder.h"
 
 class Test_GUI : public QObject {
     Q_OBJECT

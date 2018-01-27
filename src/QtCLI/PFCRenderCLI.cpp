@@ -1,6 +1,6 @@
 #include "Common/Sequence_Walker.h"
 #include "Model/LSYSModel.h"
-#include "ViewModel/CustomGeometryModel.h"
+#include "QtGUI/CustomGeometryModel.h"
 
 #include "PFCRenderCLI.h"
 
