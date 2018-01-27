@@ -67,17 +67,9 @@ void Common::Sequence_Walker::execute(Model::LSYSModel& mod, QtGUI::CustomGeomet
         //        }
 
         //TODO: Case export plugin
-        //        auto exportr = qobject_cast<Plugins::Export*>(plugin);
-        //        if (!exportr == nullptr) {
-
-        //            auto mdl = factory.createModel();
-        //            owner.m_mdl = mdl;
-        //            continue;
-        //        }
-        //TODO: Case export viewmodel plugin
         auto exportr = qobject_cast<Plugins::Export*>(plugin);
-        if (exportr != nullptr) {
-            exportr->exportViewModel(vm);
+        if (exportr) {
+            exportr->exportModel(mod);
             continue;
         }
     }

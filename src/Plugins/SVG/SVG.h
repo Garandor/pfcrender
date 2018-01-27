@@ -30,7 +30,6 @@ namespace SVG {
 
         //Export Interface methods
         void exportModel(const ::Model::LSYSModel& mdl) const override;
-        void exportViewModel(const ::ViewModel::CustomGeometryModel& mdl) const override;
 
     private:
         void drawSVG(const Model::LSYSModel& mdl) const;

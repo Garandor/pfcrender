@@ -5,7 +5,7 @@
 #include <memory>
 
 namespace Model {
-class LSYSModel : QObject {
+class LSYSModel : public QObject {
     Q_OBJECT
 
 signals:
@@ -19,5 +19,6 @@ public:
 
 } // namespace Model
 
-Q_DECLARE_INTERFACE(Model::LSYSModel, "Common.LSYSMODEL")
+using namespace Model;
+Q_DECLARE_INTERFACE(LSYSModel, "Common.LSYSMODEL")
 #endif

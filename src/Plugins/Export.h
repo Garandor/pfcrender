@@ -20,12 +20,6 @@ public:
      */
     virtual void exportModel(const ::Model::LSYSModel&) const = 0;
 
-    /**
-     * @brief runs the export plugin
-     * @return void
-     */
-    virtual void exportViewModel(const ::ViewModel::CustomGeometryModel&) const = 0;
-
     virtual ~Export() {}
 };
 }

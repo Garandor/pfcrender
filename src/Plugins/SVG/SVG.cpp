@@ -43,11 +43,10 @@ namespace SVG {
 
     void SVG::drawSVG(const Model::LSYSModel& mdl) const
     {
-
         QSvgGenerator qsvg;
-        QPainterParse qpp(*mdl.getModel(), qsvg);
-
         qsvg.setFileName("/home/osboxes/test.svg");
+        //        qsvg.setSize({ 10000, 10000 });
+        QPainterParse qpp(*mdl.getModel(), qsvg);
     }
 
 } // namespace SVG
