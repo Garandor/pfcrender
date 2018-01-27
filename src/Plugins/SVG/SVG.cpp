@@ -6,6 +6,7 @@
 #include <QVariant>
 
 #include "Common/Config_Registry.h"
+#include "QPainterParse.h"
 
 #include "SVG.h"
 
@@ -37,15 +38,16 @@ namespace SVG {
     {
         //While SVG is supposed to draw colored curves, we can also compute an SVG with default graphical info from the LSYS string
         //TBI
-        qFatal("SVG export from ModelString is not implemented");
+        drawSVG(mdl);
     }
 
-    void SVG::exportViewModel(const ViewModel::CustomGeometryModel& mdl) const
+    void SVG::drawSVG(const Model::LSYSModel& mdl) const
     {
-        auto cr = Common::Config_Registry::getInstance();
-        Expects(!(cr->getOpt("Plugins.SVG.outfile").isEmpty()));
 
-        qFatal("SVG export from ModelString is not implemented");
+        QSvgGenerator qsvg;
+        QPainterParse qpp(*mdl.getModel(), qsvg);
+
+        qsvg.setFileName("/home/osboxes/test.svg");
     }
 
 } // namespace SVG

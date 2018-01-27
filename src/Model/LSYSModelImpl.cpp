@@ -1,14 +1,14 @@
-#include "LSYSModel.h"
+#include "LSYSModelImpl.h"
 
 namespace Model {
 
-void LSYSModel::setModel(std::unique_ptr<QString> newMod)
+void LSYSModelImpl::setModel(std::unique_ptr<QString> newMod)
 {
     m_sModel = std::move(newMod);
     emit modelChanged(*m_sModel.get());
 }
 
-QString const* const LSYSModel::getModel() const
+QString const* LSYSModelImpl::getModel() const
 {
     return m_sModel.get();
 }

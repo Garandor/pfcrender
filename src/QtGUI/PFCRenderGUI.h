@@ -5,8 +5,8 @@
 #include <QQmlApplicationEngine>
 #include <QString>
 
-#include "Model/LSYSModel.h"
 #include "QtGUI/CustomGeometryModel.h"
+#include "Model/LSYSModelImpl.h"
 
 namespace QtGUI {
 
@@ -23,7 +23,7 @@ public:
     void post_status(const QString& what);
 
 public:
-    Model::LSYSModel m_mdl;
+    Model::LSYSModelImpl m_mdl;
     QtGUI::CustomGeometryModel m_vm;
     QQmlApplicationEngine* p_eng;
 };

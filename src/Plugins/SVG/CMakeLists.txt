@@ -12,6 +12,9 @@ set (SVG_SRC
     "SVG.cpp"
     "SVG.h"
 
+    "QPainterParse.cpp"
+    "QPainterParse.h"
+
     )
 
 add_library(plugin_SVG SHARED ${SVG_SRC} )

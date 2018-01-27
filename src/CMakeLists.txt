@@ -33,9 +33,9 @@ set(SRC
         "Common/CLIParser.cpp"
         "Common/Sequence_Walker.cpp"
 
-        "Model/LSYSModel.cpp"
-
         "PFCStart.cpp"
+
+        "Model/LSYSModelImpl.cpp"
 
         "QtCLI/PFCRenderCLI.cpp"
 
@@ -56,6 +56,7 @@ set(INC
         "Model/ModelStringParser.h"
         "Model/ModelFactory.h"
         "Model/LSYSModel.h"
+        "Model/LSYSModelImpl.h"
 
         "QtCLI/PFCRenderCLI.h"
 

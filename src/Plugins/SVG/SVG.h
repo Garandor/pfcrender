@@ -23,6 +23,7 @@ namespace SVG {
 
     public:
         SVG();
+        virtual ~SVG() {}
 
         //Plugin Interface Methods
         const Plugins::PluginInfo& getInfo() const override;
@@ -32,7 +33,7 @@ namespace SVG {
         void exportViewModel(const ::ViewModel::CustomGeometryModel& mdl) const override;
 
     private:
-        void drawSVG();
+        void drawSVG(const Model::LSYSModel& mdl) const;
     };
 
 } // namespace SVG

@@ -5,8 +5,8 @@
 #include <QObject>
 #include <QString>
 
-#include "Model/LSYSModel.h"
 #include "QtGUI/CustomGeometryModel.h"
+#include "Model/LSYSModelImpl.h"
 
 namespace QtCLI {
 
@@ -17,7 +17,7 @@ public:
     PFCRenderCLI();
 
 public:
-    Model::LSYSModel m_mdl;
+    Model::LSYSModelImpl m_mdl;
     QtGUI::CustomGeometryModel m_vm;
 };
 
