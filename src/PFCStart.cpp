@@ -37,6 +37,9 @@ int main(int argc, char** argv)
     //Register custom QML Types
     qmlRegisterType<QtGUI::CustomGeometryModel>("sci.pfcrender.customModel", 1, 0, "CustomGeometryModel");
 
+    //Declare Config_Registry to the QML type system so our plugins can access it
+    qmlRegisterSingletonType<Common::Config_Registry>(Common::Config_Registry::URI, Common::Config_Registry::V_MAJ, Common::Config_Registry::V_MIN, Common::Config_Registry::QMLTYPE, Common::Config_Registry::qmlInstance);
+
     QQmlApplicationEngine qeng(QUrl(QStringLiteral("qrc:///main.qml")));
     QtGUI::PFCRenderGUI desktop_obj(&qeng);
 //    }

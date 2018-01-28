@@ -46,7 +46,7 @@ Plugin_Registry::Plugin_Registry()
             if (plug) {
                 qDebug() << "inserting plugin " << plug->getInfo().name;
                 m_registered.insert(plug->getInfo().name, plug);
-                assert(plug == plug->getInfo().plugin);
+                assert(plug == plug->getInfo().plugin); //This assert catches out of date plugin libs being present in the build tree (bld/plugins)
             }
         } else {
             qWarning() << "Loading of Plugin " << f.fileName() << " failed with :" << ldr.errorString();

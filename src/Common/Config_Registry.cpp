@@ -18,6 +18,13 @@ Config_Registry* Config_Registry::getInstance()
     return instance;
 }
 
+QObject* Config_Registry::qmlInstance(QQmlEngine* qmle, QJSEngine* qjsle)
+{
+    Q_UNUSED(qmle)
+    Q_UNUSED(qjsle)
+    return qobject_cast<QObject*>(getInstance());
+}
+
 //Enhancement: When using C++17 is possible this should become a std::optional
 /**
  * @brief Config_Registry::getOpt

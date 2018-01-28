@@ -1,5 +1,5 @@
 #Check for Qt5
-find_package(Qt5 REQUIRED Core Test OPTIONAL_COMPONENTS Quick)
+find_package(Qt5 REQUIRED Core Qml Test OPTIONAL_COMPONENTS Quick)
 
 if(Qt5Test_FOUND)
         set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -32,6 +32,7 @@ if(Qt5Test_FOUND)
 
         target_link_libraries(test_gui PRIVATE
             Qt5::Core
+            Qt5::Qml
             Qt5::Quick
             Qt5::Test
             plugin_LSYS

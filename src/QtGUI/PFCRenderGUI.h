@@ -2,11 +2,12 @@
 #define QTGUI_P_F_C_RENDER_H
 
 #include <QObject>
-#include <QQmlApplicationEngine>
 #include <QString>
 
 #include "Model/LSYSModel.h"
 #include "QtGUI/CustomGeometryModel.h"
+
+class QQmlApplicationEngine;
 
 namespace QtGUI {
 

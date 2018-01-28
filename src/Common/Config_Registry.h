@@ -8,6 +8,8 @@
 
 #include <QHash>
 #include <QSettings>
+#include <QObject>
+#include <QQmlEngine>
 #include <QString>
 #include <QVector>
 
@@ -15,20 +17,23 @@ namespace Common {
 
 class SettingsFile;
 
-class Config_Registry : public QSettings {
-private:
-    static Config_Registry* instance; ///XXX: Old style leaky singleton. Should be a more C++11 style definiton
-    QHash<QString, QString> m_options;
-    QVector<QString> m_sequence; //XXX: Having sequence in the config store seems dirty
-    QSettings m_set;
-
-private:
-    Config_Registry();
+class Config_Registry : public QObject , public QSettings{
+    Q_OBJECT
     Q_DISABLE_COPY(Config_Registry)
+
     void store_to_file();
+    Config_Registry();
 
 public:
+    //QML Metatype Information
+    static constexpr auto URI{ "Common.Config_Registry" };
+    static constexpr uint V_MAJ{ 1 },
+        V_MIN{ 0 };
+    static constexpr auto QMLTYPE{ "Config_Registry" };
+
+    //Singleton API
     static Config_Registry* getInstance();
+    static QObject* qmlInstance(QQmlEngine*, QJSEngine*);
     ~Config_Registry();
 
     //Declared as slots to have this accessible from QML
@@ -41,6 +46,12 @@ public:
     void add_to_sequence(const QString& name);
     void clearSequence();
     const QVector<QString> getSequence() const;
+
+private:
+    static Config_Registry* instance; ///XXX: Old style leaky singleton. Should be a more C++11 style definiton
+    QHash<QString, QString> m_options;
+    QVector<QString> m_sequence; //XXX: Having sequence in the config store seems dirty
+    QSettings m_set;
 };
 
 } // namespace Common

@@ -1,4 +1,4 @@
-find_package(Qt5 REQUIRED Core)
+find_package(Qt5 REQUIRED Core Qml)
 
 set (LSYS_SRC
 
@@ -28,6 +28,7 @@ target_include_directories(plugin_LSYS PRIVATE
 
 target_link_libraries(plugin_LSYS PRIVATE
     Qt5::Core
+    Qt5::Qml
     )
 
 target_link_libraries(plugin_LSYS INTERFACE plugin_ALL)
@@ -49,6 +50,7 @@ if(GENERATE_UNITTESTS)
             )
         target_link_libraries(test_lsys PRIVATE
             Qt5::Core
+            Qt5::Qml
             Qt5::Test)
 
         add_test(NAME Test_LSYS COMMAND test_lsys)

@@ -10,4 +10,8 @@ add_library(plugin_ALL INTERFACE )
 target_link_libraries(plugin_ALL INTERFACE Qt5::Quick)
 
 #add subdirectories of each plugin to be built
-add_subdirectory(LSYS)
+
+OPTION (Use_Plugin_LSYS "Compile import plugin using stringsubst.h to generate the model string" ON)
+if(Use_Plugin_LSYS)
+        add_subdirectory(LSYS)
+endif()
