@@ -1,4 +1,4 @@
-find_package(Qt5 REQUIRED Core Gui Quick Svg)
+find_package(Qt5 REQUIRED Core Qml Gui Quick Svg)
 
 set (SVG_SRC
 
@@ -27,6 +27,7 @@ target_include_directories(plugin_SVG PRIVATE
 target_link_libraries(plugin_SVG PUBLIC
             Qt5::Core
             Qt5::Gui
+            Qt5::Qml
             Qt5::Quick
             Qt5::Svg
     )
@@ -51,6 +52,7 @@ if(GENERATE_UNITTESTS)
         target_link_libraries(test_SVG PRIVATE
             Qt5::Core
             Qt5::Gui
+            Qt5::Qml
             Qt5::Quick
             Qt5::Svg
             Qt5::Test)

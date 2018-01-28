@@ -4,7 +4,7 @@
 #include "Plugin.h"
 
 #include "Model/LSYSModel.h"
-#include "ViewModel/CustomGeometryModel.h"
+#include "QtGUI/CustomGeometryModel.h"
 
 class QQuickItem;
 class QCommandLineParser;
