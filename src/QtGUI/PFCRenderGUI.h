@@ -18,6 +18,7 @@ public slots:
 
 public:
     PFCRenderGUI(QQmlApplicationEngine*);
+    ~PFCRenderGUI();
 
     void post_status(const QString& what);
 

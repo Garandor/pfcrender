@@ -2,6 +2,8 @@
 #include <QQmlApplicationEngine>
 #include <QQuickItem>
 
+#include "Common/Config_Registry.h"
+#include "Common/Plugin_Registry.h"
 #include "Common/Sequence_Walker.h"
 
 #include "PFCRenderGUI.h"
@@ -38,6 +40,16 @@ PFCRenderGUI::PFCRenderGUI(QQmlApplicationEngine* eng)
 
     //we should now have a model and viewmodel in place
     //now that everything is in place, connect all necessary signals so we can resume normal GUI operation
+}
+
+/**
+ * @brief PFCRenderGUI::~PFCRenderGUI
+ * If this object goes out of scope, that means the program is shutting down. Cleanup the Singletons
+ */
+PFCRenderGUI::~PFCRenderGUI()
+{
+    Common::Config_Registry::getInstance()->~Config_Registry();
+    Common::Plugin_Registry::getInstance()->~Plugin_Registry();
 }
 
 } // namespace QtGUI

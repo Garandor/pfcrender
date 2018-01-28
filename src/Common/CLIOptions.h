@@ -14,7 +14,7 @@ namespace Common {
 
 const std::vector<QPair<QString, QCommandLineOption>> builtin_opts{
 
-    //Options for rengering the ViewModel
+    //Options for rendering the ViewModel
     { "ViewModel.InitialAngle", QCommandLineOption("ia", "initial angle of first curve segment (0 = right)", "0 - 360") },
     { "ViewModel.Angle", QCommandLineOption("a", "angle of turns for each segment", "0 - 360") },
     { "ViewModel.SegmentLength", QCommandLineOption("sl", "length of segment in pixels", "360") },
