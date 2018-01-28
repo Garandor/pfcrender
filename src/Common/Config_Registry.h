@@ -7,9 +7,9 @@
 #define COMMON_CONFIG_REGISTRY_H
 
 #include <QHash>
-#include <QSettings>
 #include <QObject>
 #include <QQmlEngine>
+#include <QSettings>
 #include <QString>
 #include <QVector>
 
@@ -17,7 +17,7 @@ namespace Common {
 
 class SettingsFile;
 
-class Config_Registry : public QObject , public QSettings{
+class Config_Registry : public QSettings {
     Q_OBJECT
     Q_DISABLE_COPY(Config_Registry)
 
