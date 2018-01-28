@@ -1,5 +1,6 @@
 ## VIM and Dolphin tempfiles
 *~
+*.swo
 *.swp
 .directory
 

@@ -61,8 +61,8 @@
 
 % Deckblatt und Abstract ohne Seitenzahl
 \ofoot{}
-\include{Deckblatt}
-\include{Inhalt/Abstract}
+\include{Titlepage}
+\include{Content/Abstract}
 \ofoot{\pagemark}
 
 % Seitennummerierung -----------------------------------------------------------
@@ -73,7 +73,7 @@
 \tableofcontents % Inhaltsverzeichnis
 
 % Abkürzungsverzeichnis --------------------------------------------------------
-\input{Inhalt/Glossar}
+\input{Content/Glossary}
 % für korrekte Überschrift in der Kopfzeile
 \clearpage\markboth{\nomname}{\nomname} 
 \printnomenclature
@@ -89,13 +89,13 @@
 \pagenumbering{arabic}
 
 % die Inhaltskapitel werden in "Inhalt.tex" inkludiert -------------------------
-\input{Inhalt}
+\input{Content}
 
 % Literaturverzeichnis ---------------------------------------------------------
 %   Das Literaturverzeichnis wird aus der BibTeX-Datenbank "Bibliographie.bib"
 %   erstellt.
 % ------------------------------------------------------------------------------
-\bibliography{Bibliographie} % Aufruf: bibtex Masterarbeit
+\bibliography{Bibliography} % Aufruf: bibtex Masterarbeit
 \bibliographystyle{natdin} % DIN-Stil des Literaturverzeichnisses
 
 \include{Erklaerung} % Selbständigkeitserklärung
@@ -107,16 +107,16 @@
 \begin{appendix}
     \clearpage
     \pagenumbering{roman}
-    \chapter{Anhang}
-    \label{sec:Anhang}
+    \chapter{Appendix}
+    \label{sec:Appendix}
     % Rand der Aufzählungen in Tabellen anpassen
     \setdefaultleftmargin{1em}{}{}{}{}{}
-    \input{Anhang}
+    \input{Appendix}
 \end{appendix}
 
 % Index ------------------------------------------------------------------------
 %   Zum Erstellen eines Index, die folgende Zeile auskommentieren.
 % ------------------------------------------------------------------------------
-%\printindex
+\printindex
 
 \end{document}
