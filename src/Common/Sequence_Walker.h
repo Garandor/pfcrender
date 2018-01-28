@@ -15,6 +15,6 @@ public:
     Sequence_Walker();
     void addStep(const QString& stepName);
 
-    void execute(Model::LSYSModel& mod, ViewModel::CustomGeometryModel& vm);
+    void execute(Model::LSYSModel& mod, QtGUI::CustomGeometryModel& vm);
 };
 }

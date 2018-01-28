@@ -7,7 +7,7 @@
 class QSGNode;
 class QSGGeometryNode;
 
-namespace ViewModel {
+namespace QtGUI {
 class CustomGeometryModel : public QQuickItem {
     Q_OBJECT
     Q_PROPERTY(QSizeF vertexSize MEMBER m_vertexSize READ vertexSize NOTIFY orgSizeChanged)

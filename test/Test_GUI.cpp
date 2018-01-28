@@ -41,7 +41,7 @@ void Test_GUI::createGeometry_90deg()
     qreal angle = 90;
     int seglen = 10;
 
-    QSGGeometryNode* res = ViewModel::createGeom(resultString).first;
+    QSGGeometryNode* res = QtGUI::createGeom(resultString).first;
     QSGGeometry const* g = res->geometry();
     const QSGGeometry::ColoredPoint2D* v = g->vertexDataAsColoredPoint2D();
 
@@ -60,7 +60,7 @@ void Test_GUI::createGeometry_different_letters()
     qreal angle = 90;
     int seglen = 10;
 
-    QSGGeometryNode* res = ViewModel::createGeom(resultString).first;
+    QSGGeometryNode* res = QtGUI::createGeom(resultString).first;
     QSGGeometry const* g = res->geometry();
     const QSGGeometry::ColoredPoint2D* v = g->vertexDataAsColoredPoint2D();
 
@@ -78,7 +78,7 @@ void Test_GUI::createGeometry_6colors()
     qreal angle = 90;
     int seglen = 10;
 
-    QSGGeometryNode* res = ViewModel::createGeom(resultString).first;
+    QSGGeometryNode* res = QtGUI::createGeom(resultString).first;
     QSGGeometry const* g = res->geometry();
     const QSGGeometry::ColoredPoint2D* v = g->vertexDataAsColoredPoint2D();
 

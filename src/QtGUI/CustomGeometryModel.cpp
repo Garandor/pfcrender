@@ -5,7 +5,7 @@
 #include <QSGNode>
 #include <algorithm>
 
-namespace ViewModel {
+namespace QtGUI {
 
 void CustomGeometryModel::setGeometryNode(std::pair<QSGGeometryNode*, QRectF> vm)
 {

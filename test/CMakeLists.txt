@@ -7,7 +7,7 @@ if(Qt5Test_FOUND)
 
         include_directories(
                 ${CMAKE_SOURCE_DIR}/src
-                ${CMAKE_SOURCE_DIR}/src/ViewModel
+                ${CMAKE_SOURCE_DIR}/src/QtGUI
                 ${CMAKE_SOURCE_DIR}/src/Plugins
                 ${Qt5Core_INCLUDES}
                 ${Qt5Test_INCLUDES}

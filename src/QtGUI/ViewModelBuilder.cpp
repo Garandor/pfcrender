@@ -9,7 +9,7 @@
 #include <QPainter>
 #include <QPixmap>
 
-namespace ViewModel {
+namespace QtGUI {
 
 ViewModelBuilder::ViewModelBuilder()
     : stack{}

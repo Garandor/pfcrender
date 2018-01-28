@@ -35,7 +35,7 @@ int main(int argc, char** argv)
 #else
     //    if (cr->getOpt("batch").isEmpty()) { //TODO: Handle batch mode
     //Register custom QML Types
-    qmlRegisterType<ViewModel::CustomGeometryModel>("sci.pfcrender.customModel", 1, 0, "CustomGeometryModel");
+    qmlRegisterType<QtGUI::CustomGeometryModel>("sci.pfcrender.customModel", 1, 0, "CustomGeometryModel");
 
     QQmlApplicationEngine qeng(QUrl(QStringLiteral("qrc:///main.qml")));
     QtGUI::PFCRenderGUI desktop_obj(&qeng);

@@ -11,9 +11,9 @@ namespace QtGUI {
 
 void PFCRenderGUI::onModelChanged()
 {
-    auto* mdlItem = qobject_cast<ViewModel::CustomGeometryModel*>(p_eng->rootObjects()[0]->findChild<QQuickItem*>(QStringLiteral("model")));
+    auto* mdlItem = qobject_cast<QtGUI::CustomGeometryModel*>(p_eng->rootObjects()[0]->findChild<QQuickItem*>(QStringLiteral("model")));
     if (mdlItem) {
-        auto vm = ViewModel::createGeom(*(m_mdl.getModel()));
+        auto vm = QtGUI::createGeom(*(m_mdl.getModel()));
         mdlItem->setGeometryNode(vm);
     }
 }

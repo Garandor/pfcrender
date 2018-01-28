@@ -31,7 +31,7 @@ void Common::Sequence_Walker::addStep(const QString& stepName)
  * 	execute build
  * 	put result where it belongs
  */
-void Common::Sequence_Walker::execute(Model::LSYSModel& mod, ViewModel::CustomGeometryModel& vm)
+void Common::Sequence_Walker::execute(Model::LSYSModel& mod, QtGUI::CustomGeometryModel& vm)
 {
     auto pr = Plugin_Registry::getInstance();
 

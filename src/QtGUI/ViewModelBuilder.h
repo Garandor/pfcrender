@@ -13,7 +13,7 @@
 
 #include "util/PolarVector2D.h"
 
-namespace ViewModel {
+namespace QtGUI {
 
 class ViewModelBuilder {
 public slots:

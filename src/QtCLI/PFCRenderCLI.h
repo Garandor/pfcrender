@@ -18,7 +18,7 @@ public:
 
 public:
     Model::LSYSModel m_mdl;
-    ViewModel::CustomGeometryModel m_vm;
+    QtGUI::CustomGeometryModel m_vm;
 };
 
 } // namespace QtCLI
