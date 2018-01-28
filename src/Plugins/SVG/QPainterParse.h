@@ -1,5 +1,5 @@
 #pragma once
-#include "ViewModel/ModelStringParser.h"
+#include "Model/ModelStringParser.h"
 #include "util/PolarVector2D.h"
 #include <QPainter>
 #include <QStack>
