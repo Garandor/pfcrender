@@ -26,10 +26,10 @@ class Config_Registry : public QSettings {
 
 public:
     //QML Metatype Information
-    static constexpr auto URI{ "Common.Config_Registry" };
-    static constexpr uint V_MAJ{ 1 },
-        V_MIN{ 0 };
-    static constexpr auto QMLTYPE{ "Config_Registry" };
+    static constexpr char URI[] = "asd";
+    static constexpr char QMLTYPE[] = "fd";
+    static constexpr uint V_MAJ = 1,
+                          V_MIN = 0;
 
     //Singleton API
     static Config_Registry* getInstance();

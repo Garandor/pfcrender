@@ -1,4 +1,5 @@
 import QtQuick 2.4
+import Config_Registry 1.0 as CR
 import QtQuick.Controls 2.2
 
 Item {

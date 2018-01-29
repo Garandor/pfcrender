@@ -26,6 +26,8 @@ namespace LSYS {
             { "Plugins.LSYS.it", QCommandLineOption("it", "Number LSYS iterations to compute", "int") },
         },
         m_info.plugin = this;
+
+        qmlRegisterSingletonType<Common::Config_Registry>(Common::Config_Registry::URI, Common::Config_Registry::V_MAJ, Common::Config_Registry::V_MIN, Common::Config_Registry::QMLTYPE, Common::Config_Registry::qmlInstance);
     }
 
     const Plugins::PluginInfo& LSYS::getInfo() const

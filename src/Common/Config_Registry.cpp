@@ -11,6 +11,14 @@
 namespace Common {
 Config_Registry* Config_Registry::instance = nullptr;
 
+//Definition of static constexpr members that are initialized in the header
+//This is a syntactically weird quirk of static constexpr, which seemingly
+//flips the locations of declaration and definition
+constexpr char Config_Registry::URI[];
+constexpr char Config_Registry::QMLTYPE[];
+constexpr uint Config_Registry::V_MAJ,
+    Config_Registry::V_MIN;
+
 Config_Registry* Config_Registry::getInstance()
 {
     if (instance == nullptr)
@@ -130,5 +138,4 @@ void Config_Registry::store_to_file()
 
     m_set.sync(); //clear write buffer
 }
-
 } // namespace Common

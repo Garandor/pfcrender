@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>LSYSConfig.qml</file>
+        <file>LSYSConfigForm.ui.qml</file>
+    </qresource>
+</RCC>

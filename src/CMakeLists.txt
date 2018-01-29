@@ -52,6 +52,7 @@ set(INC
         "Common/CLIOptions.h"
 
         "util/PolarVector2D.h"
+        "util/constexprstring.h"
 
         "Model/ModelStringParser.h"
         "Model/ModelFactory.h"

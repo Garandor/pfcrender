@@ -31,6 +31,8 @@ target_link_libraries(plugin_LSYS PRIVATE
     Qt5::Qml
     )
 
+qt5_add_resources(qml_QRC qml.qrc)
+
 target_link_libraries(plugin_LSYS INTERFACE plugin_ALL)
 
 #Add unit tests

@@ -67,7 +67,7 @@ namespace LSYS {
             ulong ct = 0;
             char c;
             while ((c = lsys.current()) != '\0') {
-                curve->append(c);
+                curve->append(c); //This is probably slow as hell
                 lsys.next();
             }
         }
