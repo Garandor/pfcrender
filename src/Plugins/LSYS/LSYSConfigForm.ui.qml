@@ -1,77 +1,53 @@
 import QtQuick 2.4
-import Config_Registry 1.0 as CR
 import QtQuick.Controls 2.2
 
 Item {
+    id: lsysconfigview
     width: 640
     height: 400
+    property alias itvalue: itvalue
+    property alias itname: itname
+    property alias rulesvalue: rulesvalue
+    property alias rulesname: rulesname
 
-    ListView {
-        id: listView
-        x: 181
-        y: 14
-        width: 110
-        height: 160
-        anchors.fill: parent
-        delegate: Item {
-            x: 5
-            width: 80
-            height: 40
-            Row {
-                spacing: 10
+    Column {
+        Row {
+            spacing: 10
 
-                Text {
-                    id: name
-                    text: qsTr("#name#")
-                    anchors.verticalCenter: parent.verticalCenter
-                    font.bold: true
-                }
+            Text {
+                id: rulesname
+                width: 130
+                text: qsTr("Plugins.LSYS.rules")
+                anchors.verticalCenter: parent.verticalCenter
+                font.bold: true
+            }
 
-                TextInput {
-                    id: value
-                    width: 80
-                    height: 20
-                    text: qsTr("Text Input")
-                    font.pixelSize: 12
-                }
+            TextInput {
+                id: rulesvalue
+                width: 80
+                height: 20
+                text: qsTr("sometext")
+                font.pixelSize: 12
             }
         }
-        model: ListModel {
-            ListElement {
-                name: "Rules"
-                value: "sometext"
-                ToolTip.visible: down
-                ToolTip.text: "hi"
+        Row {
+            y: 100
+            spacing: 10
+
+            Text {
+                id: itname
+                width: 130
+                text: qsTr("Plugins.LSYS.it")
+                anchors.verticalCenter: parent.verticalCenter
+                font.bold: true
             }
-            ListElement {
-                name: "iterates"
-                value: "sometext"
-                ToolTip.visible: hovered
-                ToolTip.text: "ho"
-            }
-            ListElement {
-                name: "Initial Angle"
-                value: "sometext"
-                ToolTip.visible: hovered
-                ToolTip.text: "oas"
-            }
-            ListElement {
-                name: "Angle Increment"
-                value: "sometext"
-                ToolTip.visible: hovered
-                ToolTip.text: "oas"
-            }
-            ListElement {
-                name: "Segment Length"
-                value: "sometext"
-                ToolTip.visible: hovered
-                ToolTip.text: "oas"
-            }
-            ListElement {
-                name: "Segment Width"
-                value: "sometext"
-                ToolTip.text: "oas"
-                ToolTip.visible: hovered
+
+            TextInput {
+                id: itvalue
+                width: 80
+                height: 20
+                text: qsTr("sometext")
+                font.pixelSize: 12
             }
         }
     }

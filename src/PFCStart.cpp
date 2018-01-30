@@ -33,16 +33,10 @@ int main(int argc, char** argv)
 #else
     //    if (cr->getOpt("batch").isEmpty()) { //TODO: Handle batch mode
     //Register custom QML Types
-    qmlRegisterType<QtGUI::CustomGeometryModel>("sci.pfcrender.customModel", 1, 0, "CustomGeometryModel");
+    qmlRegisterType<QtGUI::CustomGeometryModel>("Sci.Pfcrender.CustomModel", 1, 0, "CustomGeometryModel");
 
-    //    qmlRegisterSingletonType<Common::Config_Registry>("asdf", 1, 0, "dasf", Common::Config_Registry::qmlInstance);
     //Declare Config_Registry to the QML type system so our plugins can access it
-    qDebug() << "a" << Common::Config_Registry::URI;
-    Common::Config_Registry::getInstance();
-    qDebug() << "b" << Common::Config_Registry::URI;
-    auto a = Common::Config_Registry::URI;
-    qDebug() << "bla " << a;
-    qmlRegisterSingletonType<Common::Config_Registry>(a, Common::Config_Registry::V_MAJ, Common::Config_Registry::V_MIN, Common::Config_Registry::QMLTYPE, Common::Config_Registry::qmlInstance);
+    qmlRegisterSingletonType<Common::Config_Registry>(Common::Config_Registry::URI, Common::Config_Registry::V_MAJ, Common::Config_Registry::V_MIN, Common::Config_Registry::QMLTYPE, Common::Config_Registry::qmlInstance);
 
     QQmlApplicationEngine qeng(QUrl(QStringLiteral("qrc:///main.qml")));
     QtGUI::PFCRenderGUI desktop_obj(&qeng);

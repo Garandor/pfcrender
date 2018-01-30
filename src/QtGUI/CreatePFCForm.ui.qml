@@ -5,6 +5,7 @@ Item {
     id: window
     width: 400
     height: 400
+    property alias bExport: bExport
     property alias listView: listView
 
     ListView {

@@ -11,13 +11,13 @@
 namespace Common {
 Config_Registry* Config_Registry::instance = nullptr;
 
-//Definition of static constexpr members that are initialized in the header
-//This is a syntactically weird quirk of static constexpr, which seemingly
-//flips the locations of declaration and definition
+//XXX: This syntactic hiccup is C++11 specific and has been fixed in C++17
+//ODR-used static constexpr members still have to be defined outside the class (without initializer)
+//even if they have been initialized in the class, if they are not immediately
+//rvalue converted upon use. Since that isnt the case with array types, this
+//definition is in place for the strings, but not the ints
 constexpr char Config_Registry::URI[];
 constexpr char Config_Registry::QMLTYPE[];
-constexpr uint Config_Registry::V_MAJ,
-    Config_Registry::V_MIN;
 
 Config_Registry* Config_Registry::getInstance()
 {

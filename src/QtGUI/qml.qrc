@@ -4,5 +4,7 @@
         <file>ModelView.qml</file>
         <file>CreatePFCForm.ui.qml</file>
         <file>res/dummy.jpg</file>
+        <file>ModelFormatConfig.qml</file>
+        <file>ModelFormatConfigForm.ui.qml</file>
     </qresource>
 </RCC>
