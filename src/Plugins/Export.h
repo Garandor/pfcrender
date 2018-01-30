@@ -4,13 +4,12 @@
 #include "Plugin.h"
 
 #include "Model/LSYSModel.h"
-#include "QtGUI/CustomGeometryModel.h"
 
 class QQuickItem;
 class QCommandLineParser;
 
 namespace Plugins {
-class Export : public Plugin {
+class Exporter : public Plugin {
     Q_OBJECT
 
 public:
@@ -20,11 +19,15 @@ public:
      */
     virtual void exportModel(const ::Model::LSYSModel&) const = 0;
 
-    virtual ~Export() {}
+    virtual ~Exporter() {}
 };
 }
 
 using namespace Plugins;
+<<<<<<< HEAD
 Q_DECLARE_INTERFACE(Export, "PFCRender.Plugins.Export")
+=======
+Q_DECLARE_INTERFACE(Exporter, "PFCRender.Plugins.Exporter")
+>>>>>>> stdout dumper plugin
 
 #endif

@@ -1,0 +1,48 @@
+find_package(Qt5 REQUIRED Core)
+set (PLUGIN_NAME plugin_stdout)
+set (TEST_NAME test_stdout)
+
+set (SRC
+
+    "${PLUGIN_DIR}/Plugin.h"
+    "${PLUGIN_DIR}/Export.h"
+
+    "${CMAKE_SOURCE_DIR}/src/Model/LSYSModel.cpp"
+    "stdout.cpp"
+    "stdout.h"
+    )
+
+add_library(${PLUGIN_NAME} SHARED ${SRC} )
+
+target_include_directories(${PLUGIN_NAME} PRIVATE
+    ${PLUGIN_DIR}
+    ${CMAKE_SOURCE_DIR}/src
+    )
+
+target_link_libraries(${PLUGIN_NAME} PUBLIC
+            Qt5::Core
+    )
+
+target_link_libraries(${PLUGIN_NAME} INTERFACE plugin_ALL)
+
+#Add unit tests
+if(GENERATE_UNITTESTS)
+        find_package(Qt5 REQUIRED Test)
+
+        set(CMAKE_AUTOMOC ON)
+
+        add_executable(${TEST_NAME}
+            test_stdout.cpp
+            ${SRC}
+            )
+        target_include_directories(${TEST_NAME} PRIVATE
+            "${CMAKE_CURRENT_SOURCE_DIR}"
+            ${CMAKE_SOURCE_DIR}/src
+            "${PLUGIN_DIR}"
+            )
+        target_link_libraries(${TEST_NAME} PRIVATE
+            Qt5::Core
+            Qt5::Test)
+
+        add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
+endif()
