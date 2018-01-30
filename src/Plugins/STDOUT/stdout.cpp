@@ -23,7 +23,7 @@ namespace Export {
 
         void StdoutExport::exportModel(const Model::LSYSModel& mdl) const
         {
-            std::cout << mdl.getModel() << std::endl;
+            std::cout << (*mdl.getModel()).toStdString() << std::endl;
         }
 
     } // namespace Stdout

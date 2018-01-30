@@ -24,10 +24,6 @@ public:
 }
 
 using namespace Plugins;
-<<<<<<< HEAD
-Q_DECLARE_INTERFACE(Export, "PFCRender.Plugins.Export")
-=======
 Q_DECLARE_INTERFACE(Exporter, "PFCRender.Plugins.Exporter")
->>>>>>> stdout dumper plugin
 
 #endif

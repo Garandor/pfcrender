@@ -11,30 +11,32 @@
 #include "Export.h"
 
 namespace Plugins {
-namespace SVG {
+namespace Export {
+    namespace SVG {
 
-    class SVG : public Export {
-        Q_OBJECT
-        Q_INTERFACES(Export Plugin)
-        Q_PLUGIN_METADATA(IID "PFCRender.Plugins.Export.SVG")
+        class SVG : public Exporter {
+            Q_OBJECT
+            Q_INTERFACES(Exporter Plugin)
+            Q_PLUGIN_METADATA(IID "PFCRender.Plugins.Export.SVG")
 
-    private:
-        PluginInfo m_info;
+        private:
+            PluginInfo m_info;
 
-    public:
-        SVG();
-        virtual ~SVG() {}
+        public:
+            SVG();
+            virtual ~SVG() {}
 
-        //Plugin Interface Methods
-        const Plugins::PluginInfo& getInfo() const override;
+            //Plugin Interface Methods
+            const Plugins::PluginInfo& getInfo() const override;
 
-        //Export Interface methods
-        void exportModel(const ::Model::LSYSModel& mdl) const override;
+            //Export Interface methods
+            void exportModel(const ::Model::LSYSModel& mdl) const override;
 
-    private:
-        void drawSVG(const Model::LSYSModel& mdl) const;
-    };
+        private:
+            void drawSVG(const Model::LSYSModel& mdl) const;
+        };
 
-} // namespace SVG
+    } // namespace SVG
+} // namespace Export
 } // namespace Plugin
 #endif

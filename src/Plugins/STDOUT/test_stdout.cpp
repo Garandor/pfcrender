@@ -9,7 +9,7 @@ namespace Export {
 
     class Test_STDOUT : public QObject {
         Q_OBJECT
-        Stdout::StdoutExport exporter{};
+        Stdout::StdoutExport plugin{};
 
     private slots:
         //Test Harness

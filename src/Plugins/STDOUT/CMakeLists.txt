@@ -7,7 +7,6 @@ set (SRC
     "${PLUGIN_DIR}/Plugin.h"
     "${PLUGIN_DIR}/Export.h"
 
-    "${CMAKE_SOURCE_DIR}/src/Model/LSYSModel.cpp"
     "stdout.cpp"
     "stdout.h"
     )
