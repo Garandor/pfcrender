@@ -31,7 +31,8 @@ namespace Export {
             QPen m_pen;
 
             //config options
-            const double seglen, rounding, angle, initial_angle;
+            double seglen, rounding, angle, initial_angle;
+            //            const double seglen, rounding, angle, initial_angle;
 
             util::PolarVector2D pos;
             QStack<util::PolarVector2D> stack{};

@@ -33,12 +33,11 @@ namespace Export {
             pos.length = seglen;
 
             //initialize defaults
-            QPen pen(colors.first());
-            pen.setWidth(lineWidth);
-            pen.setWidth(4); //TODO: Remove temp code
+            m_pen.setColor(colors.first());
+            m_pen.setWidthF(lineWidth);
 
             m_p.setRenderHint(QPainter::Antialiasing, true);
-            m_p.setPen(pen);
+            m_p.setPen(m_pen);
 
             ///TODO: Get colors from config
         }
@@ -55,7 +54,7 @@ namespace Export {
             p1 = p2;
             p2 = pos.next();
 
-            //        rounding = 0.3;
+            //            rounding = 0.3;
 
             if (!rounding)
                 m_p.drawLine(p1, p2);
