@@ -1,6 +1,5 @@
 #include "ViewModelBuilder.h"
 
-#include <QSGGeometry>
 #include <QSGGeometryNode>
 #include <QSGVertexColorMaterial>
 
@@ -31,6 +30,7 @@ ViewModelBuilder::ViewModelBuilder()
           QColor::fromCmykF(0.5, 0, 1, 0),
           QColor::fromCmykF(0.64, 0, 0.95, 0.4) })
     , cur_color(colors.cbegin())
+    , temp_vertexstore{}
 {
 }
 
@@ -61,7 +61,8 @@ LSYS_STRING_PARSE_FUNC_DEF(ViewModelBuilder)
 inline void ViewModelBuilder::add_segment()
 {
     auto p = pos.next().getPoint();
-    m_g->vertexDataAsColoredPoint2D()[current_segment++] = p;
+
+    temp_vertexstore.push_back(p); //add position to vertex array
 
     //Pick up bounding box along the way
     if (p.x < min.x())
@@ -118,8 +119,11 @@ inline void ViewModelBuilder::stackPop()
 
 inline void ViewModelBuilder::parsing_finalize(const unsigned int vertexcount)
 {
+    //We read vertices into a temporary array with
 
-    m_g->allocate(vertexcount); //Make sure Geometry gets realloc'd to its final size
+    m_g->allocate(temp_vertexstore.size()); //XXX: Can not be used here since it invalidates vertex data. Keep the worstcase size for now
+    memcpy(m_g->vertexData(), temp_vertexstore.data(), temp_vertexstore.size() * sizeof(QSGGeometry::ColoredPoint2D)); //Copy array content to QSGGeometry
+
     m_g->markVertexDataDirty(); //Mark dirty to tell Qt to redraw
 
     // Create Material
@@ -138,9 +142,9 @@ inline void ViewModelBuilder::parsing_finalize(const unsigned int vertexcount)
 
 inline void ViewModelBuilder::parsing_preamble(const QString& mdl)
 {
-    //allocate a new Geometry (Wrapper for OpenGL vertices) with enough space for the worst case, where every string char is a segment
+    //create a new Geometry (Wrapper for OpenGL vertices) don't allocate any space (we do this later), since we write to a temporary during parsing
     m_g = new QSGGeometry(
-        QSGGeometry::defaultAttributes_ColoredPoint2D(), mdl.length() + 1);
+        QSGGeometry::defaultAttributes_ColoredPoint2D(), 0);
 
     // we won't touch the vertices after they have first been rendered
     //NOTE: if we do -> mark_dirty
@@ -149,10 +153,6 @@ inline void ViewModelBuilder::parsing_preamble(const QString& mdl)
 
     pos = util::PolarVector2D{}; //Create initial vector for rendering the curve
 
-    //initialize defaults
-    m_g->setLineWidth(4);
-    angle_increment = 90;
-
     //Read user supplied config options. XXX: this could be greatly simplified with std::optional once C++17 is supported by CI
 
     parse_config("ViewModel.SegmentWidth", [&](double param) { m_g->setLineWidth(param); }); //Line Rendering Width
@@ -160,8 +160,7 @@ inline void ViewModelBuilder::parsing_preamble(const QString& mdl)
     parse_config("ViewModel.Angle", [&](double param) { angle_increment = param; }); //Angle per segment
     parse_config("ViewModel.SegmentLength", [&](double param) { pos.length = param; }); //Segment Length
 
-    auto v = m_g->vertexDataAsColoredPoint2D();
-    v[0] = pos.getPoint();
+    temp_vertexstore.push_back(pos.getPoint());
 }
 
 std::pair<QSGGeometryNode*, QRectF> createGeom(const QString& mdl)

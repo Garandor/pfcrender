@@ -5,6 +5,7 @@
 #include <QColor>
 #include <QList>
 #include <QListIterator>
+#include <QSGGeometry>
 #include <QStack>
 #include <QString>
 #include <Qt>
@@ -49,6 +50,8 @@ private:
     QList<QColor>::const_iterator cur_color;
 
     double angle_increment;
+
+    std::vector<QSGGeometry::ColoredPoint2D> temp_vertexstore;
 
     QPointF min, max;
 };
