@@ -14,7 +14,11 @@ if(Qt5Test_FOUND)
                 )
 
         #CLI Testing
-        add_executable(test_cli "Test_CLI.cpp")
+        add_executable(test_cli "Test_CLI.cpp"
+            "../src/Common/Config_Registry.cpp"
+            "../src/Common/CLIParser.cpp"
+            "../src/Common/Plugin_Registry.cpp"
+            )
 
         target_link_libraries(test_cli PRIVATE
             Qt5::Core
@@ -28,6 +32,9 @@ if(Qt5Test_FOUND)
         add_executable(test_gui
             "Test_GUI.cpp"
             "../src/QtGUI/ViewModelBuilder.cpp"
+            "../src/Common/Config_Registry.cpp"
+            "../src/Common/CLIParser.cpp"
+            "../src/Common/Plugin_Registry.cpp"
             )
 
         target_link_libraries(test_gui PRIVATE
