@@ -21,10 +21,13 @@ Currently available:
 - svg : Export model to a SVG file
 
 Plugins bring switches (syntax --opname optvalue) for configuration, execute pfcrender -h for info on what is available.
+All switches are cached and re-read on the next execution so they have to be provided only on changes, except for the following
 
-All switches are cached and re-read on the next execution so they have to be provided only on changes.
+Special commandline switches, which are _NEVER_ cached:
+- --batch : Runs all supplied positional arguments and exits, without entering GUI mode
+- --clear : Clears all cached options
 
-
+# GUI
 Scrolling in UI via Drag&Drop, zoom via Ctrl+Mousewheel
 
 # Documentation

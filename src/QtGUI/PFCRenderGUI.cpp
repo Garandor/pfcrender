@@ -35,7 +35,7 @@ PFCRenderGUI::PFCRenderGUI(QQmlApplicationEngine* eng)
 
     post_status(QString(walker.m_stepNames.count()));
 
-    walker.execute(m_mdl, m_vm);
+    walker.execute(m_mdl);
     onModelChanged(); //XXX: This shouldnt be here
 
     //we should now have a model and viewmodel in place
@@ -48,8 +48,8 @@ PFCRenderGUI::PFCRenderGUI(QQmlApplicationEngine* eng)
  */
 PFCRenderGUI::~PFCRenderGUI()
 {
-    Common::Config_Registry::getInstance()->~Config_Registry();
-    Common::Plugin_Registry::getInstance()->~Plugin_Registry();
+    delete Common::Config_Registry::getInstance();
+    delete Common::Plugin_Registry::getInstance();
 }
 
 } // namespace QtGUI

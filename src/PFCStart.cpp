@@ -15,32 +15,20 @@
 
 int main(int argc, char** argv)
 {
-#if NOGUI
-    QCoreApplication app(argc, argv);
-#else
-    //    if (cr->getOpt("batch") == "true") //TODO: Handle batch mode
-    //        QCoreApplication app(argc, argv);
-    //    else
     QGuiApplication app(argc, argv);
-#endif
-    //Set Version Information
-    app.setApplicationVersion(VERSION_STRING);
+    auto cr = Common::Config_Registry::getInstance(); //Note: cr uses plugin_registry so it is implicitly created
+    app.setApplicationVersion(VERSION_STRING); //Set Version Information
 
-    //populate registries
-    auto pr = Common::Plugin_Registry::getInstance();
-    auto cr = Common::Config_Registry::getInstance(); //Note: pr should be initialised before cr because it adds plugin specific CLI options
+    if (cr->getOpt("Main.Batch").compare("N/A")) {
+        QtCLI::PFCRenderCLI desktop_obj;
+    } else {
 
-#if NOGUI
-    QtCLI::PFCRender_CLI desktop_obj();
-#else
-    //    if (cr->getOpt("batch").isEmpty()) { //TODO: Handle batch mode
-    //Register custom QML Types
-    qmlRegisterType<QtGUI::CustomGeometryModel>("sci.pfcrender.customModel", 1, 0, "CustomGeometryModel");
+        //Register custom QML Types
+        qmlRegisterType<QtGUI::CustomGeometryModel>("sci.pfcrender.customModel", 1, 0, "CustomGeometryModel");
 
-    QQmlApplicationEngine qeng(QUrl(QStringLiteral("qrc:///main.qml")));
-    QtGUI::PFCRenderGUI desktop_obj(&qeng);
-//    }
-#endif
+        QQmlApplicationEngine qeng(QUrl(QStringLiteral("qrc:///main.qml")));
+        QtGUI::PFCRenderGUI desktop_obj(&qeng);
 
-    return app.exec();
+        return app.exec();
+    }
 }

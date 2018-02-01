@@ -14,6 +14,10 @@ namespace Common {
 
 const std::vector<QPair<QString, QCommandLineOption>> builtin_opts{
 
+    //Options for application control flow
+    { "Main.Batch", QCommandLineOption("batch", "No GUI loaded when present, exits after sequence execution", "") },
+    { "Main.Clear", QCommandLineOption("clear", "Skip loading previous state from config store", "") },
+
     //Options for rendering the ViewModel
     { "ViewModel.InitialAngle", QCommandLineOption("ia", "initial angle of first curve segment (0 = right)", "0 - 360") },
     { "ViewModel.Angle", QCommandLineOption("a", "angle of turns for each segment", "0 - 360") },

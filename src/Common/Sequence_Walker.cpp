@@ -24,14 +24,15 @@ void Common::Sequence_Walker::addStep(const QString& stepName)
 }
 /**
  * @brief Common::Sequence_Walker::execute
- * @param owner
+ * @param mod The model to be given to modify and export plugins. Unused by import
+ *
  * sequence:
  *	check if step is plugin
  * 	get the factory
  * 	execute build
  * 	put result where it belongs
  */
-void Common::Sequence_Walker::execute(Model::LSYSModel& mod, QtGUI::CustomGeometryModel& vm)
+void Common::Sequence_Walker::execute(Model::LSYSModel& mod)
 {
     auto pr = Plugin_Registry::getInstance();
 
@@ -47,15 +48,6 @@ void Common::Sequence_Walker::execute(Model::LSYSModel& mod, QtGUI::CustomGeomet
             continue;
         } else
             qWarning() << "Could not cast plugin " << plugin->getInfo().name << " to Import plugin";
-
-        //TODO: Case modifyVM plugin
-        //        auto modVM = qobject_cast<Plugins::ModifyVM*>(plugin);
-        //        if (!modVM == nullptr) {
-        //            auto factory = modVM->getFactory();
-        //            auto vm = factory.modifyVM(owner.m_vm);
-        //            owner.m_vm = vm;
-        //            continue;
-        //        }
 
         //TODO: Case modify model plugin
         //        auto modmod = qobject_cast<Plugins::ModifyModel*>(plugin);

@@ -26,6 +26,8 @@ Config_Registry* Config_Registry::getInstance()
  */
 const QString Config_Registry::getOpt(const QString& optName) const
 {
+    if (!m_options.contains(optName))
+        return QStringLiteral("N/A");
     return m_options.value(optName);
 }
 
@@ -43,6 +45,7 @@ void Config_Registry::add_to_sequence(const QString& name)
             m_sequence.append(p->getInfo().name);
             qDebug() << "Appended plugin" << p->getInfo().name << " to sequence for step " << name;
 
+            found = true;
             break;
         }
     }
@@ -70,9 +73,10 @@ Config_Registry::Config_Registry()
     : m_options{}
     , m_set("THNuernberg", "PFCRender")
 {
-    //Initialize registry with defaults/last used state from config file
-    for (auto k : m_set.allKeys())
-        setOpt(k, m_set.value(k).toString());
+    //Initialize registry with defaults/last used state from config file unless --clear is provided
+    if ((getOpt("Main.Clear").compare("N/A")))
+        for (auto k : m_set.allKeys())
+            setOpt(k, m_set.value(k).toString());
 
     //Get or create an instance of the CLI parser to populate with options
     auto p_clip = CLIParser::getInstance();
@@ -117,8 +121,13 @@ void Config_Registry::store_to_file()
     qDebug() << "storing config to disk:" << m_set.fileName();
     auto i = m_options.constBegin();
     while (i != m_options.constEnd()) {
-        m_set.setValue(i.key(), i.value());
-        ++i;
+
+        if (i.key().compare("Main.Batch") && i.key().compare("Main.Clear")) //Never store batchmode operation switch
+            ++i;
+        else {
+            m_set.setValue(i.key(), i.value());
+            ++i;
+        }
     }
 
     m_set.sync(); //clear write buffer

@@ -1,3 +1,5 @@
+#include "Common/Config_Registry.h"
+#include "Common/Plugin_Registry.h"
 #include "Common/Sequence_Walker.h"
 
 #include "PFCRenderCLI.h"
@@ -6,14 +8,19 @@ namespace QtCLI {
 
 PFCRenderCLI::PFCRenderCLI()
     : m_mdl{}
-    , m_vm{}
 {
-    //Instantiate everything from the provided sequence
+    //Execute the provided sequence and quit
     Common::Sequence_Walker walker;
 
-    walker.execute(m_mdl, m_vm);
+    walker.execute(m_mdl);
 
     qApp->quit();
+}
+
+PFCRenderCLI::~PFCRenderCLI()
+{
+    delete Common::Config_Registry::getInstance();
+    delete Common::Plugin_Registry::getInstance();
 }
 
 } // namespace QtCLI
