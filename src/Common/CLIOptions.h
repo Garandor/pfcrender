@@ -18,7 +18,8 @@ const std::vector<QPair<QString, QCommandLineOption>> builtin_opts{
     { "ViewModel.InitialAngle", QCommandLineOption("ia", "initial angle of first curve segment (0 = right)", "0 - 360") },
     { "ViewModel.Angle", QCommandLineOption("a", "angle of turns for each segment", "0 - 360") },
     { "ViewModel.SegmentLength", QCommandLineOption("sl", "length of segment in pixels", "360") },
-    { "ViewModel.SegmentWidth", QCommandLineOption("sw", "stroke width for segment rendering in pixels", "integer") }
+    { "ViewModel.SegmentWidth", QCommandLineOption("sw", "stroke width for segment rendering in pixels", "integer") },
+    { "ViewModel.Rounding", QCommandLineOption("rd", "Percentage of segments that should be rounded with arcs", "<0.5") }
 };
 }
 

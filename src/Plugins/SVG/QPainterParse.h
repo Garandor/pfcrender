@@ -37,6 +37,9 @@ namespace Export {
             util::PolarVector2D pos;
             QStack<util::PolarVector2D> stack{};
             int cur_color_idx = 0;
+
+            QPointF coord_last_drawn,
+                coord_final;
         };
 
         static const QList<QColor> colors({ QColor(Qt::black),

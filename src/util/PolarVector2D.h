@@ -13,9 +13,9 @@ namespace util {
  * making sure it only gets instantiated once
  */
 class PolarVector2D {
-    QSGGeometry::ColoredPoint2D start;
 
 public:
+    QSGGeometry::ColoredPoint2D start;
     qreal angle;
     qreal length;
 
