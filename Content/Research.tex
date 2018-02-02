@@ -150,3 +150,9 @@ http://doc.qt.io/qt-5/qcommandlineparser.html
 \item Manual parsing of the argv array. While this is the most flexible solution in customization, it is reinventing the wheel and also very inflexible with respect to extensibility.
 
 Due to it supporting our use-case, being easily extensible and not introducing any more dependencies into the project above the already used Qt Framework libraries, the QtCommandLineParser was chosen to provide the main CLI-based interface to the program.
+
+
+\section{Option Persistency}
+Since it is often unneccessary to set any and all config options for the program on the command line each time it is run, keeping config options persistently over program relaunches is useful. The typical implementation of this persistent store again varies by platform, ranging from putting keys into the Windows registry, over property list files on Mac to plain .ini or .cfg files on Linux.
+
+Again, Qt comes with a wrapper around this platform disparity
