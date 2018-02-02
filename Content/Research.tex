@@ -22,12 +22,14 @@ In conjunction with a dynamic loading system, this confers several benefits:
 
 This architecture also comes with drawbacks
 - Updating the main app with changes breaking public APIs used by plugins will fail at runtime until all plugins have been updated/recompiled
-- If plugins have dependencies on other plugins, maintenance complexity grows exponentially.
+- If plugins have dependencies on other plugins, maintenance complexity grows exponentially and loading sequence must be enforced
 
-Since plugins to pfcrender will mainly consist of new Import/Export formats with limited intrinsic complexity and no dependencies on other plugins, the following architecture was chosen
+The additionally introduced complexity can - in sufficiently complex projects - significantly outweigh modularization benefits, resulting in what is called \"plugin hell\". \ref @ph.
+The Eclipse IDE, in its core being a plugin loader and all functionality supplied by plugins is a prime example of the possible complexity.
 
+Since plugins to pfcrender will mainly consist of new Import/Export formats with limited intrinsic complexity and no dependencies on other plugins, a plugin architecture was deemed beneficial for increasing extensibility and thus the following architecture was chosen.
 
-
+\image {Plugin architecture}
 
 \subsection{Configuration}
 Main considerations:
@@ -35,36 +37,41 @@ Main considerations:
 - Want documentation of available commandline options
 - Options are provided by components of the GUI as well as by plugins
 
-It is inefficient to create objects just to query for their config info
-All possible config options must be known by the time the cmdline is parsed for CLI documentation and type checking. While it is possible to query all plugins for that info by this time, other components of the app requiring/exporting config values do not necessarily exist at that time.
+The main interface to the application will be the commandline.
 
-This is a catch-22 type situation, where compromise needs to be made. Since I want full CLI documentation, and I dont want to have a list of manuallz specified CLI options that inevitably desyncs with its objects, I decided to compromise on the following:
+Automatic documentation of all available options to the commandline is a must-have feature when maintainability of the application is a major concern.
 
-Instead of specifying CLI options centrally, each object that wants to export configuration options, inherits a Configurable* interface that can be used to query the static config options.
-Classes in the main app that can be configured are centrally stored in a list in the Config_Store singleton (i.e. new classes that are configurable must inherit the interface and be _manually_ added to the list).
-Classes from interfaces are queried for their config options on app startup.
+Though other, manual approaches like manfiles and README documents exist, it is not only difficult to prevent them from desynchronizing with the actual code of the program, in a plugin architecture as described above, the actual functionality offered by the total of available plugins will vary by deployment and can thus not be centrally written down.
 
-While this is a non-nice gotcha for developers of the main app, it enables plugin writers to easily extend the CLI
+It was thus decided to introduce a central store of configuration, that will be accessible to the entire application.
 
+Furthermore, each plugin is required to publish configuration options it needs to the main application.
 
-Another option is to build a compile-time list of configurable classes in the main compilation unit. As all plugins are instantiated before CLI parsing anyway, the list of options can be completed then.
-Building a compile-time list uses template metaprogramming though
-	https://stackoverflow.com/questions/9975672/c-automatic-factory-registration-of-derived-types
+Since all available commandline options must be known at parsing time for documentation generation and parsing itself, it follows that all plugins must be loaded once on startup to query them for their config options.
 
+While this is not computationally efficient, as not all plugins will necessarily be executed during program runtime and thus get loaded in vain, maintainability outweighs this minor performance issue, as the number of plugins is small
+
+##TODO: Make callgrind timing analysis of lib calls 
+
+A standard workaround for this issue is builing a list of options at compile time, e.g. using the C++11 \code constexpr keyword or \term[Template Metaprogramming]{template}, this method is not suitable here, since options available depend on the available plugins, which are only known at runtime.
+See also \url{https://stackoverflow.com/questions/9975672/c-automatic-factory-registration-of-derived-types}
+or auto registration of class with a typelist ?
+\url{https://stackoverflow.com/questions/42077057/c14-metaprogramming-automagically-build-a-list-of-types-at-compile-init-tim?rq=1}
+
+Another problem is gathering options from plugins automatically is possible when building a list of plugins, options exposed by the main application can not be added this easily, as the objects that expose the info structure do not need to exist by the time. So in this instance - for options of the main app - a manual list must be maintained after all. While this difference in behaviour betwenn core and plugins is unfortunate, it is still an improvement over fully manual API documentation.
+
+For further details on the implementation, see \ref chapterX{Singleton}
+
+This central store can also be exposed to user via the GUI (see \ref chapterX{guiconfig}
+
+\subsection{Batch mode}
 Unlike in the GUI, where we can check for config options once the object using them is instantiated, the CLI batch mode runs a preset sequence of steps and needs to gather all available/acceptable config options before starting the process in order to generate meaningful CLI documentation.	
 
-Automatic gathering of classes that export configuration is only possible at compile time, as the compiler goes through each source file. A runtime object of a class might not exist until long after CLI parsing	
-
-
-Solution - auto registration of class with a typelist ?
-https://stackoverflow.com/questions/42077057/c14-metaprogramming-automagically-build-a-list-of-types-at-compile-init-tim?rq=1
-
-Interfaces - CLIconfig, GUIconfig
-
+\subsection{config stores}
 The selected architecture defines an order of precedence of config options:
 1. Global options are set from config file is parsed
-2. options give on Command line are set 
-3. GUI options can set config settings
+2. options given on Command line are set 
+(3. GUI options can set config settings)
 
 \subsection{Performance}
 \subsubsection{fxtlib}
