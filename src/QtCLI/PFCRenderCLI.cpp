@@ -13,8 +13,6 @@ PFCRenderCLI::PFCRenderCLI()
     Common::Sequence_Walker walker;
 
     walker.execute(m_mdl);
-
-    qApp->quit();
 }
 
 PFCRenderCLI::~PFCRenderCLI()

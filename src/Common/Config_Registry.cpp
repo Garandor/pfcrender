@@ -114,8 +114,10 @@ Config_Registry::Config_Registry()
     QHashIterator<QString, QCommandLineOption> it2(p_clip->getOptlist());
     while (it2.hasNext()) {
         it2.next();
-        if (p_clip->getParser().isSet(it2.value()))
+        if (p_clip->getParser().isSet(it2.value())) {
             setOpt(it2.key(), p_clip->getParser().value(it2.value()));
+            qDebug() << "Config_Reg - Read from file: " << it2.key() << " : " << p_clip->getParser().value(it2.value());
+        }
     }
 
     //populate sequence from positional arguments

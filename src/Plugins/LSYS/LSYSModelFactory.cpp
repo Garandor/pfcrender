@@ -20,7 +20,7 @@ namespace LSYS {
 
         //Check if all opts are set
         for (auto opt : p->getInfo().conf_opts)
-            if (cr->getOpt(opt) == "") {
+            if (cr->getOpt(opt) == "N/A") {
                 qCritical() << "NOT ALL OPTIONS WERE SET: " << opt << " is empty";
                 abort();
             }
