@@ -11,19 +11,19 @@
 
 namespace Plugins {
 namespace Export {
-    namespace SVG {
+    namespace PDF {
 
-        class SVG : public Exporter {
+        class PDF : public Exporter {
             Q_OBJECT
             Q_INTERFACES(Exporter Plugin)
-            Q_PLUGIN_METADATA(IID "PFCRender.Plugins.Export.SVG")
+            Q_PLUGIN_METADATA(IID "PFCRender.Plugins.Export.PDF")
 
         private:
             PluginInfo m_info;
 
         public:
-            SVG();
-            virtual ~SVG() {}
+            PDF();
+            virtual ~PDF() {}
 
             //Plugin Interface Methods
             const Plugins::PluginInfo& getInfo() const override;
@@ -32,9 +32,9 @@ namespace Export {
             void exportModel(const ::Model::LSYSModel& mdl) const override;
 
         private:
-            void drawSVG(const Model::LSYSModel& mdl) const;
+            void printPDF(const Model::LSYSModel& mdl) const;
         };
 
-    } // namespace SVG
+    } // namespace PDF
 } // namespace Export
 } // namespace Plugin
