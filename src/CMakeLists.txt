@@ -1,6 +1,6 @@
 configure_file(projectinfo.h.in projectinfo.h @ONLY)
 
-option(COMPILE_GUI_SUPPORT "For tinyfication, turn this off to not compile any GUI code into the application. Batch mode usage only" ON)
+option(COMPILE_GUI_SUPPORT "For tinyfication, turn this off to not compile any GUI code into the application. Implies you will use --batch mode only" ON)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
