@@ -42,12 +42,12 @@ void Common::Sequence_Walker::execute(Model::LSYSModel& mod)
 
         //Case import plugin
         auto import = qobject_cast<Plugins::Import*>(plugin);
-        if (import != nullptr) {
+        if (import) {
+            qDebug() << "Executing import plugin " << import->getInfo().name;
             auto factory = import->getFactory();
             mod.setModel(factory->createModel());
             continue;
-        } else
-            qWarning() << "Could not cast plugin " << plugin->getInfo().name << " to Import plugin";
+        }
 
         //TODO: Case modify model plugin
         //        auto modmod = qobject_cast<Plugins::ModifyModel*>(plugin);
@@ -61,6 +61,7 @@ void Common::Sequence_Walker::execute(Model::LSYSModel& mod)
         //TODO: Case export plugin
         auto exportr = qobject_cast<Plugins::Exporter*>(plugin);
         if (exportr) {
+            qDebug() << "Executing export plugin " << exportr->getInfo().name;
             exportr->exportModel(mod);
             continue;
         }

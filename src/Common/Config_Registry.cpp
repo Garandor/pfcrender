@@ -74,10 +74,12 @@ Config_Registry::Config_Registry()
     , m_set("THNuernberg", "PFCRender")
 {
     //Initialize registry with defaults/last used state from config file unless --clear is provided
-    if ((getOpt("Main.Clear").compare("N/A")))
+    if (getOpt("Main.Clear").compare("N/A")) {
+        m_set.clear();
+    } else {
         for (auto k : m_set.allKeys())
             setOpt(k, m_set.value(k).toString());
-
+    }
     //Get or create an instance of the CLI parser to populate with options
     auto p_clip = CLIParser::getInstance();
 
@@ -122,10 +124,11 @@ void Config_Registry::store_to_file()
     auto i = m_options.constBegin();
     while (i != m_options.constEnd()) {
 
-        if (i.key().compare("Main.Batch") && i.key().compare("Main.Clear")) //Never store batchmode operation switch
+        if (!(i.key().compare("Main.Batch") && i.key().compare("Main.Clear"))) //Never store batchmode operation switch
             ++i;
         else {
             m_set.setValue(i.key(), i.value());
+            qDebug() << i.key() << " : " << i.value();
             ++i;
         }
     }
