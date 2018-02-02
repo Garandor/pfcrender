@@ -1,0 +1,4 @@
+@misc{ QtC,
+       author = "Community Effort",
+       title = "Qt5 Cadaques",
+       year = "2015" }
