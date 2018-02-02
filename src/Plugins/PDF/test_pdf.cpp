@@ -2,15 +2,15 @@
 #include <QString>
 #include <QtTest>
 
-#include "SVG.h"
+#include "pdf.h"
 
 namespace Plugins {
 namespace Export {
-    namespace SVG {
+    namespace PDF {
 
-        class Test_SVG : public QObject {
+        class Test_PDF : public QObject {
             Q_OBJECT
-            SVG plugin{};
+            PDF plugin{};
 
         private slots:
             //Test Harness
@@ -54,5 +54,5 @@ namespace Export {
 }
 }
 
-QTEST_MAIN(Plugins::Export::SVG::Test_SVG)
-#include "Test_SVG.moc"
+QTEST_MAIN(Plugins::Export::PDF::Test_PDF)
+#include "test_pdf.moc"
