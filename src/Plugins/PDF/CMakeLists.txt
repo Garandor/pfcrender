@@ -52,7 +52,7 @@ if(GENERATE_UNITTESTS)
             "${CMAKE_SOURCE_DIR}/src"
             "${PLUGIN_DIR}"
             )
-        target_link_libraries(${TEST_NAME}PRIVATE
+        target_link_libraries(${TEST_NAME} PRIVATE
             Qt5::Core
             Qt5::Gui
             Qt5::Qml
