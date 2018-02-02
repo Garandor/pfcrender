@@ -9,6 +9,8 @@
 
 #include <QCommandLineOption>
 #include <QPair>
+#include <QString>
+#include <vector>
 
 namespace Common {
 

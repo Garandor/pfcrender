@@ -13,9 +13,7 @@
 
 namespace Common {
 
-class SettingsFile;
-
-class Config_Registry : public QSettings {
+class Config_Registry {
 private:
     static Config_Registry* instance; ///XXX: Old style leaky singleton. Should be a more C++11 style definiton
     QHash<QString, QString> m_options;

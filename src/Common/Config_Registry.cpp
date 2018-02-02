@@ -1,5 +1,3 @@
-#include <QDebug>
-#include <QPair>
 
 #include "Common/CLIOptions.h"
 #include "Common/CLIParser.h"
@@ -7,6 +5,9 @@
 #include "Plugins/Plugin.h"
 
 #include "Config_Registry.h"
+
+#include <QDebug>
+#include <QPair>
 
 namespace Common {
 Config_Registry* Config_Registry::instance = nullptr;
@@ -71,15 +72,11 @@ void Config_Registry::setOpt(const QString& optName, const QString& optValue)
 
 Config_Registry::Config_Registry()
     : m_options{}
-    , m_set("THNuernberg", "PFCRender")
+    , m_set{ "THNuernberg", "PFCRender" }
 {
-    //Initialize registry with defaults/last used state from config file unless --clear is provided
-    if (getOpt("Main.Clear").compare("N/A")) {
-        m_set.clear();
-    } else {
-        for (auto k : m_set.allKeys())
-            setOpt(k, m_set.value(k).toString());
-    }
+    //Fallbacks are confusing since they dont get deleted by clear - so lets not use them
+    m_set.setFallbacksEnabled(false);
+
     //Get or create an instance of the CLI parser to populate with options
     auto p_clip = CLIParser::getInstance();
 
@@ -96,12 +93,29 @@ Config_Registry::Config_Registry()
     //Now that all options are known to CLI Parser, read the commandline
     p_clip->parse();
 
-    //Add all options that have been set to the global config store
+    //XXX: Need to load singleton from CLI before loading from file because of --clear switch, (and possibly other future switches) this leads to parsing CLI options twice. Sure there is a better solution
+
     QHashIterator<QString, QCommandLineOption> it(p_clip->getOptlist());
     while (it.hasNext()) {
         it.next();
         if (p_clip->getParser().isSet(it.value()))
             setOpt(it.key(), p_clip->getParser().value(it.value()));
+    }
+
+    //Initialize registry with defaults/last used state from config file unless --clear is provided
+    if ((getOpt("Main.Clear").compare("N/A")) != 0) {
+        m_set.clear();
+    } else {
+        for (auto k : m_set.allKeys())
+            setOpt(k, m_set.value(k).toString());
+    }
+
+    //XXX: Readd from CLI parser to overwrite defaults
+    QHashIterator<QString, QCommandLineOption> it2(p_clip->getOptlist());
+    while (it2.hasNext()) {
+        it2.next();
+        if (p_clip->getParser().isSet(it2.value()))
+            setOpt(it2.key(), p_clip->getParser().value(it2.value()));
     }
 
     //populate sequence from positional arguments
