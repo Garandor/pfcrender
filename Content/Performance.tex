@@ -1,21 +1,11 @@
 \chapter{Architecture Implementation}
 
-\section{Architectural Considerations}
-\subsection{Configuration}
-
-\subsubsubsection{Signals and Slots in QML}
-
-\subsubsubsection{Qt and C++1y}
-
-\subsection{Extensibility}
-\subsubsection{Plugin Structure}
-
 \section{Problems}
 \subsection{Model Creation}
 
 \subsubsection{QQuickItem + Custom Geometry vs QQuickPaintedItem}
 While QQuickPaintedItem allows us to use the QPainter API to generate the model for viewing, which is great, since it is also used by the SVG and PDF exporters, it is also painfully slow, as running callgrind on two parallel implementations shows.
-do_paint, which renders using QPainter API is a factor of 10 slower than manual creation of the OpenGL Vertex/Colordata
+do\_paint, which renders using QPainter API is a factor of 10 slower than manual creation of the OpenGL Vertex/Colordata
 
 IMAGE : Callgrind cost
 
@@ -24,23 +14,23 @@ For this reason, a parallel implementation of both approaches was selected, with
 While this means that the GUI viewmodel can not be reused and the curve has to be rebuilt using qpainter on export, the GUI becomes responsive more quickly / scales to more iterates. As far as UX goes, the user can wait for file export, but not for an interactive GUI.
 Especially since export is threadable/backgroundable.
 
-\subsubsubsection{Encapsulation of Functionality (OOP) vs. Method Call overhead}
+\subsubsection{Encapsulation of Functionality (OOP) vs. Method Call overhead}
 A lot of the OOP functionalites C++ offers, come at a performance cost.
 While some of those classically named ones like stl containers are almost equivalent to plain C data, there are still very costly abstractions present in C++ wwhich can slow down a program significantly.
 The gaming world programs C++ without exceptions for this exact reason (TODO: Reference), while those don't come into play here, method call overhead does.
 
 
-\subsubsubsection{Runtime Optimization}
-When optimizing a program for performance, it is essential to know where in the code the program spends the most time during typical execution, as optimizing 80\% of usecases by 20\⅜ will be much more noticeable by users than speeding up 20\% of usecases by 80\% and is thus a better target for engineering effort.
+\subsubsection{Runtime Optimization}
+When optimizing a program for performance, it is essential to know where in the code the program spends the most time during typical execution, as optimizing 80\% of usecases by 20\% will be much more noticeable by users than speeding up 20\% of usecases by 80\% and is thus a better target for engineering effort.
 
 While measuring the overall execution time of a program is as simple as starting and stopping a timer, looking for timings inside of executable, i.e. at the function level, needs additional instrumentation of the code that is executing. Tools that provide this instrumentation are called application profilers.
 
-TODO: WHAT DO PROFILERS DO EXACTLY?
+%TODO: WHAT DO PROFILERS DO EXACTLY?
 
 One such tool - callgrind - is part of the valgrind analysis suite and well integrated into QtCreator.
 
-\subsubsubsection{Compiler Optimizations and Inlining}
-TODO: Define stack frame
+\subsubsection{Compiler Optimizations and Inlining}
+%TODO: Define stack frame
 If a method is simple, but executes a billion times, the cycles spent saving and restoring stack frames while jumping between functions will make up a significant portion of the execution time of the program.
 
 This is where so called inlining can help improve the runtime performance - as with all optimizations - at a cost. The tradeoff in this case being executable size.
@@ -55,7 +45,7 @@ Modern compilers are able to optimize a program by several methods automatically
 
 The standard mode for release software is -O2.
 
-\subsubsubsection{Link-Time Optimization}
+\subsubsection{Link-Time Optimization}
 Compilers can only optimize on the code they know, i.e. the code in the current translation unit.
 
 Some optimizations (TODO: Which) only become possible when the full program is known, which is link-time. LTO is thus also known as full-program-optimization.
@@ -65,7 +55,7 @@ Insead of optimizing on a TU base, it optimizes llvm bytecode (TODO: llvm erkär
 -flto=full
 
 
-\subsubsubsection{Polymorphism and Performance}
+\subsubsection{Polymorphism and Performance}
 Polymorphic classes are a key abstraction of C++ and are distinct from simple inheritance by the presence of the virtual keyword on at least some of their members.
 
 This keyword enables a derived class, referred to through a pointer to the base class to execute its own implementation (a so called override) of the virtual member instead of the one (possibly, but not necessarily) implemented by the base class.

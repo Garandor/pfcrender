@@ -19,7 +19,7 @@ Still, the great benefit of this tool is that once it has been set up, it "just 
 \subsection{Rendering the Model Curve}
 While a PFC can be constructed segment by segment, the final size and position of the curve is not known until after the full curve is constructed.
 
-The smallest rectangle fitting around a curve rendering is called its \term[In 2D graphics, denotes the smallest possible rectangle that fully contains a given geometric shape]{bounding box}.
+The smallest rectangle fitting around a curve rendering is called its  \gls{bounding box}
 
 Since the extent is not known beforehand, the resulting drawing must be transformed in such a way as to fit the given drawing device (screen, bitmap).
 
@@ -27,12 +27,12 @@ The resulting transformation can be done with a translation and scaling of the b
 
 A performance-optimal way of calculating the bounding box is picking up minimum and maximum coordinates alongside the drawing avoiding a second parsing run of the model string.
 
-Since the \term QPainter API used by Qt is iterative in nature (\term QPainter API), the transformation must be set before drawing begins. Setting a transformation only affect future drawing calls.
+Since the \gls{QPainter} API used by Qt is iterative in nature (\gls{QPainter} API), the transformation must be set before drawing begins. Setting a transformation only affect future drawing calls.
 
-Using \term QPainter thus forces precomputing of the bounding box.
+Using \gls{QPainter} thus forces precomputing of the bounding box.
 
 
-\subsubsubsection{Inheritance in Qt}
+\subsubsection{Inheritance in Qt}
 Implementing interfaces that are supposed to be used with Qt's meta object system is a slightly awkward procedure, as Qt's macros used to notify the moc about interface definitions and implementations are not namespace aware. 
 
 This limitation pertains to interfaces exposing functionality from the Qt MetaObject system like signals/slots.
@@ -47,10 +47,6 @@ It is a stateful
 A transformation matrix can be applied on all drawing calls,
 
 \subsection{Configuration}
-
-\subsubsubsection{Signals and Slots in QML}
-
-\subsubsubsection{Qt and C++1y}
 
 \subsection{Extensibility}
 \subsubsection{Plugin Structure}

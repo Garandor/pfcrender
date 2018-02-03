@@ -38,8 +38,8 @@
 
 % Erstellung eines Index und Abkürzungsverzeichnisses aktivieren ---------------
 \makeindex
-\makenomenclature
-
+\makeglossaries
+\loadglsentries{Content/glossary-definitions.tex}
 % Kopf- und Fußzeilen, Seitenränder etc. ---------------------------------------
 \input{Seitenstil}
 
@@ -63,6 +63,7 @@
 \ofoot{}
 \include{Titlepage}
 \include{Content/Abstract}
+
 \ofoot{\pagemark}
 
 % Seitennummerierung -----------------------------------------------------------
@@ -73,10 +74,9 @@
 \tableofcontents % Inhaltsverzeichnis
 
 % Abkürzungsverzeichnis --------------------------------------------------------
-\input{Content/Glossary}
+%\input{Content/Appendix}
 % für korrekte Überschrift in der Kopfzeile
-\clearpage\markboth{\nomname}{\nomname} 
-\printnomenclature
+\printglossaries
 \label{sec:Glossar}
 
 \listoffigures % Abbildungsverzeichnis
