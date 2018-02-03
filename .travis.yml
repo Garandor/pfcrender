@@ -52,6 +52,7 @@ before_install:
   - tar xzf lcov-1.13.tar.gz
   - cd lcov-1.13
   - sudo make install
+  - cd ..
 
 install:
   # C++14
