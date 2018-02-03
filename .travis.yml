@@ -31,8 +31,6 @@ addons:
     - graphviz
     #build
     - cmake
-    - ggcov
-    - lcov
 
 language: C++
 compiler:
@@ -50,17 +48,23 @@ before_install:
   - if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then travis_retry sudo add-apt-repository ppa:beineri/opt-qt592-trusty -y ; fi
   - if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then travis_retry sudo apt-get update -qq ; fi
   #coverage - lcov for gcc5
-#  -  if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then wget http://downloads.sourceforge.net/ltp/lcov-1.13.tar.gz ; fi
-#  -  if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then tar xzf lcov-1.13.tar.gz ; fi
-#  -  if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then cd lcov-1.13 ; fi
-#  -  if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then sudo make install ; fi
-#  -  if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then cd .. ; fi
+  -  if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then wget http://downloads.sourceforge.net/ltp/lcov-1.13.tar.gz ; fi
+  -  if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then tar xzf lcov-1.13.tar.gz ; fi
+  -  if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then cd lcov-1.13 ; fi
+  -  if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then sudo make install ; fi
+  -  if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then cd .. ; fi
 
 install:
   # C++14
   - if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then travis_retry sudo apt-get install -qq g++-5 ; fi
   # g++ should call g++-5
   - if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then travis_retry sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 90 ; fi
+  - ls -la /usr/bin/
+  - ls -la /usr/bin/g++
+  - find /usr/bin -name "gcov" -print
+  - find /usr/bin -name "*gcov"* -print
+  - find / -name "gcov" -print
+  - find / -name "*gcov*" -print
   #Qt5.9
   - if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then travis_retry travis_wait sudo apt-get install qt59-meta-full ; fi
   - if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then source /opt/qt59/bin/qt59-env.sh ; fi
