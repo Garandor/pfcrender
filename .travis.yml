@@ -50,6 +50,7 @@ before_install:
   #coverage - lcov for gcc5
   - wget http://mirrors.kernel.org/ubuntu/pool/universe/l/lcov/lcov_1.12-2_all.deb
   - sudo apt update
+  - sudo apt-get install dpkg
   - sudo dpkg -i lcov_1.13-3_all.deb
 
 install:
