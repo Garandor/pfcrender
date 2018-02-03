@@ -49,6 +49,7 @@ before_install:
   - if [[ $TRAVIS_OS_NAME == 'linux' ]] ; then travis_retry sudo apt-get update -qq ; fi
   #coverage - lcov for gcc5
   - wget http://mirrors.kernel.org/ubuntu/pool/universe/l/lcov/lcov_1.13-3_all.deb
+  - sudo apt update
   - sudo dpkg -i lcov_1.13-3_all.deb
 
 install:
