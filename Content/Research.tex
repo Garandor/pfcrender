@@ -1,23 +1,38 @@
 \chapter{Research and Architecture Definition}
+This section goes into detail on the requirements and discusses possible solutions.
+\section{Maintainability}
+Maintainability was declared a main goal in the requirements, and this is an issue with much broader reach than just good writing clean code.
 
-\section{State-of-the Art Development Environment}
+It consists of many non-coding factors, including
+\begin{itemize}
+	\item ease of collaboration
+	\item issue tracking
+	\item enforcecment of a common coding standard, i.e. making sure code from different contributors "looks the same"
+	\item early indication of breaking changes
+	\item incremental integration of changes with possibility to roll back to an earlier point in history
+\end{itemize}
 
-Maintainability was declared a main goal in the requirements, and this is an issue with much broader reach than just good programming practice.
+The importance of such "meta-programming" techniques is testified by the fact that a job field for software engineers called \gls{DevOps} exists, which engages in finding ways to optimize coding workflow all day.
+A definition of DevOps in \citet{Bass2015}:
+\begin{quote}
+	DevOps is a set of practices intended to reduce the time between committing a change to a system and the change being placed into normal production, while ensuring high quality.
+\end{quote}
 
-It consists of many non-coding factors such as
+Though this field is too extensive to thoroughly investigate in the course of a bachelor's thesis, some of these practices are adapted here to make the resulting software maintainable.
 
-- ease of collaboration, issue tracking
-- enforcing of good coding by-default, e.g. through static analysis
-- early indication of breaking changes
-- incremental integration or big-bang-release
-- ease of code documentation
+In addition to the above, code itself should also conform to certain rules:
+\begin{itemize}
+	\item encapsulation of functionality in logical units - i.e. classes according to the implementation of \gls{oop} principles in C++
+	\item common code formatting guidelines, i.e. making sure code from different contributors "looks the same"
+	\item consistent code documentation
+\end{itemize}
 
-The importance of such "meta-programming" techniques is testified by the fact, that a job field for software engineers called \gls{DevOps} exists, which engages in finding ways to optimize coding workflow all day.
+Adhering to above rules increases productivity of developers and lowers the barrier of entry for new coders.
 
 \subsection{Version Control}
 
 \subsubsection{Git}
-\gls{git} is an code revisioning software implementation created by Linus Torvalds, searching for a solution to manage the growing base of coders on his main project - the \gls{linux} kernel.
+\gls{git} is a code revisioning software implementation created by Linus Torvalds, searching for a solution to manage the growing base of coders on his main project - the Linux kernel.
 
 Its key benefits are
 - Decentralization: No reliance on a central server for daily work
@@ -30,12 +45,24 @@ A revisioning software once claiming to be "CVS done right", where CVS is its di
 It is a  
 \subsubsection{Mercurial}
 
-\subsection{CI}
+\subsection{\gls{ci}}
 Continuous Integration is a concept popularized as an \gls{agile} method
 \subsubsection{Github}
 
 \subsubsection{Jenkins}
 
+
+\subsection{Code formatting guidelines}
+Creating a common code format can be as simple as writing down a set of rules in a code-of-conduct letter for coders to adhere to. What constitutes a "good" formatting guideline is a highly subjective matter however, which is the reason for "different looking code" in the first place.
+
+While it is unlikely that consensus will be reached on coding style in the full C++ community, companies and larger \gls{floss} projects often define guidelines for their employees / contributors,
+e.g. the WebKit project\footnote{\url{https://webkit.org/code-style-guidelines/}} and Google\footnote{\url{https://github.com/google/styleguide}}
+
+Though it is possible to manually review every contribution and deny it if it violates code syle guidelines, doing so is unproductively used developer time. Since reformatting code (in the case of C++) simply consists of parsing and reorganizing characters in a text file, it can be automated.
+
+Tools like clang-format\footnote{\url{https://clang.llvm.org/docs/ClangFormat.html}} and astyle\footnote{\url{http://astyle.sourceforge.net/}} exist that - when supplied a formatting contract and source files, automatically reformat the latter.
+
+When used in conjunction with a \gls{vcs}, formatting can be automatically applied before publishing changes (e.g. git pre-commit hook) to other parties, completely abstracting the developer from the process - and thus enabling him to freely disregard code style guidelines during development, without violating them on check-in.
 
 \subsection{Unit Testing frameworks}
 
@@ -58,7 +85,7 @@ Round-Trip Engineering Tooling helps alleviate this problem, by automatically fe
 
 Depending on the target language, the task of reintroducing changes can be very difficult. C++, being a very syntactically complex language is notoriously difficult to round-trip engineer, reflecting in bad tool support.o
 
-%TODO: list of tools that claim to offer c++ rountripping
+\todo{list of tools that claim to offer c++ rountripping}
 
 - Astah - plugin
 
@@ -68,8 +95,7 @@ Since no suitably sophisticated tool could be identified in the noncommercial so
 
 \subsection{Autogenerated Docs}
 
-
-\section{Software Architecture Considerations}
+\section{Extensibility}
 
 \subsection{Plugin Architecture}
 Looking at the requirements, it is apparent, almost all component have disjunt responsibilities, their main common element being the string description of the PFC they operate on.
@@ -115,7 +141,7 @@ Since all available commandline options must be known at parsing time for docume
 
 While this is not computationally efficient, as not all plugins will necessarily be executed during program runtime and thus get loaded in vain, maintainability outweighs this minor performance issue, as the number of plugins is small
 
-%TODO: Make callgrind timing analysis of lib calls 
+\todo{Make callgrind timing analysis of lib calls }
 
 A standard workaround for this issue is builing a list of options at compile time, e.g. using the C++11 constexpr keyword or \gls{tmp}, this method is not suitable here, since options available depend on the available plugins, which are only known at runtime.
 See also \url{https://stackoverflow.com/questions/9975672/c-automatic-factory-registration-of-derived-types}
