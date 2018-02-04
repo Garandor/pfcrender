@@ -1,8 +1,30 @@
 \chapter{Application Performance}
 
+\subsection{fxtlib}
+\subsection{move semantics when operating on model}
 \section{Problems}
-\subsection{Model Creation}
 
+\subsection{Angle calculation}
+\begin{quote}
+Sometimes "pi = 3.14" is (a) infinitely faster than the "correct" answer and (b) the difference between the "correct" and the "wrong" answer is meaningless. And this is why I get upset when somebody dismisses performance issues based on "correctness". The thing is, some specious value of "correctness" is often irrelevant because it doesn't matter. While performance almost always matters. And I absolutely detest the fact that people so often dismiss performance concerns so readily.
+
+- Git mailing list, Fri, 8 Aug 2008
+\end{quote}
+\subsection{Model Creation}
+QQuickPaintedItem uses a given painter, explicitly calling functions on it to draw on a paint device.
+We want the finished image though, not something that draws based on input. We would need to embed the LSYS string into the model if that were the case.
+
+Und jetzt habe ich die Wahl was ich in der GUI als Modell der PFC speichere, bisherige Überlegungen:
+- Den String selbst
+Die Ideen sind wohl halbwegs speicheroptimal, müssen aber wohl entweder ein ViewModel zwischengeschaltet bekommen, bevor sie renderbar werden, was den Speichervorteil zunichte macht, oder auf ein Canvasobjekt "gemalt" werden
+- Als SVG. Einfach zu rendern, aber den SVG overhead zu parsen ist sicher alles andere als performant.
+
+Model: - 2D - Matrix in der jeder Index ein Segment mit Richtung und Farbe repräsentiert
+
+- Ein QML-Objekt (QQuickPaintedItem), das den LSYS String als member enthält und neu zeichnen lässt (bessere Austauschbarkeit des Modells - nicht limitiert auf PFCs)
+- Ein generisches QQuickItem, das als Information direkte OpenGL drawing calls enthält (QSGGeometry)
+
+Das Model muss weiterhin nicht nur als Bitmap renderbar, sondern in verlustfreier Form z.B. nach SVG exportierbar sein - die Daten z.B. nur in einer QSGGeometry vorzuhalten ist praktisch zum rendern (automatisch in Qt), aber unmöglich aus dem Quickitem wieder zu extrahieren
 \subsubsection{QQuickItem + Custom Geometry vs QQuickPaintedItem}
 While QQuickPaintedItem allows us to use the QPainter API to generate the model for viewing, which is great, since it is also used by the SVG and PDF exporters, it is also painfully slow, as running callgrind on two parallel implementations shows.
 do\_paint, which renders using QPainter API is a factor of 10 slower than manual creation of the OpenGL Vertex/Colordata

@@ -3,11 +3,10 @@ This section goes into detail on the requirements and discusses possible solutio
 \section{Maintainability}
 Maintainability was declared a main goal in the requirements, and this is an issue with much broader reach than just good writing clean code.
 
-It consists of many non-coding factors, including
+Non-coding factors that contribute to maintainability of a software project include
 \begin{itemize}
 	\item ease of collaboration
 	\item issue tracking
-	\item enforcecment of a common coding standard, i.e. making sure code from different contributors "looks the same"
 	\item early indication of breaking changes
 	\item incremental integration of changes with possibility to roll back to an earlier point in history
 \end{itemize}
@@ -30,27 +29,42 @@ In addition to the above, code itself should also conform to certain rules:
 Adhering to above rules increases productivity of developers and lowers the barrier of entry for new coders.
 
 \subsection{Version Control}
+Distributed (even if small in scale) software engineering efforts can greatly benefit from version conttrol systems, which provide features like
+\begin{itemize}
+	\item Bookkeeping of who authored which change
+	\item Messages describing each change (obsoleting Changelogs)
+	\item History-keeping of earlier revisions of code
+	\item Automatic conflict resolutions in case two developers changed the same files
+	\item Maintaining separate states of the code in so-called branches
+\end{itemize}
 
-\subsubsection{Git}
-\gls{git} is a code revisioning software implementation created by Linus Torvalds, searching for a solution to manage the growing base of coders on his main project - the Linux kernel.
+When working on a multi-user project, there really is no excuse for not using some form of \gls{vcs}, as anyone who ever had to manually codebases will attest, but even for single-developer projects they can be very useful, e.g. because the branching feature coupled with change messages allows working on multiple separate features in parallel, only merging changes back to the main program after completion. 
 
-Its key benefits are
-- Decentralization: No reliance on a central server for daily work
-- Smart Merging: Conflict resolution algorithms are fairly good at finding and automatically fixing trivial conflicts, keeping developer interaction a merge to a minimum
-- Central repository supported: Though git operates locally, it supports pushing code to and pulling from remote repositories, enabling the use of a central "synchronization" repository, which is the Basis for the popular \gls{github} 
 
 \subsubsection{SVN}
 A revisioning software once claiming to be "CVS done right", where CVS is its direct precursor.
 
 It is a  
+
+It has windows integration with TortoiseSVN, making it easy to use
 \subsubsection{Mercurial}
+
+\subsubsection{Git}
+\gls{git} is a code revisioning software implementation created by Linus Torvalds, searching for a solution to manage the growing base of coders another project of his - the Linux kernel.
+
+Its key benefits are
+\begin{description}
+	\item[Decentralization] No reliance on availability of a central server for daily work
+	\item[Smart Merging] Conflict resolution algorithms are fairly good at finding and automatically fixing trivial conflicts, keeping developer interaction on merges to a minimum
+	\item[Central repository support] Though git operates locally, it supports pushing code to and pulling from remote repositories, enabling the use of a central "synchronization" repository, which is the Basis for the popular \gls{github} 
+	\item [Huge community] Git has been the prime \gls{vcs} in the \gls{floss} community for several years and brings with it an ecosystem of 3rd-party tool integration 
+\end{description}
 
 \subsection{\gls{ci}}
 Continuous Integration is a concept popularized as an \gls{agile} method
 \subsubsection{Github}
 
 \subsubsection{Jenkins}
-
 
 \subsection{Code formatting guidelines}
 Creating a common code format can be as simple as writing down a set of rules in a code-of-conduct letter for coders to adhere to. What constitutes a "good" formatting guideline is a highly subjective matter however, which is the reason for "different looking code" in the first place.
@@ -89,13 +103,38 @@ Depending on the target language, the task of reintroducing changes can be very 
 
 - Astah - plugin
 
+\begin{quote}
+Theory and practice sometimes clash. And when that happens, theory loses. Every single time.
+- Torvalds, Linus (2009-03-25). Message to Linux kernel mailing list. Retrieved on 2009-03-25.
+\end{quote}
 
 Since no suitably sophisticated tool could be identified in the noncommercial solutions, round-trip engineering could not be used in this project.
+
+\subsection{Design Patterns}
+\subsubsection{Registry Pattern}
+
+\subsubsection{Factory Pattern}
+
+\subsubsection{Builder Pattern}
+
+\subsubsection{Singleton}
+Single instance + easy global access from all classes of the app
 
 
 \subsection{Autogenerated Docs}
 
 \section{Extensibility}
+
+\subsubsection{Plugin Structure}
+Lower app startup times, not every importer exporter is needed on every app run
+
+Easy to extend the app with new importers / exporters without touching other internal code
+
+Plugins encapsulated by Shared Libraries can be published to the app, registry of available plugins can be read from config file.
+
+No recompilation needed on adding/removing plugins.
+
+Each plugin must share a common interface though
 
 \subsection{Plugin Architecture}
 Looking at the requirements, it is apparent, almost all component have disjunt responsibilities, their main common element being the string description of the PFC they operate on.
@@ -163,20 +202,43 @@ The selected architecture defines an order of precedence of config options:
 2. options given on Command line are set 
 (3. GUI options can set config settings)
 
-\subsection{Performance}
-\subsubsection{fxtlib}
-\subsubsection{move semantics when operating on model}
+\section{Cross-OS operation}
 
-\subsection{Cross-Platform Operation}
+Writing portable software has always been difficult, as operating system APIs differ significantly. 
+
+Linux and MacOS comply with the \gls{posix} standard, which governs the OS-hardware interaction \gls{api}, while Windows has historically had a non-\gls{posix}-compliant proprietary system programming \gls{api}.
+
+Recently, Microsoft is making advances towards \gls{posix} compatibility in Win10\furl{https://blogs.msdn.microsoft.com/wsl/2016/04/22/windows-subsystem-for-linux-overview/}, and the Linux world offers a similar compatiblility layer with WINE\furl{https://en.wikipedia.org/w/index.php?title=Wine_(software)&oldid=823689556}. While the performance of the windows POSIX layer is promising\furl{https://www.phoronix.com/scan.php?page=article&item=windows-10-lxcore&num=2}, neither it, nor WINE\furl{https://wiki.winehq.org/Performance} are on par with programs implementing each systems native interface directly at the time of writing.
+
+Notable \gls{api} differences are in
+\begin{description}
+	\item[Library Loading] \gls{posix} Systems use dlopen(), Windows uses LoadLibrary()
+	\item[3D Graphics Backend] Windows mainly uses Microsoft DirectX and - more recently - AMD Vulkan, while the Unix world mostly uses OpenGL.
+\end{description}
+
+Code depending on any of the above directly is therefore nonportable and the multitude of incompatibilities makes implementing a cross-platform program from-scratch, i.e. without depending on OS-abstracting 3rd-party libraries - an arduous task.
+
+Thankfully, several of those libraries exist that provide a higher-level API abstracting programmers from OS-specific code. They differ wildly in feature-scope, some being abstractions of the graphics layer, some being full-featured cross-OS \gls{gui} toolkits and will be investigated in the following section.
+
+\subsection{Graphics Frameworks Providing OS Abstraction}
+
+\subsubsection{Cairo}
+
+\subsubsection{\gls{sfml}}
+The \gls{sfml} lib
+
+\subsubsection{\gls{sdl}}
+
+\subsubsection{GTK+}
 \subsubsection{Qt Framework}
+
+The Qt Framework is a full-featured cross-OS application development toolkit and offers extensive functionality, 
+
 QApplication, main event loop
 
 \subsubsection{Dynamic Library Loading}
-POSIX Systems use dlopen()
 
-Windows uses LoadLibrary()
-
-To get cross-platform operation without recompiling, use Qt's Library loading mechanism: QPluginLoader
+To get cross-\gls{os} operation without recompiling, use Qt's Library loading mechanism: QPluginLoader
 
 \subsubsection{QtQuick}
 QML integrate in C++
@@ -195,85 +257,3 @@ Signals are captured by invoking Signal Handlers
 Move semantics not implemented
 QQuickItem has disabled copy ctor and no move ctor
 use unique\_ptrs to copy without resource leaks
-
-
-\subsection{Extensibility}
-\subsubsection{Plugin Structure}
-Lower app startup times, not every importer exporter is needed on every app run
-
-Easy to extend the app with new importers / exporters without touching other internal code
-
-Plugins encapsulated by Shared Libraries can be published to the app, registry of available plugins can be read from config file.
-
-No recompilation needed on adding/removing plugins.
-
-Each plugin must share a common interface though
-
-\section{Design Patterns}
-\subsection{Registry Pattern}
-
-\subsection{Factory Pattern}
-
-\subsection{Builder Pattern}
-
-\subsection{Singleton}
-Single instance + easy global access from all classes of the app
-
-
-\section{Problems}
-\subsection{Model Creation}
-QQuickPaintedItem uses a given painter, explicitly calling functions on it to draw on a paint device.
-We want the finished image though, not something that draws based on input. We would need to embed the LSYS string into the model if that were the case.
-
-Und jetzt habe ich die Wahl was ich in der GUI als Modell der PFC speichere, bisherige Überlegungen:
-- Den String selbst
-Die Ideen sind wohl halbwegs speicheroptimal, müssen aber wohl entweder ein ViewModel zwischengeschaltet bekommen, bevor sie renderbar werden, was den Speichervorteil zunichte macht, oder auf ein Canvasobjekt "gemalt" werden
-- Als SVG. Einfach zu rendern, aber den SVG overhead zu parsen ist sicher alles andere als performant.
-
-Model: - 2D - Matrix in der jeder Index ein Segment mit Richtung und Farbe repräsentiert
-
-- Ein QML-Objekt (QQuickPaintedItem), das den LSYS String als member enthält und neu zeichnen lässt (bessere Austauschbarkeit des Modells - nicht limitiert auf PFCs)
-- Ein generisches QQuickItem, das als Information direkte OpenGL drawing calls enthält (QSGGeometry)
-
-Das Model muss weiterhin nicht nur als Bitmap renderbar, sondern in verlustfreier Form z.B. nach SVG exportierbar sein - die Daten z.B. nur in einer QSGGeometry vorzuhalten ist praktisch zum rendern (automatisch in Qt), aber unmöglich aus dem Quickitem wieder zu extrahieren
-
-
-\section{Chosen Application Architecture}
-
-%\figure{fullrequirements.png}
-
-
-
-\section{Flexible Buildsystem}
-Due to the requirement of a Multi-platform architecture, one of the first considerations is how to get the program code built.
-
-Though it would surely be possible to have the platform agnosstic sources present, and then manually create a project for MSVC/MinGW when on Windows, gnu gcc on Linux and clang on Mac, this would be a pain to set up and maintain.
-
-Solutions to this problem exist in so-called buildsystem generators. Those gather sources, dependencies and additional project information from a configuration file, detect the architecture they are running on, and generate the files necessary to compile the full project on whichever compiler is present on the current system.
-
-QMake - The native buildsystem generator of Qt, uses .pro files for project description
-
-CMake - A powerful and scalable config script-driven generator that is widely used in both Open Source and commercial projects 
-
-
-\section{Commandline Parsing}
-Unlike other programming languages (e.g. Python), C++ does not provide a standard built-in facility to provide parsing capability for parsing parameters passed to the program as commandline options.
-
-Alternatives:
-
-\begin{itemize}
-\item getopt() - Coming from C, this is a legacy method widely used on Linux. Since it is specific to POSIX systems, it cannot be used on Windows 
-\item Boost.progam\_options - A C++ native, highly configurable solution shipped with the open source Boost library
-\url{http://www.boost.org/doc/libs/1\_58\_0/doc/html/program\_options.html}
-\item QtCommandLineParser - A Qt native parsing class. Batch-parses all parameters and returns data structures with positional arguments in correct order, and a (reordered) map of switches with their parameters
-http://doc.qt.io/qt-5/qcommandlineparser.html
-\item Manual parsing of the argv array. While this is the most flexible solution in customization, it is reinventing the wheel and also very inflexible with respect to extensibility.
-\end{itemize}
-
-Due to it supporting our use-case, being easily extensible and not introducing any more dependencies into the project above the already used Qt Framework libraries, the QtCommandLineParser was chosen to provide the main CLI-based interface to the program.
-
-
-\section{Option Persistency}
-Since it is often unneccessary to set any and all config options for the program on the command line each time it is run, keeping config options persistently over program relaunches is useful. The typical implementation of this persistent store again varies by platform, ranging from putting keys into the Windows registry, over property list files on Mac to plain .ini or .cfg files on Linux.
-
-Again, Qt comes with a wrapper around this platform disparity
