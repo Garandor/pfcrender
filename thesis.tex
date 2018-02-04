@@ -62,8 +62,14 @@
 % Deckblatt und Abstract ohne Seitenzahl
 \ofoot{}
 \include{Aussenetikett}
+\newpage
+\thispagestyle{empty}
+\mbox{}
+\newpage
 \include{Titlepage}
-\include{Content/Abstract}
+
+\newpage
+\includepdf[pages={1}]{erklaerung.pdf}
 
 \ofoot{\pagemark}
 
@@ -72,6 +78,7 @@
 %   nummeriert.
 % ------------------------------------------------------------------------------
 \pagenumbering{Roman}
+%\include{Content/Abstract} - Guideline does not want an abstract, so they dont get one
 \tableofcontents % Inhaltsverzeichnis
 
 % Abkürzungsverzeichnis --------------------------------------------------------
@@ -97,8 +104,6 @@
 % ------------------------------------------------------------------------------
 \bibliography{Bibliography} % Aufruf: bibtex Masterarbeit
 \bibliographystyle{natdin} % DIN-Stil des Literaturverzeichnisses
-
-\include{Erklaerung} % Selbständigkeitserklärung
 
 % Anhang -----------------------------------------------------------------------
 %   Die Inhalte des Anhangs werden analog zu den Kapiteln inkludiert.
