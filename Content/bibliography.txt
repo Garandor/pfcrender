@@ -1,7 +1,0 @@
-@misc{ QtC,
-       author = "Community Effort",
-       title = "Qt5 Cadaques",
-       year = "2015" }
-@misc{ ph
-	url = "https://queue.acm.org/detail.cfm?id=1053345"
-}

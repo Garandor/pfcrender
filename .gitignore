@@ -42,6 +42,10 @@
 
 ## Auxiliary and intermediate files from other packages:
 
+# glossaries
+*.glsdefs
+*.latexmain
+
 # algorithms
 *.alg
 *.loa
