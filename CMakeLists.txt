@@ -18,7 +18,30 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 option(GENERATE_UNITTESTS "Enable building and running of ctest unit testing files" ON)
 option(GENERATE_DOCS "Enable building and running of Doxygen doc creation" ON)
 
+#--- START SUBMODULES
+#gsl
 include_directories("lib/GSL/include")
+
+#QNanoPainter
+include_directories("lib/qnanopainter/libqnanopainter")
+add_subdirectory("lib/qnanopainter")
+
+find_package(Qt5 REQUIRED Gui)
+
+find_package(OpenGL REQUIRED)
+LINK_LIBRARIES(OpenGL::GL)
+LINK_LIBRARIES(	Qt5::Gui_EGL
+    )
+INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR})
+add_definitions(
+    -DQT_NO_INFO_OUTPUT
+    -DQNANO_USE_RENDERNODE
+    -DQNANO_ENABLE_GLES3
+    -DQNANO_QT_GL_INCLUDE
+   )
+
+#--- END SUBMODULES
+
 add_subdirectory(src)
 
 if(GENERATE_UNITTESTS)

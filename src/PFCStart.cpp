@@ -9,6 +9,7 @@
 
 #include "QtCLI/PFCRenderCLI.h"
 #include "QtGUI/CustomGeometryModel.h"
+#include "QtGUI/NanoCustomGeometryModel.h"
 #include "QtGUI/PFCRenderGUI.h"
 
 #include "projectinfo.h"
@@ -25,6 +26,7 @@ int main(int argc, char** argv)
 
         //Register custom QML Types
         qmlRegisterType<QtGUI::CustomGeometryModel>("sci.pfcrender.customModel", 1, 0, "CustomGeometryModel");
+        qmlRegisterType<QtGUI::NanoCustomGeometryModel>("MyQNanoItem", 1, 0, "MyQNanoItem");
 
         QQmlApplicationEngine qeng(QUrl(QStringLiteral("qrc:///main.qml")));
         QtGUI::PFCRenderGUI desktop_obj(&qeng);

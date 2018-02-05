@@ -1,6 +1,7 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.2
 import sci.pfcrender.customModel 1.0
+import MyQNanoItem 1.0
 
 Rectangle{
     border.width: 4
@@ -61,6 +62,9 @@ Rectangle{
             height = vertexSize.height * scale;
             parent.returnToBounds
         }
+        }
+
+        MyQNanoItem {
         }
     }
 

@@ -22,6 +22,9 @@ if(COMPILE_GUI_SUPPORT)
         #Add QtQuick resources
         qt5_add_resources(qml_QRC QtGUI/qml.qrc)
 
+        #QNanoPainter
+        qt5_add_resources(qml_QRC ${CMAKE_SOURCE_DIR}/lib/qnanopainter/libqnanopainter/libqnanopainterdata.qrc)
+
 else()
     add_definitions(-DNOGUI)
 endif()
@@ -42,7 +45,12 @@ set(SRC
         "QtGUI/PFCRenderGUI.cpp"
         "QtGUI/ViewModelBuilder.cpp"
         "QtGUI/CustomGeometryModel.cpp"
+        "QtGUI/NanoViewModelBuilder.cpp"
+        "QtGUI/NanoCustomGeometryModel.cpp"
+        "QtGUI/QNanoPainterParse.cpp"
 )
+
+LIST(APPEND SRC ${QNANOPAINTER_SRC})
 
 set(INC 
         "Common/Config_Registry.h"
@@ -81,7 +89,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         "${Qt5Core_INCLUDE_DIRS}"
         "${Qt5Gui_INCLUDE_DIRS}"
         "${Qt5Qml_INCLUDE_DIRS}"
-        "${Qt5Quick_INCLUDE_DIRS}"
 )
 
 #Link with Qt
