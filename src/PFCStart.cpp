@@ -26,7 +26,7 @@ int main(int argc, char** argv)
 
         //Register custom QML Types
         qmlRegisterType<QtGUI::CustomGeometryModel>("sci.pfcrender.customModel", 1, 0, "CustomGeometryModel");
-        qmlRegisterType<QtGUI::HelloItem>("HelloItem", 1, 0, "HelloItem");
+        qmlRegisterType<QtGUI::QNanoRenderedCurve>("sci.pfcrender.qnanorenderedcurve", 1, 0, "QNanoRenderedCurve");
 
         QQmlApplicationEngine qeng(QUrl(QStringLiteral("qrc:///main.qml")));
         QtGUI::PFCRenderGUI desktop_obj(&qeng);

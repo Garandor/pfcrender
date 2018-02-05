@@ -8,10 +8,10 @@
 namespace QtGUI {
 
 // HelloItemPainter contains the painting code
-class HelloItemPainter : public QNanoQuickItemPainter {
+class QNanoCurvePainter : public QNanoQuickItemPainter {
 
 public:
-    HelloItemPainter()
+    QNanoCurvePainter()
     {
     }
 

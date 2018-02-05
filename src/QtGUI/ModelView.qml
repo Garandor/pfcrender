@@ -1,7 +1,7 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.2
 import sci.pfcrender.customModel 1.0
-import HelloItem 1.0
+import sci.pfcrender.qnanorenderedcurve 1.0
 
 Rectangle{
     border.width: 4
@@ -64,7 +64,7 @@ Rectangle{
 //        }
 //        }
 
-        HelloItem {
+       QNanoRenderedCurve {
             width: 400
             height: 800
         }

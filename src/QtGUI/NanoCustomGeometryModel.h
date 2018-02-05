@@ -6,10 +6,10 @@
 namespace QtGUI {
 
 // HelloItem provides the API towards QML
-class HelloItem : public QNanoQuickItem {
+class QNanoRenderedCurve : public QNanoQuickItem {
     Q_OBJECT
 public:
-    HelloItem(QQuickItem* parent = 0)
+    QNanoRenderedCurve(QQuickItem* parent = 0)
         : QNanoQuickItem(parent)
     {
     }
@@ -18,7 +18,7 @@ public:
     QNanoQuickItemPainter* createItemPainter() const
     {
         // Create painter for this item
-        return new QtGUI::HelloItemPainter();
+        return new QtGUI::QNanoCurvePainter();
     }
 };
 
