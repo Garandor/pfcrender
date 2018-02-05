@@ -1,8 +1,35 @@
 \section{Chosen Application Architecture}
 
-%\figure{fullrequirements.png}
+\section{Proposed Architecture}
+
+After investigating the alternatives, the following architecture was selected to build the tool upon. Due to the size of the graph, requirements were split to functional- (figure \ref{fr}) and non-functional (figure \ref{nfr}) requirements  
+
+\begin{figure}[p]
+	\includegraphics[width=\textwidth]{FunctionalRequirements}
+	\caption{Functional requirements}
+	\label{fr}
+\end{figure}
+
+\begin{figure}[p]
+	\includegraphics[width=\textwidth]{Non-FunctionalRequirements}
+	\caption{Non-functional requirements}
+	\label{nfr}
+\end{figure}
 
 
+\subsubsection{Dynamic Library Loading}
+
+
+
+To get cross-\gls{os} operation without recompiling, use Qt's Library loading mechanism: QPluginLoader
+
+\subsubsection{Signals and Slots in QML}
+Signals are captured by invoking Signal Handlers
+
+\subsubsection{Qt and C++1y}
+Move semantics not implemented
+QQuickItem has disabled copy ctor and no move ctor
+use unique\_ptrs to copy without resource leaks
 
 \section{Flexible Buildsystem}
 Due to the requirement of a Multi-platform architecture, one of the first considerations is how to get the program code built.

@@ -145,9 +145,10 @@ This characteristic is conducive to segregating those components of the app not 
 
 In conjunction with a dynamic loading system, this confers several benefits:
 
-- Reduced compilation time of the main application
-- Extensibility without recompilation
-- 
+\begin{itemize}
+	\item  Reduced compilation time of the main application
+	\item  Extensibility without recompilation
+\end{itemize}
 
 This architecture also comes with drawbacks
 - Updating the main app with changes breaking public APIs used by plugins will fail at runtime until all plugins have been updated/recompiled
@@ -204,16 +205,18 @@ The selected architecture defines an order of precedence of config options:
 
 \section{Cross-OS operation}
 
-Writing portable software has always been difficult, as operating system APIs differ significantly. 
+Writing portable software has historically been difficult, as operating system \gls{api}s differ significantly. 
 
-Linux and MacOS comply with the \gls{posix} standard, which governs the OS-hardware interaction \gls{api}, while Windows has historically had a non-\gls{posix}-compliant proprietary system programming \gls{api}.
+Linux and MacOS comply with the \gls{posix} standard, which defines an \gls{api} for system calls, while Windows has historically had a non-\gls{posix}-compliant proprietary system programming \gls{api}.
 
 Recently, Microsoft is making advances towards \gls{posix} compatibility in Win10\furl{https://blogs.msdn.microsoft.com/wsl/2016/04/22/windows-subsystem-for-linux-overview/}, and the Linux world offers a similar compatiblility layer with WINE\furl{https://en.wikipedia.org/w/index.php?title=Wine_(software)&oldid=823689556}. While the performance of the windows POSIX layer is promising\furl{https://www.phoronix.com/scan.php?page=article&item=windows-10-lxcore&num=2}, neither it, nor WINE\furl{https://wiki.winehq.org/Performance} are on par with programs implementing each systems native interface directly at the time of writing.
 
-Notable \gls{api} differences are in
+Supporting the OS native APIs is thus necessary, since good application performance is a requirement.
+
+Notable \gls{api} differences between \gls{posix} and Windows are
 \begin{description}
-	\item[Library Loading] \gls{posix} Systems use dlopen(), Windows uses LoadLibrary()
-	\item[3D Graphics Backend] Windows mainly uses Microsoft DirectX and - more recently - AMD Vulkan, while the Unix world mostly uses OpenGL.
+	\item[Library Loading] \gls{posix} Systems use dlopen(), Windows uses LoadLibrary() and different runtime library layouts (.dll on Windows, .so on \gls{posix}
+	\item[3D Graphics Backend] Windows mainly uses Microsoft GDI or DirectX and - more recently - AMD Vulkan, while the \gls{posix} world mostly uses OpenGL.
 \end{description}
 
 Code depending on any of the above directly is therefore nonportable and the multitude of incompatibilities makes implementing a cross-platform program from-scratch, i.e. without depending on OS-abstracting 3rd-party libraries - an arduous task.
@@ -223,37 +226,25 @@ Thankfully, several of those libraries exist that provide a higher-level API abs
 \subsection{Graphics Frameworks Providing OS Abstraction}
 
 \subsubsection{Cairo}
+\ref{sec:cairo}
+Cairo is a C-based 2D vector graphics library which is widely used in open-source projects\furl{https://en.wikipedia.org/w/index.php?title=Cairo_(graphics)&oldid=812908471} like GTK+, WebKit and the Poppler PDF rendering library.
 
-\subsubsection{\gls{sfml}}
-The \gls{sfml} lib
+\subsubsection{SFML}
+The C++ written \gls{sfml} library\furl{https://en.wikipedia.org/w/index.php?title=Simple_and_Fast_Multimedia_Library&oldid=820377932} is a relative newcomer to the multi-OS application landscape, with v1 released in 2007.
 
-\subsubsection{\gls{sdl}}
+While its core is a 2D graphics engine, add-ons exist for providing GUI application functionality.  
+
+At the time of writing, it is mainly used in in free or indie game releases.
+
+\subsubsection{SDL}
+The \gls{sdl} is a cross-platfrom \gls{hal} library created in 1998, with extensive use in games industry\furl{https://en.wikipedia.org/w/index.php?title=List_of_games_using_SDL&oldid=819037514} to provide 2D \& 3D rendering.
 
 \subsubsection{GTK+}
+Unlike above solutions, GTK+\furl{https://en.wikipedia.org/w/index.php?title=GTK\%2B&oldid=822745199}, written in C - is a full GUI application toolkit, providing not only a \gls{hal}, but also graphical control elements, called widgets. Since 2005 it uses cairo (\ref{sec:cairo}) to provide its low-level rendering functionality.
+
 \subsubsection{Qt Framework}
+The Qt Framework, like GTK+ is a full-featured GUI application development toolkit and offers extensive functionality.
 
-The Qt Framework is a full-featured cross-OS application development toolkit and offers extensive functionality, 
+Like GTK+ it has a widget-based API, but since Qt5 additionally brings a JavaFX-like declarative API called QtQuick.
 
-QApplication, main event loop
-
-\subsubsection{Dynamic Library Loading}
-
-To get cross-\gls{os} operation without recompiling, use Qt's Library loading mechanism: QPluginLoader
-
-\subsubsection{QtQuick}
-QML integrate in C++
-
-QRC QtResourceCollection
-
-qml files are not compiled (javascript like)
-Actually based on ECMAScript6 aka. JavaScript
-
-declarative as opposed to the imperative  C++
-
-\subsubsection{Signals and Slots in QML}
-Signals are captured by invoking Signal Handlers
-
-\subsubsection{Qt and C++1y}
-Move semantics not implemented
-QQuickItem has disabled copy ctor and no move ctor
-use unique\_ptrs to copy without resource leaks
+In addition to providing graphics and \gls{gui} abstractions, it also provides a platform-independent library loading wrapper.
