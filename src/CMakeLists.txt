@@ -75,6 +75,8 @@ set(INC
         "projectinfo.h.in"
 )
 
+LIST(APPEND INC ${QNANOPAINTER_HDR})
+
 #TODO: Split SRC and INC by common and GUI
 
 #Build executable

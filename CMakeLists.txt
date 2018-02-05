@@ -24,7 +24,7 @@ include_directories("lib/GSL/include")
 
 #QNanoPainter
 include_directories("lib/qnanopainter/libqnanopainter")
-add_subdirectory("lib/qnanopainter")
+add_subdirectory("lib")
 
 find_package(Qt5 REQUIRED Gui)
 
