@@ -221,9 +221,10 @@ Notable \gls{api} differences between \gls{posix} and Windows are
 
 Code depending on any of the above directly is therefore nonportable and the multitude of incompatibilities makes implementing a cross-platform program from-scratch, i.e. without depending on OS-abstracting 3rd-party libraries - an arduous task.
 
-Thankfully, several of those libraries exist that provide a higher-level API abstracting programmers from OS-specific code. They differ wildly in feature-scope, some being abstractions of the graphics layer, some being full-featured cross-OS \gls{gui} toolkits and will be investigated in the following section.
+Thankfully, several of those libraries exist that provide a higher-level API abstracting programmers from OS-specific code. They differ wildly in feature-scope, some being abstractions of the graphics layer, some being full-featured cross-platform \gls{gui} toolkits and will be investigated in the following section.
 
 \subsection{Graphics Frameworks Providing OS Abstraction}
+\label{sec:res_frameworks}
 
 \subsubsection{Cairo}
 \ref{sec:cairo}
@@ -248,3 +249,34 @@ The Qt Framework, like GTK+ is a full-featured GUI application development toolk
 Like GTK+ it has a widget-based API, but since Qt5 additionally brings a JavaFX-like declarative API called QtQuick.
 
 In addition to providing graphics and \gls{gui} abstractions, it also provides a platform-independent library loading wrapper.
+
+Asynchronous GUI programming is provided through an event loop and notification system called Signals and Slots
+
+\subsection{Makefile generators}
+Having cross-platform compilable sources is not the only requirement to getting a program developable and deployable cross-platform.
+In addition to sources and headers provided with the project, compiling needs information on 
+\begin{itemize}
+	\item which compiler/linker toolchain is available and where
+	\item where all the libraries the project links to are located
+	\item if any platform specific preprocessor directives or linker flags have to be set
+	\item Build type (Debug/Release) and architecture ( arm, x86, amd64 etc.)
+\end{itemize}
+
+This information is typically stored in "project stores" like Visual Studio's solution, or makefiles. Since those are inherently platform-specific, and manually creating one for each project type and platform is cumbersome at best, so called makefile generators were created, which parse build information from script files written by the programmer and then identify actual locations of dependencies and availabe tools automatically. If the process is successful and all dependencies are found, they output a build definition (makefile, Visual Studio solution or similar) that runs the compiler with all necessary options. Often those tools can also create automated deployments for the software they are building, e.g. generate a make install target. The most widely used ones are discussed here
+
+\subsubsection{GNU autotools}
+A collection of the GNU utilities autoconf, automake and libtool. It is the first widely used cross platform build configurator, existing since the 1980s. They are used to generate a ./configure script, that can be executed on any system that provides a bourne-shell (standard on POSIX systems) and generates a makefile.
+
+Cross-compilation to Windows from a linux host is possible using MinGW. 
+
+\subsubsection{QMake}
+The native makefile generator of Qt. Defines build definitions in .pro files and handles Qt specific tools like the \gls{moc} automatically as needed, giving a rather straightforward experience when building Qt programs.
+
+Integrated with QtCreator.
+
+\subsection{CMake}
+Gathers information on what to build from CMakeLists.txt files added to the projects's sources.
+
+Can generate projects in an plethora of formats, including Visual Studio, GNU make,  Apple Xcode and Eclipse
+
+Has widespread usage in open source and commercial projects and QtCreator provides good integration for CMake generated projects.

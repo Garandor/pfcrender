@@ -1,4 +1,5 @@
 \chapter{Architecture Implementation}
+\section{Application Configuration / Development Environment}
 
 \subsection{Build System}
 Travis CI / Codecov.io
@@ -16,6 +17,17 @@ Manually updating tools had ramifications as gcov was now ouptutting coverage da
 
 Still, the great benefit of this tool is that once it has been set up, it "just works" - running alongside the projects dev flow unintrusively and gives good insight into areas of improvement.
 
+\section{Application configuration}
+
+\section{Plugin Interface abstraction}
+\subsubsection{Inheritance in Qt}
+Implementing interfaces that are supposed to be used with Qt's meta object system is a slightly awkward procedure, as Qt's macros used to notify the moc about interface definitions and implementations are not namespace aware. 
+
+This limitation pertains to interfaces exposing functionality from the Qt MetaObject system like signals/slots.
+
+\section{Curve Creation}
+
+\section{Graphical Output}
 \subsection{Rendering the Model Curve}
 While a PFC can be constructed segment by segment, the final size and position of the curve is not known until after the full curve is constructed.
 
@@ -32,24 +44,12 @@ Since the \gls{QPainter} API used by Qt is iterative in nature (\gls{QPainter} A
 Using \gls{QPainter} thus forces precomputing of the bounding box.
 
 
-\subsubsection{Inheritance in Qt}
-Implementing interfaces that are supposed to be used with Qt's meta object system is a slightly awkward procedure, as Qt's macros used to notify the moc about interface definitions and implementations are not namespace aware. 
+\section{SVG Output}
+\label{sec:svg}
 
-This limitation pertains to interfaces exposing functionality from the Qt MetaObject system like signals/slots.
+\section{PDF Output}
+\label{sec:pdf}
 
-\section{Architectural Considerations}
+\section{Challenges faced during Implementation}
 
-\subsection{Painting in Qt}
-Qt uses an iterative API for 2D graphics named QPainter.
-
-It is a stateful 
-
-A transformation matrix can be applied on all drawing calls,
-
-\subsection{Configuration}
-
-\subsection{Extensibility}
-\subsubsection{Plugin Structure}
-
-\section{Problems}
-\subsection{Model Creation}
+\subsection{Custom Geometry dunt werk liek it should}
