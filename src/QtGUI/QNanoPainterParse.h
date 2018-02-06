@@ -1,6 +1,9 @@
 #pragma once
+#include "Model/LSYSModel.h"
 #include "Model/ModelStringParser.h"
 #include "util/PolarVector2D.h"
+#include <QColor>
+#include <QList>
 #include <QStack>
 #include <QString>
 #include <qnanoquickitempainter.h>
@@ -12,35 +15,58 @@ class QNanoCurvePainter : public QNanoQuickItemPainter {
 
 public:
     QNanoCurvePainter()
+        : p(nullptr)
+        , pos()
+        , rounding(0)
+        , stack{}
+        , cur_color_idx(0)
+        , modelstring()
     {
     }
+    void paint(QNanoPainter* p) override;
+    void synchronize(QNanoQuickItem* item) override;
 
-    void paint(QNanoPainter* p)
-    {
-        // Paint the background circle
-        p->beginPath();
-        p->circle(width() * 0.5, height() * 0.5, width() * 0.46);
-        QNanoRadialGradient gradient1(width() * 0.5, height() * 0.4, width() * 0.6, width() * 0.2);
-        gradient1.setStartColor("#808080");
-        gradient1.setEndColor("#404040");
-        p->setFillStyle(gradient1);
-        p->fill();
-        p->setStrokeStyle("#202020");
-        p->setLineWidth(width() * 0.02);
-        p->stroke();
-        // Hello text
-        p->setTextAlign(QNanoPainter::ALIGN_CENTER);
-        p->setTextBaseline(QNanoPainter::BASELINE_MIDDLE);
-        QNanoFont font1(QNanoFont::DEFAULT_FONT_BOLD_ITALIC);
-        font1.setPixelSize(width() * 0.08);
-        p->setFont(font1);
-        p->setFillStyle("#B0D040");
-        p->fillText("HELLO", width() * 0.5, height() * 0.4);
-        // QNanoPainter text
-        QNanoFont font2(QNanoFont::DEFAULT_FONT_THIN);
-        font2.setPixelSize(width() * 0.18);
-        p->setFont(font2);
-        p->fillText("QNanoPainter", width() * 0.5, height() * 0.5);
-    }
+private:
+    QNanoPainter* p;
+    QString modelstring;
+
+    util::PolarVector2D pos, p1, p2, p3;
+    bool is_first_segment = true; //The first drawn segment needs to be handled differently than the inner segments)
+    QStack<util::PolarVector2D> stack{};
+    int cur_color_idx;
+    double angle;
+
+    QPointF coord_last_drawn,
+        coord_final;
+
+    double rounding;
+
+    void parsing_preamble();
+    void parsing_finalize();
+
+    LSYS_STRING_PARSE_FUNC_DECL
+    void add_segment();
+    void next_color();
+    void prev_color();
+    void incAngle();
+    void decAngle();
+    void stackPush();
+    void stackPop();
+
+    void normalize();
 };
+
+static const QList<QColor>
+    colors({ QColor(Qt::black),
+        QColor(Qt::blue),
+        QColor(Qt::green),
+        QColor(Qt::red),
+        QColor(Qt::cyan),
+        QColor::fromCmykF(0.45, 0.86, 0, 0),
+        QColor::fromCmykF(0, 0.61, 0.87, 0),
+        QColor::fromCmykF(0, 0.83, 1, 0.7),
+        QColor(Qt::magenta),
+        QColor::fromCmykF(0.86, 0.91, 0, 0.04),
+        QColor::fromCmykF(0.5, 0, 1, 0),
+        QColor::fromCmykF(0.64, 0, 0.95, 0.4) });
 }

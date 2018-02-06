@@ -55,7 +55,6 @@ namespace Export {
         {
             Expects(rounding <= 0.5); //Rounding percentage must not be larger than 50% (where arc connects with arc, no line inbetween)
 
-            static QColor current_color;
             static util::PolarVector2D p1{ pos }, p2{ pos }, p3{ pos };
 
             if (!rounding) //If we don't do rounding, we just draw a straight line between the current point an the last

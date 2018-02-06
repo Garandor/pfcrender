@@ -35,10 +35,12 @@ LINK_LIBRARIES(	Qt5::Gui_EGL
 INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR})
 add_definitions(
     -DQT_NO_INFO_OUTPUT
-    -DQNANO_USE_RENDERNODE
     -DQNANO_ENABLE_GLES3
     -DQNANO_QT_GL_INCLUDE
+   -DQNANO_USE_RENDERNODE
    )
+# Using QNANO_USE_RENDERNODE allows to pick up the bounding box on the go and just apply a transformation to normaliye the curve,
+# otherwise, rendering on a FBO, the curve would be clipped
 
 #--- END SUBMODULES
 

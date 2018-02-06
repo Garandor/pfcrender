@@ -13,10 +13,11 @@ namespace QtGUI {
 
 void PFCRenderGUI::onModelChanged()
 {
-    auto* mdlItem = qobject_cast<QtGUI::CustomGeometryModel*>(p_eng->rootObjects()[0]->findChild<QQuickItem*>(QStringLiteral("model")));
+    auto* mdlItem = qobject_cast<QtGUI::QNanoRenderedCurve*>(p_eng->rootObjects()[0]->findChild<QQuickItem*>(QStringLiteral("model")));
     if (mdlItem) {
-        auto vm = QtGUI::createGeom(*(m_mdl.getModel()));
-        mdlItem->setGeometryNode(vm);
+        mdlItem->onModelChanged(m_mdl.getModel());
+    } else {
+        qDebug() << "Not currently displaying a curve, ignoring model change";
     }
 }
 
@@ -28,7 +29,6 @@ void PFCRenderGUI::post_status(const QString& what)
 PFCRenderGUI::PFCRenderGUI(QQmlApplicationEngine* eng)
     : p_eng(eng)
     , m_mdl()
-    , m_vm()
 {
     //Instantiate everything from the provided sequence
     Common::Sequence_Walker walker;
@@ -36,7 +36,8 @@ PFCRenderGUI::PFCRenderGUI(QQmlApplicationEngine* eng)
     post_status(QString(walker.m_stepNames.count()));
 
     walker.execute(m_mdl);
-    onModelChanged(); //XXX: This shouldnt be here
+
+    onModelChanged(); //Notify VM that the model changed
 
     //we should now have a model and viewmodel in place
     //now that everything is in place, connect all necessary signals so we can resume normal GUI operation

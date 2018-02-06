@@ -9,7 +9,7 @@ class LSYSModel : public QObject {
     Q_OBJECT
 
 signals:
-    virtual void modelChanged(const QString& mdl) const = 0;
+    virtual void modelChanged(const QString& new_string) const = 0;
 
 public:
     virtual void setModel(std::unique_ptr<QString>) = 0;

@@ -8,7 +8,7 @@ void LSYSModelImpl::setModel(std::unique_ptr<QString> newMod)
     emit modelChanged(*m_sModel.get());
 }
 
-QString const* LSYSModelImpl::getModel() const
+const QString* LSYSModelImpl::getModel() const
 {
     return m_sModel.get();
 }

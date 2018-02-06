@@ -5,8 +5,8 @@
 #include <QQmlApplicationEngine>
 #include <QString>
 
-#include "QtGUI/CustomGeometryModel.h"
 #include "Model/LSYSModelImpl.h"
+#include "QtGUI/NanoCustomGeometryModel.h"
 
 namespace QtGUI {
 
@@ -24,7 +24,6 @@ public:
 
 public:
     Model::LSYSModelImpl m_mdl;
-    QtGUI::CustomGeometryModel m_vm;
     QQmlApplicationEngine* p_eng;
 };
 

@@ -67,6 +67,8 @@ Rectangle{
        QNanoRenderedCurve {
             width: 400
             height: 800
+        objectName: 'model'
+        id: model
         }
     }
 

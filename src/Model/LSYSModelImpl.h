@@ -8,11 +8,11 @@ class LSYSModelImpl : public LSYSModel {
     Q_INTERFACES(LSYSModel)
 
 signals:
-    void modelChanged(const QString& mdl) const override;
+    void modelChanged(const QString& new_string) const override;
 
 public:
     void setModel(std::unique_ptr<QString>) override;
-    QString const* getModel() const override;
+    const QString* getModel() const override;
 
 private:
     std::unique_ptr<QString> m_sModel;

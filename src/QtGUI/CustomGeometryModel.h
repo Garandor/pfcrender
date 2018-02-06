@@ -32,5 +32,5 @@ private:
     QSizeF m_vertexSize;
 };
 
-} // namespace Model
+} // namespace QtGUI
 #endif
