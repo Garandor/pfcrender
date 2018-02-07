@@ -12,14 +12,12 @@ void QtGUI::QNanoCurvePainter::paint(QNanoPainter* pe)
     Expects(pe); //fail on nullptr
     p = pe;
 
+    cur_color_idx = 0;
+
+    p->translate(200, 200);
     //If we have no string, just draw a circle
     if (modelstring.isEmpty()) {
-        p->beginPath();
-        p->setStrokeStyle("#202020");
-        p->setLineWidth(width() * 0.02);
-        p->circle(width() * 0.5, height() * 0.5, width() * 0.46);
-        p->stroke();
-        p->fill();
+        qWarning() << "QNanoCurvePainter: Modelstring was empty";
         return;
     }
     // Pick up bounding box and draw curve in one parsing of the string
@@ -28,7 +26,8 @@ void QtGUI::QNanoCurvePainter::paint(QNanoPainter* pe)
     parse_model_string(modelstring);
     parsing_finalize();
 
-    normalize();
+    qDebug() << "Bounding box is " << min << " : " << max;
+    boundingBox = QRectF(min, max);
 }
 
 void QtGUI::QNanoCurvePainter::synchronize(QNanoQuickItem* item)
@@ -42,9 +41,30 @@ void QtGUI::QNanoCurvePainter::synchronize(QNanoQuickItem* item)
         modelstring = *(real_item->getP_mdl());
 }
 
+void QtGUI::QNanoCurvePainter::calculate_bounding_box()
+{
+    //Box needs to be precaclulated since we need to transform the coordinate system for everything to fit and QNanoPainter does not
+    //provide a mechanism of doing that post-drawing
+    //TODO: This could maybe be improved by hacking QNanoPainter to include a QSGTransformNode if a transform is wanted
+
+    if (pos.start.x < min.x())
+        min.setX(pos.start.x);
+    else if (pos.start.x > max.x())
+        max.setX(pos.start.x);
+    if (pos.start.y < min.y())
+        min.setY(pos.start.y);
+    else if (pos.start.y > max.y())
+        max.setY(pos.start.y);
+}
+
 inline void QtGUI::QNanoCurvePainter::parsing_preamble()
 {
     p->beginPath();
+
+    //calculate BBox and translate coordinates, so the top left ends up at 0,0
+    //    calculate_bounding_box();
+
+    //    p->translate(min);
 
     //Starting position
     pos = {};
@@ -52,13 +72,12 @@ inline void QtGUI::QNanoCurvePainter::parsing_preamble()
     //initialize config
     pos.angle = Common::Config_Registry::getInstance()->getOpt("ViewModel.InitialAngle").toDouble(nullptr);
     pos.length = Common::Config_Registry::getInstance()->getOpt("ViewModel.SegmentLength").toDouble(nullptr);
-    p->setStrokeStyle(QNanoColor(0x88888888));
-    //QNanoColor::fromQColor(colors.first()));
+    p->setStrokeStyle(QNanoColor::fromQColor(colors.first()));
     p->setLineWidth(Common::Config_Registry::getInstance()->getOpt("ViewModel.SegmentWidth").toDouble(nullptr));
     angle = Common::Config_Registry::getInstance()->getOpt("ViewModel.Angle").toDouble(nullptr);
     rounding = Common::Config_Registry::getInstance()->getOpt("ViewModel.Rounding").toDouble(nullptr);
 
-    p->setAntialias(false);
+    p->setAntialias(true);
     ///TODO: Get colors from config
 
     is_first_segment = true;
@@ -68,11 +87,10 @@ inline void QtGUI::QNanoCurvePainter::parsing_preamble()
 
 inline void QtGUI::QNanoCurvePainter::parsing_finalize()
 {
-    p->stroke();
-    p->fill();
+    //    p->fill();
     if (rounding) //Connect last arc segment to final coordinate
         p->lineTo(coord_final);
-    p->circle(width() / 2, height() / 2, height());
+    p->stroke();
 }
 
 //String parsing
@@ -164,7 +182,7 @@ inline void QtGUI::QNanoCurvePainter::add_segment()
         } else {
             //angle changed, draw next arc segment
 
-            //1. move to last endpoiunt, draw line to beginning of next arc, draw arc
+            //1. move to last endpoint, draw line to beginning of next arc, draw arc
             p->lineTo(p2.start.x - (p2.start.x - p1.start.x) * rounding, p2.start.y - (p2.start.y - p1.start.y) * rounding);
             p->quadTo(p2, QPointF(p2.start.x + ((p3.start.x - p2.start.x) * rounding), p2.start.y + (p3.start.y - p2.start.y) * rounding));
 
@@ -178,7 +196,9 @@ void QtGUI::QNanoCurvePainter::next_color()
     cur_color_idx++;
     if (cur_color_idx >= colors.size())
         cur_color_idx = 0;
-
+    p->stroke();
+    p->beginPath();
+    p->moveTo(pos.start.x + 10, pos.start.y + 10);
     p->setStrokeStyle(QNanoColor::fromQColor(colors.at(cur_color_idx)));
 }
 
@@ -188,6 +208,9 @@ void QtGUI::QNanoCurvePainter::prev_color()
     if (cur_color_idx < 0)
         cur_color_idx = colors.size() - 1;
 
+    p->stroke();
+    p->beginPath();
+    p->moveTo(pos.start.x + 10, pos.start.y + 10);
     p->setStrokeStyle(QNanoColor::fromQColor(colors.at(cur_color_idx)));
 }
 
@@ -212,8 +235,4 @@ void QtGUI::QNanoCurvePainter::stackPop()
         qWarning("Tried to pop from empty stack. Ignoring this character");
     else
         pos = stack.pop();
-}
-
-void QtGUI::QNanoCurvePainter::normalize()
-{
 }
