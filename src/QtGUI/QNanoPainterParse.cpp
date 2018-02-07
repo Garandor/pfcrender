@@ -14,7 +14,6 @@ void QtGUI::QNanoCurvePainter::paint(QNanoPainter* pe)
 
     cur_color_idx = 0;
 
-    p->translate(200, 200);
     //If we have no string, just draw a circle
     if (modelstring.isEmpty()) {
         qWarning() << "QNanoCurvePainter: Modelstring was empty";
@@ -28,6 +27,7 @@ void QtGUI::QNanoCurvePainter::paint(QNanoPainter* pe)
 
     qDebug() << "Bounding box is " << min << " : " << max;
     boundingBox = QRectF(min, max);
+    emit boundingBoxChanged(boundingBox);
 }
 
 void QtGUI::QNanoCurvePainter::synchronize(QNanoQuickItem* item)
@@ -46,15 +46,6 @@ void QtGUI::QNanoCurvePainter::calculate_bounding_box()
     //Box needs to be precaclulated since we need to transform the coordinate system for everything to fit and QNanoPainter does not
     //provide a mechanism of doing that post-drawing
     //TODO: This could maybe be improved by hacking QNanoPainter to include a QSGTransformNode if a transform is wanted
-
-    if (pos.start.x < min.x())
-        min.setX(pos.start.x);
-    else if (pos.start.x > max.x())
-        max.setX(pos.start.x);
-    if (pos.start.y < min.y())
-        min.setY(pos.start.y);
-    else if (pos.start.y > max.y())
-        max.setY(pos.start.y);
 }
 
 inline void QtGUI::QNanoCurvePainter::parsing_preamble()
@@ -150,6 +141,16 @@ unsigned int QtGUI::QNanoCurvePainter::parse_model_string(const QString& curve)
 inline void QtGUI::QNanoCurvePainter::add_segment()
 {
     Expects(rounding <= 0.5); //Rounding percentage must not be larger than 50% (where arc connects with arc, no line inbetween)
+
+    //pick up boundingBox alongside rendering to avoid going through the string twice
+    if (pos.start.x < min.x())
+        min.setX(pos.start.x);
+    else if (pos.start.x > max.x())
+        max.setX(pos.start.x);
+    if (pos.start.y < min.y())
+        min.setY(pos.start.y);
+    else if (pos.start.y > max.y())
+        max.setY(pos.start.y);
 
     if (!rounding) //If we don't do rounding, we just draw a straight line between the current point an the last
     {

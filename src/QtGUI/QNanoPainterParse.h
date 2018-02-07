@@ -11,7 +11,11 @@
 namespace QtGUI {
 
 // HelloItemPainter contains the painting code
-class QNanoCurvePainter : public QNanoQuickItemPainter {
+class QNanoCurvePainter : public QObject, public QNanoQuickItemPainter {
+Q_OBJECT
+
+signals:
+    void boundingBoxChanged(QRectF newBox);
 
 public:
     QNanoCurvePainter()

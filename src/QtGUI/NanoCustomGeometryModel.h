@@ -8,14 +8,22 @@ namespace QtGUI {
 
 class QNanoRenderedCurve : public QNanoQuickItem {
     Q_OBJECT
-
     QString const* p_mdl; //non-owning pointer to model string
+
+signals:
+    void boundingBoxChanged(QRectF newBox); //Forwarding signal to qml
 
 public slots:
     void onModelChanged(QString const* pstr)
     {
         p_mdl = pstr;
         //        update(); //update the paint node
+    }
+
+    void onBoundingBoxChanged(QRectF newBox)
+    {
+        qDebug() << "HAHAHAHAHAHAHAHHAA";
+        emit boundingBoxChanged(newBox);
     }
 
 public:
@@ -27,7 +35,9 @@ public:
     QNanoQuickItemPainter* createItemPainter() const
     {
         // Create painter for this item
-        return new QtGUI::QNanoCurvePainter();
+        auto* ptr = new QtGUI::QNanoCurvePainter();
+        connect(ptr, &QNanoCurvePainter::boundingBoxChanged, this, &QNanoRenderedCurve::onBoundingBoxChanged,Qt::QueuedConnection); //receive notifications on bounding box change
+        return dynamic_cast<QNanoQuickItemPainter*>(ptr);
     }
 
     const QString* getP_mdl() const;

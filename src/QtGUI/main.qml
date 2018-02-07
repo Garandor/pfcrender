@@ -7,8 +7,8 @@ ApplicationWindow
 {
 	id: main
     visible:true
-    width: 800
-    height: 600
+    width: 1200
+    height: 1000
     title: qsTr("PFCRender")
 
     toolBar:ToolBar
