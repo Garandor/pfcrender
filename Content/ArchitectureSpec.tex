@@ -1,6 +1,5 @@
 \chapter{Chosen Application Architecture}
 
-\section{Proposed Architecture}
 After researching available technologies, an architecture to build the pfcrender tool on was selected. The implementation is shown alongside the original requirements in the following graphs, split between functional- (figure \ref{fr}) and non-functional (figure \ref{nfr}) requirements. As before, direct requirements are highlighted in green. Take note that each direct requirement is satisfied or verified through an implementation requirement or test case.
 
 The architecture is discussed in detail in the following sections.
@@ -17,24 +16,24 @@ The architecture is discussed in detail in the following sections.
 	\label{nfr}
 \end{figure}
 
-\subsection{Functional Requirements}
+\section{Functional Requirements}
 The main decision to make on the software architecture side was which of the framework libraries discussed in section \ref{sec:res_frameworks} to use.
-This was mainly driven by three main concerns: extensibility, performance and ease-of-use.
+Selection was driven by three main concerns: extensibility, performance and ease-of-use.
 
 Ultimately, the Qt Framework was chosen for the following reasons:
 \begin{itemize}
-	\item Platform-independent dynamic library loading abstraction provided, which is useful for implementing the plugin architecture described in \ref{sec:pluginarch}
+	\item Platform-independent dynamic library loading abstraction provided, which is useful for implementing a plugin architecture as described in \ref{sec:pluginarch}
 	\item Classes provided for exporting e.g. to SVG and PDF
-	\item Though Qt is not a light-weight framework like \gls{sdl}, 2D rendering performance should be good enough when rendering via the QtQuick \gls{api} (see \ref{asomewhere})
+	\item The QtQuick API exposes direct OpenGL access, i.e. rendering performance should not suffer much compared to more light-weight frameworks like \gls{sdl}
 	\item Multiple quality-of-life improvements like the QtCreator \gls{ide} with \gls{gui} designer
 	\item Included QtTest Unit-Testing Framework
 \end{itemize}
 
-Qt provides most of the wanted features in one framework, keeping additional dependencies to a minimum. One notable exception is the drawing \gls{api}, which proved unsuitable during implementation and resulted in inclusion of an additional module (see \ref{sec:qnanopainter}). 
+Qt provides most of the wanted features in one framework, reducing the amount of necessary dependencies to provide all required functionality. The only additional dependency to Qt introduced to the project is the drawing \gls{api} QNanoPainter(\ref{sec:qnanopainter}), which was introduced as manipulating OpenGL geometry directly proved unwiedly for rendering arcs. 
 
 A description of the Qt provided mechanisms used in this tool follows
 
-\subsubsection{Dynamic Library Loading}
+\subsection{Dynamic Library Loading}
 Windows DLL API mandates symbols callable from outside a library to be prefixed with a macro on export and import. The \gls{msdn}\furl{https://msdn.microsoft.com/en-us/library/3y1sfaz2.aspx} defines it the following way
 \begin{lstlisting}
 __declspec( dllimport ) declarator  
@@ -47,7 +46,7 @@ To get cross-\gls{os} operation without recompiling, use Qt's Library loading me
 
 This adds an additional step of making Qt's MetaObjectSystem aware of the library but avoids OS-specific switches/preprocessor macros
 
-\subsubsection{Rendering in Qt}
+\subsection{Rendering in Qt}
 As stated before, Qt offers two different application programming \gls{api}s. A main difference is in the rendering methode they use:
 \begin{description}
 	\item [QWidgets] The main API of Qt. It is Java SWING-like and handles GUI design and functionality in C++ using Qt-provided or custom QWidget-derived classes.
@@ -76,6 +75,8 @@ Due to performance measurements\furl{https://www.vikingsoftware.com/qtquick-cust
 Further performance benchmarks\furl{http://kgronholm.blogspot.com/2017/12/qt-510-rendering-benchmarks.html} led to preferring QNanoPainter over the built-in QQuickPaintedItem, even though it meant introducing an additional dependency into the project.
 
 It is worth noting, that QPainter \gls{api} was still used for file outputs (see \ref{svg}, \ref{pdf}), where performance is not as critical, due to its integration with other Qt exporter classes.
+
+\section{Non-functional Requirements}
 
 \subsection{Qt Unit Testing Framework}
 
@@ -131,44 +132,36 @@ Since it is a standalone executable, it can also be run by other testing environ
 	\todo{travis buildlog}
 \end{figure}
 
-\section{Flexible Buildsystem}
-Though as described in \ref{sec:somewhere} Qt has its own makefile generator with qmake, CMake was selected for this projects for the following reasons
-\begin{itemize}
-	\item CMake is more widely used in the \gls{floss} community
-	\item It is more flexible in generators
-	\item QtCreator has good CMake integration
-\end{itemize}
+\subsection{Makefile Generator - CMake}
+Though as described in \ref{sec:resMakefileGen} Qt has its own makefile generator with qmake, CMake was selected because of good support in \gls{ci} software, widespread use and thus great documentation, and its built-in CTest Test-Runner, which allows to automatically gather defined unit-tests and run them in a \gls{ci} build. This makes \gls{ci} more informative, as it will not only report failure on changes that break compilation, but also on changes that break functionality for which tests exist. This in turn is a great gain in maintainability of the project and encourages contributors to actually write unit tests, since they don't need to be run manually.
 
-Though it would surely be possible to have the platform agnosstic sources present, and then manually create a project for MSVC/MinGW when on Windows, gnu gcc on Linux and clang on Mac, this would be a pain to set up and maintain.
+\subsection{Configuration}
+It was thus decided to introduce a central store of configuration, that will be accessible to the entire application using the Singleton pattern discussed in section \ref{sec:ston}.
 
-Solutions to this problem exist in so-called buildsystem generators. Those gather sources, dependencies and additional project information from a configuration file, detect the architecture they are running on, and generate the files necessary to compile the full project on whichever compiler is present on the current system.
+Furthermore, each plugin is required to publish configuration options it wants to this config store and pull its configuration from it.
 
-QMake - The native buildsystem generator of Qt, uses .pro files for project description
+Since all available commandline options must be known at parsing time for documentation generation and parsing itself, it follows that all plugins must be loaded once on startup to query them for their config options.
 
-CMake - A powerful and scalable config script-driven generator that is widely used in both Open Source and commercial projects 
+While this is not computationally efficient, as not all plugins will necessarily be executed during program runtime and thus get loaded in vain, maintainability outweighs this minor performance issue, as the number of plugins is small. Also, the fact that all plugins must be loaded anyway allows gathering a list of plugins automatically by just loading every library present in the plugins subdirectory instead of maintaining a separate registry of available plugins, e.g. in form of a configuration file, making the program \emph{truly runtime extensible without additional configuration}.
 
-
-\section{Commandline Parsing}
-Unlike other programming languages (e.g. Python), C++ does not provide a standard built-in facility to provide parsing capability for parsing parameters passed to the program as commandline options.
-
-Alternatives:
-
-\begin{itemize}
-\item getopt() - Coming from C, this is a legacy method widely used on Linux. Since it is specific to POSIX systems, it cannot be used on Windows 
-\item Boost.progam\_options - A C++ native, highly configurable solution shipped with the open source Boost library
-\url{http://www.boost.org/doc/libs/1\_58\_0/doc/html/program\_options.html}
-\item QtCommandLineParser - A Qt native parsing class. Batch-parses all parameters and returns data structures with positional arguments in correct order, and a (reordered) map of switches with their parameters
-http://doc.qt.io/qt-5/qcommandlineparser.html
-\item Manual parsing of the argv array. While this is the most flexible solution in customization, it is reinventing the wheel and also very inflexible with respect to extensibility.
-\end{itemize}
+Another problem is gathering options from plugins automatically is possible when building a list of plugins, options exposed by the main application can not be added this easily, as the objects that expose the info structure do not need to exist by the time. So in this instance - for options of the main app - a manual list must be maintained after all. While this difference in behaviour betwenn core and plugins is unfortunate, it is still an improvement over fully manual API documentation.
 
 Due to it supporting our use-case, being easily extensible and not introducing any more dependencies into the project above the already used Qt Framework libraries, the QtCommandLineParser was chosen to provide the main CLI-based interface to the program.
+\subsubsection{config stores}
+The selected architecture defines an order of precedence of config options:
+1. Global options are set from config file is parsed
+2. options given on Command line are set 
+(3. GUI options can set config settings)
 
+\subsection{Version Control System}
+Due to the useful issue tracking feature of github and its extensive third party infrastructure integration with the services like \gls{ci}, git was chosen as \gls{vcs} and github as the central repository provider.
 
-\section{Option Persistency}
-Since it is often unneccessary to set any and all config options for the program on the command line each time it is run, keeping config options persistently over program relaunches is useful. The typical implementation of this persistent store again varies by platform, ranging from putting keys into the Windows registry, over property list files on Mac to plain .ini or .cfg files on Linux.
+\subsection{CI provider}
+Github integration, and free-for-open source service, led to Appveyor being selected as \gls{ci} provider for windows builds, and Travis CI for Linux and MacOS X.
 
-Again, Qt comes with a wrapper around this platform disparity
+\section{Honorable Mentions}\todo{lol}
+\subsection{QtCreator}
+\todo{asdf}
 
 \section{Class Hierarchy}
 \begin{figure}[p]

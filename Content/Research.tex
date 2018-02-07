@@ -1,5 +1,4 @@
 \chapter{Research and Architecture Definition}
-This section goes into detail on the requirements and discusses possible solutions.
 \section{Maintainability}
 Maintainability was declared a main goal in the requirements, and this is an issue with much broader reach than just good writing clean code.
 
@@ -11,13 +10,13 @@ Non-coding factors that contribute to maintainability of a software project incl
 	\item incremental integration of changes with possibility to roll back to an earlier point in history
 \end{itemize}
 
-The importance of such "meta-programming" techniques is testified by the fact that a job field for software engineers called \gls{DevOps} exists, which engages in finding ways to optimize coding workflow all day.
+The importance of such "meta-programming" techniques is testified by the fact that a job field for software engineers called \gls{DevOps} exists, which engages in finding ways to optimize coding workflow.
 A definition of DevOps in \citet{Bass2015}:
 \begin{quote}
 	DevOps is a set of practices intended to reduce the time between committing a change to a system and the change being placed into normal production, while ensuring high quality.
 \end{quote}
 
-Though this field is too extensive to thoroughly investigate in the course of a bachelor's thesis, some of these practices are adapted here to make the resulting software maintainable.
+Any time saved locating, fixing and testing mistakes translates to higher productivity of the development team. Although this field is too extensive to thoroughly investigate in the course of this thesis, some DevOps practices are outlined in the following sections and adapted to make the resulting software more easily maintainable.
 
 In addition to the above, code itself should also conform to certain rules:
 \begin{itemize}
@@ -29,42 +28,70 @@ In addition to the above, code itself should also conform to certain rules:
 Adhering to above rules increases productivity of developers and lowers the barrier of entry for new coders.
 
 \subsection{Version Control}
-Distributed (even if small in scale) software engineering efforts can greatly benefit from version conttrol systems, which provide features like
+\gls{Version Control System}s  are used in \gls{scm} to keep track of changes to a codebase. They provide featues like
 \begin{itemize}
 	\item Bookkeeping of who authored which change
-	\item Messages describing each change (obsoleting Changelogs)
+	\item Messages describing each change (obsoleting changelogs)
 	\item History-keeping of earlier revisions of code
 	\item Automatic conflict resolutions in case two developers changed the same files
 	\item Maintaining separate states of the code in so-called branches
 \end{itemize}
 
-When working on a multi-user project, there really is no excuse for not using some form of \gls{vcs}, as anyone who ever had to manually codebases will attest, but even for single-developer projects they can be very useful, e.g. because the branching feature coupled with change messages allows working on multiple separate features in parallel, only merging changes back to the main program after completion. 
+Their use is often mandatory in industry due to traceability requirements, but even single-developer project can benefit from using, a \gls{vcs}, e.g. because the branching feature coupled with changelog messages allows working on multiple separate features in parallel, merging changes back to the main program after a features has been completed. 
 
+Most major \gls{vcs}es have ecosystems that allow for hosting open-source repositories on the \gls{cloud}\footnote{e.g. \url{https://sourceforge.net/create/}}, selection is mostly a matter of personal preference, though some differences exist.
+An overview over some popular \gls{vcs}es follows that are available on both Windows and Linux.
 
-\subsubsection{SVN}
-A revisioning software once claiming to be "CVS done right", where CVS is its direct precursor.
+\subsubsection{Apache Subversion}
+Subversion\furl{https://subversion.apache.org/} is a centralized \gls{vcs}, changes made locally need to be pushed to a central server, where they are revisioned. It supports branching, tagging and commit messages.
 
-It is a  
+Due to the centralization, no interaction with the \gls{vcs} is possible when the connection to the server is interrupted.
 
-It has windows integration with TortoiseSVN, making it easy to use
 \subsubsection{Mercurial}
+Mercurial\furl{https://www.mercurial-scm.org/} decentralized \gls{vcs}, where a checkout contains the whole repository, i.e. all interaction like committing changes, branching, checking out other code revisions can be done locally, while a central repository can be used to synchronize local changes with others.
 
 \subsubsection{Git}
-\gls{git} is a code revisioning software implementation created by Linus Torvalds, searching for a solution to manage the growing base of coders another project of his - the Linux kernel.
+\gls{git}\furl{https://git-scm.com/} is like Mercurial, only popular\furl{https://www.openhub.net/repositories/compare}. It is also a distributed \gls{vcs}, but conceived by Linus Torvalds of Linux kernel fame on a search for ways to manage the large scale of contributors on the project.
 
-Its key benefits are
+Like with Mercurial, key benefits are
 \begin{description}
 	\item[Decentralization] No reliance on availability of a central server for daily work
-	\item[Smart Merging] Conflict resolution algorithms are fairly good at finding and automatically fixing trivial conflicts, keeping developer interaction on merges to a minimum
+	\item[Smart merging] Conflict resolution algorithms are fairly good at finding and automatically fixing trivial conflicts, keeping developer interaction on merges to a minimum
 	\item[Central repository support] Though git operates locally, it supports pushing code to and pulling from remote repositories, enabling the use of a central "synchronization" repository, which is the Basis for the popular \gls{github} 
-	\item [Huge community] Git has been the prime \gls{vcs} in the \gls{floss} community for several years and brings with it an ecosystem of 3rd-party tool integration 
 \end{description}
 
-\subsection{\gls{ci}}
-Continuous Integration is a concept popularized as an \gls{agile} method
-\subsubsection{Github}
+The distinguishing factor is the huge userbase that has resulted in git integration to a multitude of third-party tools centered around github\furl{http://github.com}, the open-source \gls{cloud}-repository provider for git.
 
-\subsubsection{Jenkins}
+\subsection{Continuous Integration}
+\gls{ci} is a concept popularized in the rise of agile software development. In classical development structures, features are are coded to perceived completion before they are introduced into the codebase of a product, their functionality maybe tested in unit-tests. Integrations of features are performed on a fixed schedule, e.g. quarterly with integration tests following the procedure, leading to an eventual release.
+
+\gls{ci} is a method to avoid the time- and effort-consuming "big-bang" integrations, by testing changes under development on the current state of the main codebase \textit{continuously}. This is made possible by \gls{vcs}es and their branching functionality, and works by taking the local branch of the developers code on each change, trying to build the code and running available tests on it. Breaking changes thus get reported to the developer much quicker than they would classically, limiting the possible causes of the build failure, thus reducing the time spent bug hunting.
+
+Since \gls{ci} needs an always-on system in a consistent configuration that is always ready to build the code, this technique relies on virtualization through software like docker\furl{https://www.docker.com/} and VMWare\furl{https://www.vmware.com/}.
+
+Since it is rarely feasible for small projects to maintain such build systems themselves, \gls{cloud} providers have started providing those as a service, for open-source projects often for free.
+
+\subsubsection{Travis CI}
+Travis \gls{ci}\furl{https://travis-ci.org} can run Linux (Ubuntu 12.04 and 14.04) and Mac OS X builds on their cloud platform.
+
+It integrates with github for starting a build on each commit and reports completion status back to github.
+
+Builds are queued on commit, depending on the load of servers it can take some time for them to actually execute.
+
+Configuration happens in a .travis.yml file that has to be provided with the sources and the service is free for open source proojects.
+
+\subsubsection{Circle CI}
+Circle CI\furl{https://circleci.com} distinguishes itself from Travis through its larger selection of preconfigured docker containers, reducing configuration overhead of the build environment.
+Configuration is through a .circleci file in the sources.
+
+One Linux-based container is free, allowing one build at a time. MacOS X is paid only.
+
+Like with Travis, they integrate with Github.
+
+\subsubsection{Appveyor CI}
+Appveyor\furl{https://ci.appveyor.com/login} is a Windows-only \gls{ci} provider, enabling builds on the various Microsoft Visual Studio version.
+
+It provides github integration, the build is configured through an appveyor.yml file in the sources, and is free for open source projects.
 
 \subsection{Code formatting guidelines}
 Creating a common code format can be as simple as writing down a set of rules in a code-of-conduct letter for coders to adhere to. What constitutes a "good" formatting guideline is a highly subjective matter however, which is the reason for "different looking code" in the first place.
@@ -80,11 +107,11 @@ When used in conjunction with a \gls{vcs}, formatting can be automatically appli
 
 \subsection{Unit Testing frameworks}
 
-"nobody has the time to write tests"
+\todo{"nobody has the time to write tests"}
 
 \subsection{Model-driven Design and Round-Trip Engineering}
 Modeling is often the first step of implementing a fairly complex architecture, 
-
+\todo{describe UML}
 decomposing the goal into subobjectives and defining clear interfaces, enabling parallel execution when working in a team.
 
 UML
@@ -95,49 +122,28 @@ In classic Model-driven Design, the UML model can be used to generate boilerplat
 
 Architectural changes made in the code have to be manually introduced in the model as well, which can not be enforced and often leads to the model desyncing. Because of that, often a waterfall model of project design is adopted, where the model is created as a starting point of implementation, and after it has been reviewed and implementation begins, discarded.
 
-Round-Trip Engineering Tooling helps alleviate this problem, by automatically feeding changes from the code back into the UML model.
+\gls{rte} Tooling helps alleviate this problem, by automatically feeding changes from the code back into the UML model.
 
 Depending on the target language, the task of reintroducing changes can be very difficult. C++, being a very syntactically complex language is notoriously difficult to round-trip engineer, reflecting in bad tool support.o
 
-\todo{list of tools that claim to offer c++ rountripping}
+In research, only a single open source / free-for-education modeling tool could be identified that offers \gls{rte} for C++: Astah\furl{http://astah.net}
 
-- Astah - plugin
+Exporting a model to C++ code is provided as core functionality, import from code through a plugin\furl{http://astah.net/features/cpp-reverse-plugin}.
+
+During development the reversing functionality was found to not work reliably, so \gls{rte} was not used.
 
 \begin{quote}
 Theory and practice sometimes clash. And when that happens, theory loses. Every single time.
 - Torvalds, Linus (2009-03-25). Message to Linux kernel mailing list. Retrieved on 2009-03-25.
 \end{quote}
 
-Since no suitably sophisticated tool could be identified in the noncommercial solutions, round-trip engineering could not be used in this project.
-
-\subsection{Design Patterns}
-\subsubsection{Registry Pattern}
-
-\subsubsection{Factory Pattern}
-
-\subsubsection{Builder Pattern}
-
-\subsubsection{Singleton}
-Single instance + easy global access from all classes of the app
-
-
 \subsection{Autogenerated Docs}
+\todo{docs}
 
 \section{Extensibility}
 
-\subsubsection{Plugin Structure}
-Lower app startup times, not every importer exporter is needed on every app run
-
-Easy to extend the app with new importers / exporters without touching other internal code
-
-Plugins encapsulated by Shared Libraries can be published to the app, registry of available plugins can be read from config file.
-
-No recompilation needed on adding/removing plugins.
-
-Each plugin must share a common interface though
-
 \subsection{Plugin Architecture}
-Looking at the requirements, it is apparent, almost all component have disjunt responsibilities, their main common element being the string description of the PFC they operate on.
+Looking at the requirements, it is apparent that almost all component have disjunct responsibilities, the main common element being the string description of the PFC.
 
 The \gls{lsys} generator takes some input and outputs a model string. GUI, SVG and PDF renderings all operate on the model, but don't influence each others operation.
 
@@ -147,61 +153,89 @@ In conjunction with a dynamic loading system, this confers several benefits:
 
 \begin{itemize}
 	\item  Reduced compilation time of the main application
-	\item  Extensibility without recompilation
+	\item  "Pluggability" of new functionality without recompilation of the main app
+	\item  Lower startup times, as functionality can be loaded once it is needed, keeping the size of the the core binary small
 \end{itemize}
 
-This architecture also comes with drawbacks
-- Updating the main app with changes breaking public APIs used by plugins will fail at runtime until all plugins have been updated/recompiled
-- If plugins have dependencies on other plugins, maintenance complexity grows exponentially and loading sequence must be enforced
+Drawbacks to this implementation are
+\begin{itemize}
+	\item Updating the main app with changes breaking public APIs used by plugins will fail at runtime until all plugins have been updated/recompiled
+	\item If plugins have dependencies on other plugins, maintenance complexity grows exponentially and loading sequence must be enforced
+\end{itemize}
 
-The additionally introduced complexity can - in sufficiently complex projects - significantly outweigh modularization benefits, resulting in what is called \"plugin hell\". %\ref @ph.
+The additionally introduced complexity can - in sufficiently complex projects - significantly outweigh modularization benefits, resulting in what is called "plugin hell"\furl{https://queue.acm.org/detail.cfm?id=1053345}.
 The Eclipse IDE, in its core being a plugin loader and all functionality supplied by plugins is a prime example of the possible complexity.
 
 Since plugins to pfcrender will mainly consist of new Import/Export formats with limited intrinsic complexity and no dependencies on other plugins, a plugin architecture was deemed beneficial for increasing extensibility and thus the following architecture was chosen.
 
-%\image {Plugin architecture}
+\todo{image of Plugin architecture}
 
 \subsection{Configuration}
-Main considerations:
-- Want all options to be command line selectable
-- Want documentation of available commandline options
-- Options are provided by components of the GUI as well as by plugins
+The solution is required to be scriptable, which means all configuration options necessary for automated operation must be selectable from the command line.
+This focus on a feature-rich \gls{cli} leads to the necessity of good \gls{cli} documentation, i.e. a form of "help" message that documents the options available to the user.
+Providing and maintaining a help page manually is not only cumbersome, it will, as is the case with all manually maintained documentation eventually become out-of-sync with the code.
 
-The main interface to the application will be the commandline.
+This problem is exacerbated by use of a plugin architecture, as available options depend on the presence of plugins that use them. This in turn is runtime information that can not be known at compile time, thus making any of the standard, static methods like "hardcoded" help message, manpage or README files impossible to use.
 
-Automatic documentation of all available options to the commandline is a must-have feature when maintainability of the application is a major concern.
+Though it was not a requirement, it is desirable to provide the \gls{gui} with a method of setting configuration options as well, to eventually enable users that don't need scriptability to operate the application fully from the \gls{gui}
 
-Though other, manual approaches like manfiles and README documents exist, it is not only difficult to prevent them from desynchronizing with the actual code of the program, in a plugin architecture as described above, the actual functionality offered by the total of available plugins will vary by deployment and can thus not be centrally written down.
+We thus need a method of configuration that is easily extensible with new options, accessible from \gls{cli} and \gls{gui} and generates \gls{cli} documentation automatically at runtime.
 
-It was thus decided to introduce a central store of configuration, that will be accessible to the entire application.
+\subsubsection{Singleton Pattern}
+\label{sec:ston}
+Whenever a piece of information needs to be known in global scope, i.e. across the whole application and exists only once - as is the case for a store of configuration information - the Singleton, described in \citet{Gamma1994} is a very useful design pattern. 
 
-Furthermore, each plugin is required to publish configuration options it needs to the main application.
+\begin{lstlisting}
+class Config_Registry {
+private:
+    static Config_Registry* instance; 
+    Config_Registry();
 
-Since all available commandline options must be known at parsing time for documentation generation and parsing itself, it follows that all plugins must be loaded once on startup to query them for their config options.
+public:
+    static Config_Registry* getInstance()
+    {
+      if (instance == nullptr)
+          instance = new Config_Registry();
+      return instance;
+    }
+    vector<config_opt_T> conf_opts;
+    ~Config_Registry();
+    Config_Registry(Config_Registry&) = delete;
+    Config_Registry operator=() = delete;
+}
 
-While this is not computationally efficient, as not all plugins will necessarily be executed during program runtime and thus get loaded in vain, maintainability outweighs this minor performance issue, as the number of plugins is small
+\end{lstlisting}
+Key element of this class is the private constructor, which can only be executed through the class-static getInstance() method, which returns an already existing instance, or creates a new one.
+Copying and moving are prevented by the delete copy and assignment operators - presence of which prevents autogeneration of move constructors by the compiler.
+It follows that an object so-created can exist only once in the program and can be accessed from any file that can access the getInstance method, i.e. has the header included. 
+This class can then contains a list of config options and other elements of interest to multiple parts of the program. 
 
-\todo{Make callgrind timing analysis of lib calls }
+Since the pointer has static duration, the lifetime of its object only ends when delete is called explicity, so care has to be taken to ensure its proper destruction and prevent memory leaks.
 
-A standard workaround for this issue is builing a list of options at compile time, e.g. using the C++11 constexpr keyword or \gls{tmp}, this method is not suitable here, since options available depend on the available plugins, which are only known at runtime.
-See also \url{https://stackoverflow.com/questions/9975672/c-automatic-factory-registration-of-derived-types}
-or auto registration of class with a typelist ?
-\url{https://stackoverflow.com/questions/42077057/c14-metaprogramming-automagically-build-a-list-of-types-at-compile-init-tim?rq=1}
+\subsection{Commandline Parsing}
+Unlike other programming languages (e.g. Python), C++ does not provide a standard built-in facility to provide parsing capability for parsing parameters passed to the program as commandline options.
 
-Another problem is gathering options from plugins automatically is possible when building a list of plugins, options exposed by the main application can not be added this easily, as the objects that expose the info structure do not need to exist by the time. So in this instance - for options of the main app - a manual list must be maintained after all. While this difference in behaviour betwenn core and plugins is unfortunate, it is still an improvement over fully manual API documentation.
+In a plugin-based architecture, the program must provide an \gls{cli} that is easily extended with additional commandline options, as plugins can need additional configuration and are loaded at runtime.
 
-For further details on the implementation, see \ref chapterX{Singleton}
+The main commandline parsing solution available in any standard C++ environment is getopt(), which is inherited from C and thus brings with it a procedural interface that is not easily extensible.
 
-This central store can also be exposed to user via the GUI (see \ref chapterX{guiconfig}
+Alternatives:
 
-\subsection{Batch mode}
-Unlike in the GUI, where we can check for config options once the object using them is instantiated, the CLI batch mode runs a preset sequence of steps and needs to gather all available/acceptable config options before starting the process in order to generate meaningful CLI documentation.	
+\begin{itemize}
+\item Manually building a structure to parse the argv array. While this is the most flexible solution w.r.t. customization, it is reinventing the wheel and also very inflexible with respect to extensibility.
+\item Boost.progam\_options - A C++ native, highly configurable solution shipped with the open source Boost library\furl{http://www.boost.org/doc/libs/1\_58\_0/doc/html/program\_options.html}
+\item QtCommandLineParser - A Qt native parsing class. Batch-parses all parameters and returns data structures with positional arguments in correct order, and a (reordered) map of switches with their parameters
+http://doc.qt.io/qt-5/qcommandlineparser.html
+\end{itemize}
 
-\subsection{config stores}
-The selected architecture defines an order of precedence of config options:
-1. Global options are set from config file is parsed
-2. options given on Command line are set 
-(3. GUI options can set config settings)
+
+
+\section{Option Persistency}
+Since it is often unneccessary to set any and all config options for the program on the command line each time it is run, keeping config options persistently over program relaunches is useful. The typical implementation of this persistent store again varies by platform, ranging from putting keys into the Windows registry, over property list files on Mac to plain .ini or .cfg files on Linux.
+
+Again, Qt comes with a wrapper around this platform disparity
+
+
 
 \section{Cross-OS operation}
 
@@ -227,7 +261,7 @@ Thankfully, several of those libraries exist that provide a higher-level API abs
 \label{sec:res_frameworks}
 
 \subsubsection{Cairo}
-\ref{sec:cairo}
+\label{sec:cairo}
 Cairo is a C-based 2D vector graphics library which is widely used in open-source projects\furl{https://en.wikipedia.org/w/index.php?title=Cairo_(graphics)&oldid=812908471} like GTK+, WebKit and the Poppler PDF rendering library.
 
 \subsubsection{SFML}
@@ -253,6 +287,7 @@ In addition to providing graphics and \gls{gui} abstractions, it also provides a
 Asynchronous GUI programming is provided through an event loop and notification system called Signals and Slots
 
 \subsection{Makefile generators}
+\label{sec:resMakefileGen}
 Having cross-platform compilable sources is not the only requirement to getting a program developable and deployable cross-platform.
 In addition to sources and headers provided with the project, compiling needs information on 
 \begin{itemize}
@@ -268,15 +303,17 @@ This information is typically stored in "project stores" like Visual Studio's so
 A collection of the GNU utilities autoconf, automake and libtool. It is the first widely used cross platform build configurator, existing since the 1980s. They are used to generate a ./configure script, that can be executed on any system that provides a bourne-shell (standard on POSIX systems) and generates a makefile.
 
 Cross-compilation to Windows from a linux host is possible using MinGW. 
-
+\todo{asdf}
 \subsubsection{QMake}
 The native makefile generator of Qt. Defines build definitions in .pro files and handles Qt specific tools like the \gls{moc} automatically as needed, giving a rather straightforward experience when building Qt programs.
 
 Integrated with QtCreator.
 
 \subsection{CMake}
-Gathers information on what to build from CMakeLists.txt files added to the projects's sources.
+Gathers information on what to build from CMakeLists.txt files added to the project's sources.
 
 Can generate projects in an plethora of formats, including Visual Studio, GNU make,  Apple Xcode and Eclipse
 
 Has widespread usage in open source and commercial projects and QtCreator provides good integration for CMake generated projects.
+
+
