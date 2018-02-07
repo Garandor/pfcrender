@@ -43,11 +43,8 @@ set(SRC
         "QtCLI/PFCRenderCLI.cpp"
 
         "QtGUI/PFCRenderGUI.cpp"
-        "QtGUI/ViewModelBuilder.cpp"
-        "QtGUI/CustomGeometryModel.cpp"
-        "QtGUI/NanoViewModelBuilder.cpp"
-        "QtGUI/NanoCustomGeometryModel.cpp"
-        "QtGUI/QNanoPainterParse.cpp"
+        "QtGUI/QNanoPaintedCurve.cpp"
+        "QtGUI/QNanoCurvePainter.cpp"
 )
 
 LIST(APPEND SRC ${QNANOPAINTER_SRC})
@@ -69,8 +66,8 @@ set(INC
         "QtCLI/PFCRenderCLI.h"
 
         "QtGUI/PFCRenderGUI.h"
-        "QtGUI/ViewModelBuilder.h"
-        "QtGUI/CustomGeometryModel.h"
+        "QtGUI/QNanoPaintedCurve.h"
+        "QtGUI/QNanoCurvePainter.h"
 
         "projectinfo.h.in"
 )

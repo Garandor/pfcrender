@@ -6,7 +6,6 @@
 #include <QString>
 
 #include "Model/LSYSModelImpl.h"
-#include "QtGUI/NanoCustomGeometryModel.h"
 
 namespace QtGUI {
 

@@ -27,11 +27,8 @@ include_directories("lib/qnanopainter/libqnanopainter")
 add_subdirectory("lib")
 
 find_package(Qt5 REQUIRED Gui)
-
 find_package(OpenGL REQUIRED)
 LINK_LIBRARIES(OpenGL::GL)
-LINK_LIBRARIES(	Qt5::Gui_EGL
-    )
 INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR})
 add_definitions(
     -DQNANO_DEBUG

@@ -12,7 +12,7 @@ namespace QtGUI {
 
 // HelloItemPainter contains the painting code
 class QNanoCurvePainter : public QObject, public QNanoQuickItemPainter {
-Q_OBJECT
+    Q_OBJECT
 
 signals:
     void boundingBoxChanged(QRectF newBox);
@@ -39,15 +39,12 @@ private:
     int cur_color_idx;
     double angle;
 
-    QPointF   coord_final,
-            min,
-            max;
-
+    QPointF coord_final,
+        min,
+        max;
     QRectF boundingBox;
-
     double rounding;
 
-void calculate_bounding_box();
     void parsing_preamble();
     void parsing_finalize();
 

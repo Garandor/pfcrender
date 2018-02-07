@@ -1,8 +1,10 @@
-#include "QNanoPainterParse.h"
-#include "Common/Config_Registry.h"
-#include "NanoCustomGeometryModel.h"
 #include <QColor>
 #include <gsl/gsl>
+
+#include "Common/Config_Registry.h"
+
+#include "QNanoCurvePainter.h"
+#include "QNanoPaintedCurve.h"
 
 namespace QtGui {
 }
@@ -12,6 +14,7 @@ void QtGUI::QNanoCurvePainter::paint(QNanoPainter* pe)
     Expects(pe); //fail on nullptr
     p = pe;
 
+    //if nothing changed from the last redraw, don't redraw
     cur_color_idx = 0;
 
     //If we have no string, just draw a circle
@@ -25,27 +28,27 @@ void QtGUI::QNanoCurvePainter::paint(QNanoPainter* pe)
     parse_model_string(modelstring);
     parsing_finalize();
 
-    qDebug() << "Bounding box is " << min << " : " << max;
     boundingBox = QRectF(min, max);
     emit boundingBoxChanged(boundingBox);
 }
 
 void QtGUI::QNanoCurvePainter::synchronize(QNanoQuickItem* item)
 {
-    //only gets executed when the model changed
-    auto* real_item = qobject_cast<QtGUI::QNanoRenderedCurve*>(item);
-    //copy the string over from the model
-    //Can not be avoided since model runs on GUI thread and this is the render thread
-    //Reading from pointer while GUI thread is unblocked would cause race condition
-    if (real_item->getP_mdl())
-        modelstring = *(real_item->getP_mdl());
-}
+    auto* real_item = qobject_cast<QtGUI::QNanoPaintedCurve*>(item);
+    if (!real_item->drawing_params_changed)
+        //copy the string over from the model
+        return;
 
-void QtGUI::QNanoCurvePainter::calculate_bounding_box()
-{
-    //Box needs to be precaclulated since we need to transform the coordinate system for everything to fit and QNanoPainter does not
-    //provide a mechanism of doing that post-drawing
-    //TODO: This could maybe be improved by hacking QNanoPainter to include a QSGTransformNode if a transform is wanted
+    //Transfer state info from GUI thread item if it changed
+
+    //Copy Can not be avoided since model runs on GUI thread and this is the render thread
+    //Reading from pointer while GUI thread is unblocked would cause race condition
+    if (real_item->p_mdl)
+        modelstring = *(real_item->p_mdl);
+
+    //mark changes synchronized
+    real_item->drawing_params_changed = false;
+    markDirty(QSGNode::DirtyMaterial);
 }
 
 inline void QtGUI::QNanoCurvePainter::parsing_preamble()

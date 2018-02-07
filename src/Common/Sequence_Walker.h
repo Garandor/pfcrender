@@ -3,7 +3,6 @@
 #include <QVector>
 
 #include "Model/LSYSModel.h"
-#include "QtGUI/CustomGeometryModel.h"
 
 namespace Common {
 

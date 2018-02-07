@@ -7,8 +7,8 @@ ApplicationWindow
 {
 	id: main
     visible:true
-    width: 1200
-    height: 1000
+    width: 800
+    height: 600
     title: qsTr("PFCRender")
 
     toolBar:ToolBar
@@ -43,7 +43,6 @@ ApplicationWindow
 //                iconSource: "res/dummy.jpg"
                      }
         }
-
     }
 
     Loader{

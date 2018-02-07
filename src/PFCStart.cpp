@@ -8,9 +8,8 @@
 #include "Common/Plugin_Registry.h"
 
 #include "QtCLI/PFCRenderCLI.h"
-#include "QtGUI/CustomGeometryModel.h"
-#include "QtGUI/NanoCustomGeometryModel.h"
 #include "QtGUI/PFCRenderGUI.h"
+#include "QtGUI/QNanoPaintedCurve.h"
 
 #include "projectinfo.h"
 
@@ -25,8 +24,7 @@ int main(int argc, char** argv)
     } else {
 
         //Register custom QML Types
-        qmlRegisterType<QtGUI::CustomGeometryModel>("sci.pfcrender.customModel", 1, 0, "CustomGeometryModel");
-        qmlRegisterType<QtGUI::QNanoRenderedCurve>("sci.pfcrender.qnanorenderedcurve", 1, 0, "QNanoRenderedCurve");
+        qmlRegisterType<QtGUI::QNanoPaintedCurve>("sci.pfcrender.qnanorenderedcurve", 1, 0, "QNanoRenderedCurve");
 
         QQmlApplicationEngine qeng(QUrl(QStringLiteral("qrc:///main.qml")));
         QtGUI::PFCRenderGUI desktop_obj(&qeng);

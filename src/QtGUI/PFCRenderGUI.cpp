@@ -6,14 +6,15 @@
 #include "Common/Plugin_Registry.h"
 #include "Common/Sequence_Walker.h"
 
+#include "QtGUI/QNanoPaintedCurve.h"
+
 #include "PFCRenderGUI.h"
-#include "QtGUI/ViewModelBuilder.h"
 
 namespace QtGUI {
 
 void PFCRenderGUI::onModelChanged()
 {
-    auto* mdlItem = qobject_cast<QtGUI::QNanoRenderedCurve*>(p_eng->rootObjects()[0]->findChild<QQuickItem*>(QStringLiteral("model")));
+    auto* mdlItem = qobject_cast<QtGUI::QNanoPaintedCurve*>(p_eng->rootObjects()[0]->findChild<QQuickItem*>(QStringLiteral("model")));
     if (mdlItem) {
         mdlItem->onModelChanged(m_mdl.getModel());
     } else {
@@ -39,7 +40,6 @@ PFCRenderGUI::PFCRenderGUI(QQmlApplicationEngine* eng)
 
     onModelChanged(); //Notify VM that the model changed
 
-    //we should now have a model and viewmodel in place
     //now that everything is in place, connect all necessary signals so we can resume normal GUI operation
 }
 
