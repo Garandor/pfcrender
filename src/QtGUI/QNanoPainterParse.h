@@ -15,8 +15,7 @@ class QNanoCurvePainter : public QNanoQuickItemPainter {
 
 public:
     QNanoCurvePainter()
-        : p(nullptr)
-        , pos()
+        : pos()
         , rounding(0)
         , stack{}
         , cur_color_idx(0)

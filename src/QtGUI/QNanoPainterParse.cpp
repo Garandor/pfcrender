@@ -14,40 +14,21 @@ void QtGUI::QNanoCurvePainter::paint(QNanoPainter* pe)
 
     //If we have no string, just draw a circle
     if (modelstring.isEmpty()) {
+        p->beginPath();
         p->setStrokeStyle("#202020");
         p->setLineWidth(width() * 0.02);
         p->circle(width() * 0.5, height() * 0.5, width() * 0.46);
+        p->stroke();
+        p->fill();
         return;
     }
     // Pick up bounding box and draw curve in one parsing of the string
     parsing_preamble();
+
     parse_model_string(modelstring);
     parsing_finalize();
 
     normalize();
-
-    // Paint the background circle
-    //    QNanoRadialGradient gradient1(width() * 0.5, height() * 0.4, width() * 0.6, width() * 0.2);
-    //    gradient1.setStartColor("#808080");
-    //    gradient1.setEndColor("#404040");
-    //    p->setFillStyle(gradient1);
-    //    p->fill();
-    //    p->setStrokeStyle("#202020");
-    //    p->setLineWidth(width() * 0.02);
-    //    p->stroke();
-    //    // Hello text
-    //    p->setTextAlign(QNanoPainter::ALIGN_CENTER);
-    //    p->setTextBaseline(QNanoPainter::BASELINE_MIDDLE);
-    //    QNanoFont font1(QNanoFont::DEFAULT_FONT_BOLD_ITALIC);
-    //    font1.setPixelSize(width() * 0.08);
-    //    p->setFont(font1);
-    //    p->setFillStyle("#B0D040");
-    //    p->fillText("HELLO", width() * 0.5, height() * 0.4);
-    //    // QNanoPainter text
-    //    QNanoFont font2(QNanoFont::DEFAULT_FONT_THIN);
-    //    font2.setPixelSize(width() * 0.18);
-    //    p->setFont(font2);
-    //    p->fillText("QNanoPainter", width() * 0.5, height() * 0.5);
 }
 
 void QtGUI::QNanoCurvePainter::synchronize(QNanoQuickItem* item)
@@ -63,33 +44,90 @@ void QtGUI::QNanoCurvePainter::synchronize(QNanoQuickItem* item)
 
 inline void QtGUI::QNanoCurvePainter::parsing_preamble()
 {
+    p->beginPath();
+
     //Starting position
     pos = {};
+
+    //initialize config
     pos.angle = Common::Config_Registry::getInstance()->getOpt("ViewModel.InitialAngle").toDouble(nullptr);
     pos.length = Common::Config_Registry::getInstance()->getOpt("ViewModel.SegmentLength").toDouble(nullptr);
-
-    //initialize defaults
-    p->setStrokeStyle(QNanoColor::fromQColor(colors.first()));
+    p->setStrokeStyle(QNanoColor(0x88888888));
+    //QNanoColor::fromQColor(colors.first()));
     p->setLineWidth(Common::Config_Registry::getInstance()->getOpt("ViewModel.SegmentWidth").toDouble(nullptr));
     angle = Common::Config_Registry::getInstance()->getOpt("ViewModel.Angle").toDouble(nullptr);
+    rounding = Common::Config_Registry::getInstance()->getOpt("ViewModel.Rounding").toDouble(nullptr);
 
     p->setAntialias(false);
     ///TODO: Get colors from config
 
     is_first_segment = true;
     p1 = p2 = p3 = pos;
-    p->beginPath();
     p->moveTo(pos);
 }
 
 inline void QtGUI::QNanoCurvePainter::parsing_finalize()
 {
+    p->stroke();
+    p->fill();
     if (rounding) //Connect last arc segment to final coordinate
         p->lineTo(coord_final);
+    p->circle(width() / 2, height() / 2, height());
 }
 
 //String parsing
-LSYS_STRING_PARSE_FUNC_DEF(QtGUI::QNanoCurvePainter)
+//LSYS_STRING_PARSE_FUNC_DEF(QtGUI::QNanoCurvePainter)
+
+unsigned int QtGUI::QNanoCurvePainter::parse_model_string(const QString& curve)
+{
+    unsigned int segcount = 0;
+    for (const QChar& c : curve) {
+        if (c.isNull())
+            break;
+
+        if (c.isLetter()) {
+            add_segment();
+            segcount++;
+            continue;
+        }
+        if (c != '0' && c.isDigit()) {
+            qCritical("direct strokes not implemented");
+        }
+
+        switch (c.toLatin1()) {
+        case '+':
+            incAngle();
+            continue;
+        case '-':
+            decAngle();
+            continue;
+        case '0':
+            continue;
+        case '[':
+            stackPush();
+            continue;
+        case ']':
+            stackPop();
+            continue;
+        case '_':
+            next_color();
+            continue;
+        case '~':
+            prev_color();
+            continue;
+        default:
+            qCritical(QString("not recognized symbol ")
+                          .append(c)
+                          .append(" present in model")
+                          .toLatin1());
+            break;
+        }
+    }
+    if (segcount == 0) {
+        qFatal("Model String contained no segment chars");
+    }
+    return segcount;
+}
 
 inline void QtGUI::QNanoCurvePainter::add_segment()
 {
@@ -137,10 +175,20 @@ inline void QtGUI::QNanoCurvePainter::add_segment()
 
 void QtGUI::QNanoCurvePainter::next_color()
 {
+    cur_color_idx++;
+    if (cur_color_idx >= colors.size())
+        cur_color_idx = 0;
+
+    p->setStrokeStyle(QNanoColor::fromQColor(colors.at(cur_color_idx)));
 }
 
 void QtGUI::QNanoCurvePainter::prev_color()
 {
+    cur_color_idx--;
+    if (cur_color_idx < 0)
+        cur_color_idx = colors.size() - 1;
+
+    p->setStrokeStyle(QNanoColor::fromQColor(colors.at(cur_color_idx)));
 }
 
 void QtGUI::QNanoCurvePainter::incAngle()

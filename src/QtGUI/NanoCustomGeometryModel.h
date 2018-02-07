@@ -15,7 +15,7 @@ public slots:
     void onModelChanged(QString const* pstr)
     {
         p_mdl = pstr;
-        update(); //update the paint node
+        //        update(); //update the paint node
     }
 
 public:
