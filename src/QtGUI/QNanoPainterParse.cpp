@@ -77,7 +77,7 @@ inline void QtGUI::QNanoCurvePainter::parsing_preamble()
     angle = Common::Config_Registry::getInstance()->getOpt("ViewModel.Angle").toDouble(nullptr);
     rounding = Common::Config_Registry::getInstance()->getOpt("ViewModel.Rounding").toDouble(nullptr);
 
-    p->setAntialias(true);
+    p->setAntialias(false);
     ///TODO: Get colors from config
 
     is_first_segment = true;
@@ -167,10 +167,8 @@ inline void QtGUI::QNanoCurvePainter::add_segment()
 
         //first segment(draw line from starting point, to possible beginning of first arc
         if (is_first_segment) {
-            is_first_segment = false;
-
             p->lineTo(QPointF(p1.start.x + ((p2.start.x - p1.start.x) * rounding), p1.start.y + (p2.start.y - p1.start.y) * rounding));
-            return;
+            p->quadTo(p2, QPointF(p1.start.x + ((p2.start.x - p1.start.x) * rounding), p1.start.y + (p2.start.y - p1.start.y) * rounding));
         }
 
         //check if the angle changed between the last points
@@ -198,7 +196,7 @@ void QtGUI::QNanoCurvePainter::next_color()
         cur_color_idx = 0;
     p->stroke();
     p->beginPath();
-    p->moveTo(pos.start.x + 10, pos.start.y + 10);
+    p->moveTo(pos.start.x, pos.start.y);
     p->setStrokeStyle(QNanoColor::fromQColor(colors.at(cur_color_idx)));
 }
 
@@ -210,7 +208,7 @@ void QtGUI::QNanoCurvePainter::prev_color()
 
     p->stroke();
     p->beginPath();
-    p->moveTo(pos.start.x + 10, pos.start.y + 10);
+    p->moveTo(pos.start.x, pos.start.y);
     p->setStrokeStyle(QNanoColor::fromQColor(colors.at(cur_color_idx)));
 }
 

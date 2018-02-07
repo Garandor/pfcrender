@@ -47,28 +47,16 @@ Rectangle{
         }
         }
 
-//        CustomGeometryModel {
-//        objectName: 'model'
-//        id: model
-//        onViewModelChanged: {
-//            //Scale to fill parent
-////            var scalefactor = Math.min(modelviewport.width / width, modelviewport.height / height )
-////            console.log (modelviewport.width+" "+width+" "+modelviewport.height+" "+height )
-////            console.log("scaling to "+scalefactor)
-////            scale = scalefactor
-//            }
-//        onScaleChanged: {
-//            width = vertexSize.width * scale;
-//            height = vertexSize.height * scale;
-//            parent.returnToBounds
-//        }
-//        }
-
        QNanoRenderedCurve {
-            width: 400
-            height: 800
+            width: 1000
+            height: 1000
         objectName: 'model'
         id: model
+        onScaleChanged: {
+            width = vertexSize.width * scale;
+            height = vertexSize.height * scale;
+            parent.returnToBounds
+        }
         }
     }
 
