@@ -41,21 +41,30 @@ The \gls{lsys} for figure \ref{fig:flosnek} is given in \citet{Arndt2016} to be
 	\centering
 	L $\rightarrow$ L+R++R-L--LL-R+ \quad and \quad R $\rightarrow$ -L+RR++R+L--L-R
 \end{quote}
-starting with an initial string -  called \gls{axiom} - of L. The first iterate of \textsc{Gosper's flowsnake} thus becomes L+R++R-L--LL-R+, as the initial \gls{axiom} L gets substituted as per the rule. 
-On each iteration the current string - called product - is substituted according to the given rules.
+starting with an initial string -  the \gls{axiom} - of L. The first iterate of \textsc{Gosper's flowsnake} thus becomes L+R++R-L--LL-R+, as the initial \gls{axiom} L gets substituted as per the rule. 
+On each iteration the current string is substituted according to the given rules.
 
 The characters in this string are given special meaning w.r.t. to the curve:
 \begin{description}
 	\item[Alphabetic character] Denotes drawing a line from the current position forward by on a defined length. Forward being defined as the current direction
-	\item[+ -] Charactes denoting changes in direction by a set amount, e.g. in figure \ref{fig:flosnek} by $\pm60^\circ$, creating a triangular grid of movement
+	\item[+ -] Characters denoting changes in direction by a set amount, e.g. in figure \ref{fig:flosnek} by $\pm60^\circ$, creating a triangular grid of movement
 \end{description}
 
-Those rules (among other, auxilliary ones discussed in \ref{sec:implementation}) define a way to render a curve given by an \gls{lsys} \gls{product}.
+Those rules, define a way to render a curve given by an \gls{lsys} \gls{product}, and can be extended by other, auxilliary characters, discussed in \ref{sec:implementation}, e.g. \_ which changes color of subsequent segments.
 
-A curve is called a \gls{pfc}, if it will fill all of the 2D plane without self-intersecting, when the process of iterating its \gls{lsys} is repeated an infintely.
+\begin{figure}[hb]
+	\centering
+	\includegraphics[width=0.5\textwidth]{flosnek_color}
+	\caption{3-iterate rendering of \textsc{Gosper's flowsnake} with axiom \textrm{L\_L} and a rounding factor of 0.5}
+\end{figure}
+\label{def:pfc}
+
+\begin{definition}[Plane-Filling Curve]
+A non-self intersecting curve is called a \textit{plane-filling}, if it traverses every edge of its grid exactly once, resulting in it filling the full 2D-plane, when the process of iterating its \gls{lsys} is repeated an infintely.
+\end{definition}
 
 \section{Problem Statement}
-In 2016, Prof. Jörg Arndt, the supervisor of this thesis, conducted research on finding \gls{pfc}s for \gls{lsys} with one non-constant character and published an article \citep{Arndt2016}, where he presented 2D renderings of the \gls{pfc}s found.
+In 2016, Prof. Jörg Arndt, the supervisor of this thesis, conducted research on finding plane-filling curves for \gls{lsys} with one non-constant character and published an article \citep{Arndt2016}, where he presented 2D renderings of the curves found.
 
 The tools used to get from an \gls{lsys} description to a graphical, pdf-embeddable rendering of the iterated curve were assortments of chained commandline scripts, leaving much to be desired in flexibility and ease-of-use.
 
@@ -73,7 +82,7 @@ An architectural model is created using \gls{uml} to define the system architect
 
 This model ist then implemented and refined/amended to address issues arising during the implementation process.
 
-The software is tested during development with \gls{ci} and \gls{Unit Testing} techniques.
+The software is tested during development with \gls{ci} and \gls{unit test} techniques.
 
 Finally, a short investigation of application performance is conducted.
 
