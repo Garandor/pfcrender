@@ -1,21 +1,25 @@
 \chapter{Architecture Implementation}
 \section{Application Configuration / Development Environment}
+\subsection{QtCreator}
+
+QtCreator is an \gls{ide} originally created for creating GUI apps using the Qt libraries. It brings integration with many useful third-party tools though.
+
+QML Designer
+
+It can natively parse CMake-defined projects
+
+It can run and visualize tests
+
+It has integration with static and dynamic analysis tools like clang-analyzer and valgrind (including code profiling with callgrind)
+
+It integrates support to automatically format code with clang-format and astyle, enforcing uniform code formatting as propsed in section \ref{sec:resformat}
+
+\todo{images}
 
 \subsection{Build System}
-Travis CI / Codecov.io
+Setting up the \gls{ci} environment is a pain, mainly caused by Travis using a 6 year old Linux distribution by default, where the standard version of gcc is 4.8, which does not even support C++11.
 
-Huge benefit to maintainability, clear insight on testing, fast feedback whether changes work.
 
-Only feasible way to confirm multiplatform functionality without running 3 separate dev environments
-
-They turned out to eat up about as much productivity in maintenance as they freed
-
-Travis CI runs on Ubuntu 12.04LTS which reached End-of-Life in 2017. Ubuntu 14.04LTS support is still experimental, but even with the updated OS, the available tools are heavily outdated.
-
-Standard gcc is a v4 with no support for C++11
-Manually updating tools had ramifications as gcov was now ouptutting coverage data from gcov-5, lcov was using the old gcov-4 leading to no coverage being reported. Manually setting the gcov tool path resolved this issue, which - along with the time spent identifying the problem - was a significant time drain.
-
-Still, the great benefit of this tool is that once it has been set up, it "just works" - running alongside the projects dev flow unintrusively and gives good insight into areas of improvement.
 
 \section{Application configuration}
 
@@ -44,12 +48,34 @@ Since the \gls{QPainter} API used by Qt is iterative in nature (\gls{QPainter} A
 Using \gls{QPainter} thus forces precomputing of the bounding box.
 
 
+A way was found to avoid reparsing the model string for the sole purpose of obtaining a bounding box for rendering.
+The bounding box is instead calculated in the the same parsing pass used to draw the geometry. The drawing frameworks can not translate after drawing, but the Qt SceneGraph can.
+
+Using the translate property, which - under the hood - prepends the actual scenegraph node with a QSGTransformNode, the rendering can be done without concern for target coordinates and moved to fit the window after drawing.
+
+\subsection{Custom Geometry dun werk liek it should}
+\label{sec:implrenderprob}
+arcs bezier
 \section{SVG Output}
 \label{sec:svg}
 
 \section{PDF Output}
 \label{sec:pdf}
 
-\section{Challenges faced during Implementation}
 
-\subsection{Custom Geometry dunt werk liek it should}
+\section{Automated Unit Testing and Coverage Reporting}
+A main benefit of using Github - as already stated, is the third party tool integration offered.
+
+Regarding unit testing, this results in the possibility to not only automatically run tests on each build of Travis CI, but also visualize the \gls{coverage} of the tests executed using \url{codecov.io}, which hooks into Travis completed builds that generated code output with coverage information and generates a graphical report on which lines of code were actually executed during testing.
+
+They turned out to eat up about as much productivity in maintenance as they freed
+
+Travis CI runs on Ubuntu 12.04LTS which reached End-of-Life in 2017. Ubuntu 14.04LTS support is still experimental, but even with the updated OS, the available tools are heavily outdated.
+
+Huge benefit to maintainability, clear insight on testing, fast feedback whether changes work.
+
+Standard gcc is a v4 with no support for C++11
+Manually updating tools had ramifications as gcov was now ouptutting coverage data from gcov-5, lcov was using the old gcov-4 leading to no coverage being reported. Manually setting the gcov tool path resolved this issue, which - along with the time spent identifying the problem - was a significant time drain.
+
+Still, the great benefit of this tool is that once it has been set up, it "just works" - running alongside the projects dev flow unintrusively and gives good insight into areas of improvement.
+\todo{lolwut}

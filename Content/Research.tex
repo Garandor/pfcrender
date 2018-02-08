@@ -1,4 +1,7 @@
-\chapter{Research and Architecture Definition}
+\chapter{Research on Architecture Design Options}
+
+We discuss the requirements in detail and show research on possible implementations of architecture design goals imposed by the former.
+
 \section{Maintainability}
 Maintainability was declared a main goal in the requirements, and this is an issue with much broader reach than just good writing clean code.
 
@@ -65,14 +68,17 @@ The distinguishing factor is the huge userbase that has resulted in git integrat
 \subsection{Continuous Integration}
 \gls{ci} is a concept popularized in the rise of agile software development. In classical development structures, features are are coded to perceived completion before they are introduced into the codebase of a product, their functionality maybe tested in unit-tests. Integrations of features are performed on a fixed schedule, e.g. quarterly with integration tests following the procedure, leading to an eventual release.
 
-\gls{ci} is a method to avoid the time- and effort-consuming "big-bang" integrations, by testing changes under development on the current state of the main codebase \textit{continuously}. This is made possible by \gls{vcs}es and their branching functionality, and works by taking the local branch of the developers code on each change, trying to build the code and running available tests on it. Breaking changes thus get reported to the developer much quicker than they would classically, limiting the possible causes of the build failure, thus reducing the time spent bug hunting.
+It is a method to avoid the time- and effort-consuming "big-bang" integrations, by testing changes under development on the current state of the main codebase \textit{continuously}. This is made possible by \gls{vcs}es and their branching functionality, and works by taking the local branch of the developers code on each change, trying to build the code and running available tests on it. Breaking changes thus get reported to the developer much quicker than they would classically, limiting the possible causes of the build failure, thus reducing the time spent bug hunting.
 
-Since \gls{ci} needs an always-on system in a consistent configuration that is always ready to build the code, this technique relies on virtualization through software like docker\furl{https://www.docker.com/} and VMWare\furl{https://www.vmware.com/}.
+Since \gls{ci} needs an always-on system in a consistent configuration for each of the target systems that are to be supported, that is always ready to build the code once a change it committed to a \gls{vcs}.
+This technique relies on virtualization through solutions like docker\furl{https://www.docker.com/} and VMWare\furl{https://www.vmware.com/}.
 
-Since it is rarely feasible for small projects to maintain such build systems themselves, \gls{cloud} providers have started providing those as a service, for open-source projects often for free.
+It is rarely feasible for small projects to maintain such build system farms themselves, especially when software is targeted for multiple platforms - as a developer usually has one development environment and can not necessarily access machines running the other implementation targets. In this particular case for example, development was done on linux, with no access to MacOS devices to test the code on.
+
+Thankfully, \gls{cloud} providers exist that provide build systems in various configurations as a service, often free for open-source projects
 
 \subsubsection{Travis CI}
-Travis \gls{ci}\furl{https://travis-ci.org} can run Linux (Ubuntu 12.04 and 14.04) and Mac OS X builds on their cloud platform.
+Travis \gls{ci}\furl{https://travis-ci.org} at the time of writing provides virtual machines running Linux (Ubuntu 12.04 and 14.04) and Mac OS X to provide builds on their cloud platform.
 
 It integrates with github for starting a build on each commit and reports completion status back to github.
 
@@ -94,6 +100,7 @@ Appveyor\furl{https://ci.appveyor.com/login} is a Windows-only \gls{ci} provider
 It provides github integration, the build is configured through an appveyor.yml file in the sources, and is free for open source projects.
 
 \subsection{Code formatting guidelines}
+\label{sec:resformat}
 Creating a common code format can be as simple as writing down a set of rules in a code-of-conduct letter for coders to adhere to. What constitutes a "good" formatting guideline is a highly subjective matter however, which is the reason for "different looking code" in the first place.
 
 While it is unlikely that consensus will be reached on coding style in the full C++ community, companies and larger \gls{floss} projects often define guidelines for their employees / contributors,
@@ -105,9 +112,15 @@ Tools like clang-format\footnote{\url{https://clang.llvm.org/docs/ClangFormat.ht
 
 When used in conjunction with a \gls{vcs}, formatting can be automatically applied before publishing changes (e.g. git pre-commit hook) to other parties, completely abstracting the developer from the process - and thus enabling him to freely disregard code style guidelines during development, without violating them on check-in.
 
-\subsection{Unit Testing frameworks}
+\subsection{Automated Unit Testing Frameworks}
+
+Research into this field was mostly motivated by a blog post\furl{https://medium.com/@fatboyxpc/the-hard-truth-nobody-has-time-to-write-tests-68a122a1a0e3}, closing with the following words
+\begin{quote}
+Nobody has the time to write tests, but true professionals make the time. 
+\end{quote}
 
 \todo{"nobody has the time to write tests"}
+
 
 \subsection{Model-driven Design and Round-Trip Engineering}
 Modeling is often the first step of implementing a fairly complex architecture, 
@@ -133,8 +146,8 @@ Exporting a model to C++ code is provided as core functionality, import from cod
 During development the reversing functionality was found to not work reliably, so \gls{rte} was not used.
 
 \begin{quote}
-Theory and practice sometimes clash. And when that happens, theory loses. Every single time.
-- Torvalds, Linus (2009-03-25). Message to Linux kernel mailing list. Retrieved on 2009-03-25.
+Theory and practice sometimes clash. And when that happens, theory loses. Every single time.\\
+- Torvalds, Linus (2009-03-25). Message to Linux kernel mailing list
 \end{quote}
 
 \subsection{Autogenerated Docs}
@@ -215,18 +228,18 @@ Since the pointer has static duration, the lifetime of its object only ends when
 \subsection{Commandline Parsing}
 Unlike other programming languages (e.g. Python), C++ does not provide a standard built-in facility to provide parsing capability for parsing parameters passed to the program as commandline options.
 
-In a plugin-based architecture, the program must provide an \gls{cli} that is easily extended with additional commandline options, as plugins can need additional configuration and are loaded at runtime.
+In a plugin-based architecture, the program must provide a \gls{cli} that is easily extended with additional commandline options, as plugins can need additional configuration and are loaded at runtime.
 
 The main commandline parsing solution available in any standard C++ environment is getopt(), which is inherited from C and thus brings with it a procedural interface that is not easily extensible.
 
 Alternatives:
 
-\begin{itemize}
-\item Manually building a structure to parse the argv array. While this is the most flexible solution w.r.t. customization, it is reinventing the wheel and also very inflexible with respect to extensibility.
-\item Boost.progam\_options - A C++ native, highly configurable solution shipped with the open source Boost library\furl{http://www.boost.org/doc/libs/1\_58\_0/doc/html/program\_options.html}
-\item QtCommandLineParser - A Qt native parsing class. Batch-parses all parameters and returns data structures with positional arguments in correct order, and a (reordered) map of switches with their parameters
-http://doc.qt.io/qt-5/qcommandlineparser.html
-\end{itemize}
+\begin{description}
+\item [Manually parse argv] building a structure to parse the argv array. While this is the most flexible solution w.r.t. customization, it is reinventing the wheel and also very inflexible with respect to extensibility.
+\item [Boost.progam\_options] - A C++ native, highly configurable solution shipped with the open source Boost library\furl{http://www.boost.org/doc/libs/1\_58\_0/doc/html/program\_options.html}
+\item [QCommandLineParser]\furl{http://doc.qt.io/qt-5/qcommandlineparser.html} A Qt native parsing class. Batch-parses all parameters and returns data structures with positional arguments in correct order, and a (reordered) map of switches with their parameters
+	
+\end{description}
 
 
 
@@ -241,7 +254,7 @@ Again, Qt comes with a wrapper around this platform disparity
 
 Writing portable software has historically been difficult, as operating system \gls{api}s differ significantly. 
 
-Linux and MacOS comply with the \gls{posix} standard, which defines an \gls{api} for system calls, while Windows has historically had a non-\gls{posix}-compliant proprietary system programming \gls{api}.
+Linux and MacOS comply with the \gls{posix} standard, which defines an \gls{api} for system calls, while Windows has historically had a non \gls{posix}-compliant proprietary system programming \gls{api}.
 
 Recently, Microsoft is making advances towards \gls{posix} compatibility in Win10\furl{https://blogs.msdn.microsoft.com/wsl/2016/04/22/windows-subsystem-for-linux-overview/}, and the Linux world offers a similar compatiblility layer with WINE\furl{https://en.wikipedia.org/w/index.php?title=Wine_(software)&oldid=823689556}. While the performance of the windows POSIX layer is promising\furl{https://www.phoronix.com/scan.php?page=article&item=windows-10-lxcore&num=2}, neither it, nor WINE\furl{https://wiki.winehq.org/Performance} are on par with programs implementing each systems native interface directly at the time of writing.
 
@@ -305,15 +318,17 @@ A collection of the GNU utilities autoconf, automake and libtool. It is the firs
 Cross-compilation to Windows from a linux host is possible using MinGW. 
 \todo{asdf}
 \subsubsection{QMake}
-The native makefile generator of Qt. Defines build definitions in .pro files and handles Qt specific tools like the \gls{moc} automatically as needed, giving a rather straightforward experience when building Qt programs.
+The native makefile generator of Qt. Defines build definitions in .pro files and handles Qt specific tools like the \gls{moc} automatically as needed, giving a straightforward experience when building Qt programs.
 
 Integrated with QtCreator.
 
-\subsection{CMake}
+\subsubsection{CMake}
 Gathers information on what to build from CMakeLists.txt files added to the project's sources.
 
 Can generate projects in an plethora of formats, including Visual Studio, GNU make,  Apple Xcode and Eclipse
 
 Has widespread usage in open source and commercial projects and QtCreator provides good integration for CMake generated projects.
 
+In addition to being a pure build system generator, CMake can be used to define commands that should be run pre-/postbuild.
 
+It also comes with a facility to gather and run unit tests, called CTest
