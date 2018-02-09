@@ -47,8 +47,6 @@ set(SRC
         "QtGUI/QNanoCurvePainter.cpp"
 )
 
-LIST(APPEND SRC ${QNANOPAINTER_SRC})
-
 set(INC 
         "Common/Config_Registry.h"
         "Common/Plugin_Registry.h"
@@ -71,8 +69,6 @@ set(INC
 
         "projectinfo.h.in"
 )
-
-LIST(APPEND INC ${QNANOPAINTER_HDR})
 
 #TODO: Split SRC and INC by common and GUI
 
@@ -98,6 +94,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAK
 
 if(COMPILE_GUI_SUPPORT)
 	target_link_libraries(${PROJECT_NAME} Qt5::Gui Qt5::Qml Qt5::Quick)
+
+        target_link_libraries(${PROJECT_NAME} qnanopainter)
 endif()
 
 #descend into plugins subdirectory to build plugins

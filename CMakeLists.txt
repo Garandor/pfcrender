@@ -23,21 +23,14 @@ option(GENERATE_DOCS "Enable building and running of Doxygen doc creation" ON)
 include_directories("lib/GSL/include")
 
 #QNanoPainter
-include_directories("lib/qnanopainter/libqnanopainter")
-add_subdirectory("lib")
-
-find_package(Qt5 REQUIRED Gui)
-find_package(OpenGL REQUIRED)
-LINK_LIBRARIES(OpenGL::GL)
-INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR})
 add_definitions(
-    -DQNANO_DEBUG
-    -DQNANO_ENABLE_GLES3
-    -DQNANO_QT_GL_INCLUDE
-   -DQNANO_USE_RENDERNODE
+        -DQNANO_DEBUG
+        -DQNANO_ENABLE_GLES3
+        -DQNANO_QT_GL_INCLUDE
+        -DQNANO_USE_RENDERNODE
    )
-# Using QNANO_USE_RENDERNODE allows to pick up the bounding box on the go and just apply a transformation to normaliye the curve,
-# otherwise, rendering on a FBO, the curve would be clipped
+include_directories("lib/qnanopainter/libqnanopainter")
+add_subdirectory("lib/qnanopainter/")
 
 #--- END SUBMODULES
 
