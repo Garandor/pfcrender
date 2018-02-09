@@ -32,7 +32,6 @@ if(Qt5Test_FOUND)
         #GUI Testing
         add_executable(test_gui
             "Test_GUI.cpp"
-            "../src/QtGUI/ViewModelBuilder.cpp"
             "../src/Common/Config_Registry.cpp"
             "../src/Common/CLIParser.cpp"
             "../src/Common/Plugin_Registry.cpp"
