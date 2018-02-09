@@ -6,12 +6,11 @@
 #include <QSGGeometryNode>
 
 #include "Common/Config_Registry.h"
-#include "QtGUI/ViewModelBuilder.h"
 
 class Test_GUI : public QObject {
     Q_OBJECT
 
-    QSGGeometryNode* n;
+    //    QSGGeometryNode* n;
 
 private slots:
     void initTestCase();
