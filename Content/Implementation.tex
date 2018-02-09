@@ -79,3 +79,24 @@ Manually updating tools had ramifications as gcov was now ouptutting coverage da
 
 Still, the great benefit of this tool is that once it has been set up, it "just works" - running alongside the projects dev flow unintrusively and gives good insight into areas of improvement.
 \todo{lolwut}
+
+\section{CI pains}
+
+
+
+
+Since switching to the NanoVG based QNanoPainter, Appveyor windows builds are failing with unresolved externals, all of which are gl*() OpenGL functions.
+Some research into why this happens lead to the following post
+\begin{quote}
+Unfortunately AppVeyor build worker VMs support only OpenGL 1.1.
+
+You might consider private build cloud to use your own VMs or real hardware machines. However this option is available for Premium plan customers only (free to try).
+\end{quote}\furl{http://help.appveyor.com/discussions/problems/11450-open-gl-version}
+
+CI support for windows was dropped for the time being.
+
+On Ubuntu 14.04, no GLES3 installation is present, this could be worked around by forcing QNanoPainter to use GLESv2.
+
+This was non-trivial to set up though, as Qt is by default not linked to a specific graphics backend - i.e. linking has to be done manually for QNanopainter to work
+
+Thankfully developers encountered the same problem and solved it for the qmake buildsystem, fixing it amounted to adapting their solution to CMAke.
