@@ -3,32 +3,38 @@
 We discuss the requirements in detail and show research on possible implementations of architecture design goals imposed by the former.
 
 \section{Maintainability}
-Maintainability was declared a main goal in the requirements, and this is an issue with much broader reach than just good writing clean code.
+Maintainability was declared a main goal in the requirements, and this is an issue with much broader reach than writing clean code.
 
-Non-coding factors that contribute to maintainability of a software project include
+The term describes the ease of performing maintenance tasks on software, the latter of which is defined in \citet{Bray1997} :
+\begin{definition}[maintenance]
+the modification of a software product after delivery to correct faults, improve performance or other attributes, or to adapt the product to a changed environment
+\end{definition}
+
+It is a highly subjective term, \citet{Bray1997} mention coefficients like  average extended cyclomatic complexity per module, average number of lines of code per module and average lines of comments per module for a \textit{maintainability index} - an attempt at quantizing maintainability.
+
+Apart from the actual code, non-coding factors also impact the maintainability of a software project, e.g.
 \begin{itemize}
-	\item ease of collaboration
-	\item issue tracking
+	\item ease of collaboration with other developers
+	\item tracking of open issues and logging of modifications
 	\item early indication of breaking changes
 	\item incremental integration of changes with possibility to roll back to an earlier point in history
 \end{itemize}
 
 The importance of such "meta-programming" techniques is testified by the fact that a job field for software engineers called \gls{DevOps} exists, which engages in finding ways to optimize coding workflow.
-A definition of DevOps in \citet{Bass2015}:
-\begin{quote}
+A definition by \citet{Bass2015}:
+\begin{definition}[DevOps]
 	DevOps is a set of practices intended to reduce the time between committing a change to a system and the change being placed into normal production, while ensuring high quality.
-\end{quote}
+\end{definition}
 
-Any time saved locating, fixing and testing mistakes translates to higher productivity of the development team. Although this field is too extensive to thoroughly investigate in the course of this thesis, some DevOps practices are outlined in the following sections and adapted to make the resulting software more easily maintainable.
+While this field is too extensive to thoroughly investigate in the course of this thesis, some DevOps practices w.r.t. automating as much non-development work as possible, while still guaranteeing that changes made don't degrade functionality of the software, will be implemented here. 
 
-In addition to the above, code itself should also conform to certain rules:
+Understandability, though distinct from maintainability in \citet{Bray1997}, consists of factors like 
 \begin{itemize}
 	\item encapsulation of functionality in logical units - i.e. classes according to the implementation of \gls{oop} principles in C++
 	\item common code formatting guidelines, i.e. making sure code from different contributors "looks the same"
 	\item consistent code documentation
 \end{itemize}
-
-Adhering to above rules increases productivity of developers and lowers the barrier of entry for new coders.
+And will also be considered in this work, as adhering to above rules increases productivity of developers and lowers the barrier of entry for new coders.
 
 \subsection{Version Control}
 \gls{Version Control System}s  are used in \gls{scm} to keep track of changes to a codebase. They provide featues like
@@ -37,10 +43,10 @@ Adhering to above rules increases productivity of developers and lowers the barr
 	\item Messages describing each change (obsoleting changelogs)
 	\item History-keeping of earlier revisions of code
 	\item Automatic conflict resolutions in case two developers changed the same files
-	\item Maintaining separate states of the code in so-called branches
+	\item Maintaining different states of codebase in so-called branches
 \end{itemize}
 
-Their use is often mandatory in industry due to traceability requirements, but even single-developer project can benefit from using, a \gls{vcs}, e.g. because the branching feature coupled with changelog messages allows working on multiple separate features in parallel, merging changes back to the main program after a features has been completed. 
+Their use is often mandatory in industry due to traceability requirements, but even single-developer projects can benefit from using, a \gls{vcs}, e.g. because the branching feature coupled with changelog messages allows working on multiple separate features in parallel, merging changes back to the main program after a features has been completed. 
 
 Most major \gls{vcs}es have ecosystems that allow for hosting open-source repositories on the \gls{cloud}\footnote{e.g. \url{https://sourceforge.net/create/}}, selection is mostly a matter of personal preference, though some differences exist.
 An overview over some popular \gls{vcs}es follows that are available on both Windows and Linux.
@@ -51,7 +57,7 @@ Subversion\furl{https://subversion.apache.org/} is a centralized \gls{vcs}, chan
 Due to the centralization, no interaction with the \gls{vcs} is possible when the connection to the server is interrupted.
 
 \subsubsection{Mercurial}
-Mercurial\furl{https://www.mercurial-scm.org/} decentralized \gls{vcs}, where a checkout contains the whole repository, i.e. all interaction like committing changes, branching, checking out other code revisions can be done locally, while a central repository can be used to synchronize local changes with others.
+Mercurial\furl{https://www.mercurial-scm.org/} is a decentralized \gls{vcs}, getting a working copy does not fetch only the current status, but rather the complete repository including all versioning information, i.e. all interaction like committing changes, branching, checking out other code revisions can be done locally, while a central repository can be used to synchronize local changes with others.
 
 \subsubsection{Git}
 \gls{git}\furl{https://git-scm.com/} is like Mercurial, only popular\furl{https://www.openhub.net/repositories/compare}. It is also a distributed \gls{vcs}, but conceived by Linus Torvalds of Linux kernel fame on a search for ways to manage the large scale of contributors on the project.
@@ -154,6 +160,11 @@ Theory and practice sometimes clash. And when that happens, theory loses. Every 
 \todo{docs}
 
 \section{Extensibility}
+
+A definition of extensibility in \citet{Johansson}
+\begin{definition}
+We define extensibility as the ability of a system to be extended with new functionality with minimal or no effects on its internal structure and data flow
+\end{definition}
 
 \subsection{Plugin Architecture}
 Looking at the requirements, it is apparent that almost all component have disjunct responsibilities, the main common element being the string description of the PFC.
