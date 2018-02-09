@@ -31,6 +31,8 @@ addons:
     - graphviz
     #build
     - cmake
+    #opengl
+    - libgles2-mesa
 
 language: C++
 compiler:

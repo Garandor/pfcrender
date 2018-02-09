@@ -25,7 +25,6 @@ include_directories("lib/GSL/include")
 #QNanoPainter
 add_definitions(
         -DQNANO_DEBUG
-        -DQNANO_ENABLE_GLES3
         -DQNANO_QT_GL_INCLUDE
         -DQNANO_USE_RENDERNODE
    )
