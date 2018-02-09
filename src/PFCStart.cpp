@@ -19,7 +19,7 @@ int main(int argc, char** argv)
     //Must be set before QGuiApplication
     //http://doc.qt.io/qt-5/windows-requirements.html
 #if defined (WIN32)
-    QCoreApplication::setAttribute(Qt::AA_UseOpenGLES)
+	QCoreApplication::setAttribute(Qt::AA_UseOpenGLES);
 #endif
 
     QGuiApplication app(argc, argv);
