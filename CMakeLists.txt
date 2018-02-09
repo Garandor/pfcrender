@@ -25,7 +25,7 @@ include_directories("lib/GSL/include")
 #QNanoPainter
 add_definitions(
         -DQNANO_DEBUG
-        -DQNANO_QT_GL_INCLUDE
+        -DQNANO_QT_GL_INCLUDE	#Platform-specific OpenGL/OpenGLES headers included through Qt::Gui module
         -DQNANO_USE_RENDERNODE
    )
 include_directories("lib/qnanopainter/libqnanopainter")

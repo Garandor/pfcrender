@@ -83,6 +83,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         "${CMAKE_CURRENT_BINARY_DIR}"
         "${Qt5Core_INCLUDE_DIRS}"
         "${Qt5Gui_INCLUDE_DIRS}"
+        "${Qt5Quick_INCLUDE_DIRS}"
         "${Qt5Qml_INCLUDE_DIRS}"
 )
 
