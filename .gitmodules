@@ -3,4 +3,4 @@
 	url = https://github.com/Microsoft/GSL
 [submodule "lib/qnanopainter"]
 	path = lib/qnanopainter
-	url = https://github.com/QUItCoding/qnanopainter
+	url = https://github.com/Garandor/qnanopainter
