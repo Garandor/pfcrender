@@ -23,9 +23,6 @@ Item{
                 modelviewport.width / width,
                 modelviewport.height / height
                 );
-
-        console.log(model.transformOriginPoint);
-
         }
     }
 }
