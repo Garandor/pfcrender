@@ -33,7 +33,7 @@ namespace LSYS {
         return m_info;
     }
 
-    std::unique_ptr<Model::ModelFactory> LSYS::getFactory() const
+    std::unique_ptr<Model::ModelStringBuilder> LSYS::getStringBuilder() const
     {
         return std::make_unique<LSYSModelFactory>();
     }

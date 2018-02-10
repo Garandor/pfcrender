@@ -28,7 +28,7 @@ namespace LSYS {
         const Plugins::PluginInfo& getInfo() const override;
 
         //Import Interface methods
-        std::unique_ptr<Model::ModelFactory> getFactory() const override;
+        std::unique_ptr<Model::ModelStringBuilder> getStringBuilder() const override;
     };
 
 } // namespace LSYS

@@ -57,7 +57,7 @@ set(INC
         "util/PolarVector2D.h"
 
         "Model/ModelStringParser.h"
-        "Model/ModelFactory.h"
+        "Model/ModelStringBuilder.h"
         "Model/LSYSModel.h"
         "Model/LSYSModelImpl.h"
 

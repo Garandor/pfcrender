@@ -3,7 +3,7 @@
 #include <memory>
 
 #include "Model/LSYSModel.h"
-#include "Model/ModelFactory.h"
+#include "Model/ModelStringBuilder.h"
 
 namespace Plugins {
 namespace LSYS {
@@ -12,7 +12,7 @@ namespace LSYS {
  * @brief The LSYSModelFactory class
  *
  */
-    class LSYSModelFactory : public Model::ModelFactory {
+    class LSYSModelFactory : public Model::ModelStringBuilder {
 
     private:
         std::unique_ptr<QString> _computeLSYS(const QList<QString>& definition, const ulong iterate);

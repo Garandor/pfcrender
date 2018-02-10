@@ -44,7 +44,7 @@ void Common::Sequence_Walker::execute(Model::LSYSModel& mod)
         auto import = qobject_cast<Plugins::Import*>(plugin);
         if (import) {
             qDebug() << "Executing import plugin " << import->getInfo().name;
-            auto factory = import->getFactory();
+            auto factory = import->getStringBuilder();
             mod.setModel(factory->createModel());
             continue;
         }

@@ -1,7 +1,7 @@
 #ifndef PLUGIN_IMPORT_H
 #define PLUGIN_IMPORT_H
 
-#include "Model/ModelFactory.h"
+#include "Model/ModelStringBuilder.h"
 #include "Plugin.h"
 
 class QQuickItem;
@@ -16,7 +16,7 @@ public:
      * @brief getFactory
      * @return A model factory object
      */
-    virtual std::unique_ptr<Model::ModelFactory> getFactory() const = 0;
+    virtual std::unique_ptr<Model::ModelStringBuilder> getStringBuilder() const = 0;
 
     virtual ~Import() {}
 };
