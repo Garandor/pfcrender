@@ -2,7 +2,6 @@
 #include <QDebug>
 
 namespace Common {
-CLIParser* CLIParser::instance = NULL;
 
 CLIParser::CLIParser()
     : m_parser{}
@@ -27,13 +26,6 @@ CLIParser::CLIParser()
     //            QCoreApplication::translate("main", "Copy all source files into <directory>."),
     //            QCoreApplication::translate("main", "directory"));
     //    m_parser.addOption(targetDirectoryOption);
-}
-
-CLIParser* CLIParser::getInstance()
-{
-    if (instance == NULL)
-        instance = new CLIParser;
-    return instance;
 }
 
 void CLIParser::addOption(const QString& optName, const QCommandLineOption& option)

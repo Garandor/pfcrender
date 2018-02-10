@@ -14,17 +14,13 @@ namespace Common {
  */
 class CLIParser {
 private:
-    static CLIParser* instance;
-
     QCommandLineParser m_parser;
     QHash<QString, QCommandLineOption> m_optlist;
 
-private:
+public:
     CLIParser();
-    Q_DISABLE_COPY(CLIParser);
 
 public:
-    static CLIParser* getInstance();
     void addOption(const QString& optName, const QCommandLineOption& option);
     void addOption(const QPair<QString, QCommandLineOption>&);
     void parse();

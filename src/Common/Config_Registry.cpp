@@ -78,28 +78,28 @@ Config_Registry::Config_Registry()
     m_set.setFallbacksEnabled(false);
 
     //Get or create an instance of the CLI parser to populate with options
-    auto p_clip = CLIParser::getInstance();
+    Common::CLIParser clip;
 
     //Read built-in (core app) options
     for (auto o : Common::builtin_opts) //add config key and cmdline option
-        p_clip->addOption(o); //add pairs of config variables and their cmdlineoptions
+        clip.addOption(o); //add pairs of config variables and their cmdlineoptions
 
     //Read options exposed by Plugins
     for (auto p : Plugin_Registry::getInstance()->getPlugins()) {
         for (auto opt : p->getInfo().co.keys())
-            p_clip->addOption(opt, p->getInfo().co.value(opt, QCommandLineOption("wat"))); //add config key and cmdline option
+            clip.addOption(opt, p->getInfo().co.value(opt, QCommandLineOption("wat"))); //add config key and cmdline option
     }
 
     //Now that all options are known to CLI Parser, read the commandline
-    p_clip->parse();
+    clip.parse();
 
     //XXX: Need to load singleton from CLI before loading from file because of --clear switch, (and possibly other future switches) this leads to parsing CLI options twice. Sure there is a better solution
 
-    QHashIterator<QString, QCommandLineOption> it(p_clip->getOptlist());
+    QHashIterator<QString, QCommandLineOption> it(clip.getOptlist());
     while (it.hasNext()) {
         it.next();
-        if (p_clip->getParser().isSet(it.value()))
-            setOpt(it.key(), p_clip->getParser().value(it.value()));
+        if (clip.getParser().isSet(it.value()))
+            setOpt(it.key(), clip.getParser().value(it.value()));
     }
 
     //Initialize registry with defaults/last used state from config file unless --clear is provided
@@ -111,17 +111,17 @@ Config_Registry::Config_Registry()
     }
 
     //XXX: Readd from CLI parser to overwrite defaults
-    QHashIterator<QString, QCommandLineOption> it2(p_clip->getOptlist());
+    QHashIterator<QString, QCommandLineOption> it2(clip.getOptlist());
     while (it2.hasNext()) {
         it2.next();
-        if (p_clip->getParser().isSet(it2.value())) {
-            setOpt(it2.key(), p_clip->getParser().value(it2.value()));
-            qDebug() << "Config_Reg - Read from file: " << it2.key() << " : " << p_clip->getParser().value(it2.value());
+        if (clip.getParser().isSet(it2.value())) {
+            setOpt(it2.key(), clip.getParser().value(it2.value()));
+            qDebug() << "Config_Reg - Read from file: " << it2.key() << " : " << clip.getParser().value(it2.value());
         }
     }
 
     //populate sequence from positional arguments
-    for (auto arg : p_clip->getParser().positionalArguments())
+    for (auto arg : clip.getParser().positionalArguments())
         add_to_sequence(arg);
 }
 
