@@ -1,6 +1,6 @@
 \chapter{Chosen Application Architecture}
 
-After researching available technologies, an architecture to build the pfcrender tool on was selected. The implementation is shown alongside the original requirements in the following graphs, split between functional- (figure \ref{fr}) and non-functional (figure \ref{nfr}) requirements. As in figure \ref{fig:directreq}, direct requirements are highlighted in green. Take note that each direct requirement is satisfied or verified through an implementation requirement or test case.
+After researching available technologies, an architecture to build the pfcrender tool on was selected. The implementation is shown alongside the original requirements in the following graphs, split between functional- (figure \ref{fr}) and non-functional (figure \ref{nfr}) requirements. As in figure \ref{fig:directreq}, direct requirements are highlighted in green. Note that each direct requirement is satisfied or verified through an implementation requirement or test case.
 
 The architecture is discussed in detail in the following sections.
 
@@ -18,7 +18,7 @@ The architecture is discussed in detail in the following sections.
 
 \section{Functional Requirements}
 The main decision to make on the software architecture side was which of the framework libraries discussed in section \ref{sec:res_frameworks} to use.
-Selection was driven by three main concerns: extensibility, performance and ease-of-use.
+Selection was driven by three main concerns: \emph{extensibility, performance and ease-of-use}.
 
 Ultimately, the Qt Framework was chosen for the following reasons:
 \begin{itemize}
@@ -44,18 +44,17 @@ Linux compilers like gcc will not be able to parse this keyword and fail compila
 
 Qt provides a wrapper around this functionality with a class called QPluginLoader\furl{http://doc.qt.io/qt-5/qpluginloader.html}.
 
-Making a library compatible to use with this mechanism involves some extra steps compared to loading a shared library directly, which pertain to making the Qt MetaObject system aware of the plugin\furl{http://doc.qt.io/qt-5/plugins-howto.html}, but spares the effort of including platform specific adapter code/preprocessor instructions to each plugin.
+Making a library compatible to use with this mechanism involves some extra steps compared to loading a shared library directly, which pertain to making the Qt \gls{mos} aware of the plugin\furl{http://doc.qt.io/qt-5/plugins-howto.html}, but spares the effort of including platform specific adapter code/preprocessor instructions to each plugin.
 
 \subsection{Rendering in Qt}
 \label{sec:qtrender}
 As stated before, Qt offers two different application programming \gls{api}s. A main difference is in the rendering methode they use:
 \begin{description}
-	\item [QWidgets] The main API of Qt. It is similar to Java SWING and handles GUI design and functionality in C++ using Qt-provided or custom QWidget-derived classes.
-	\item [QtQuick] A relatively new (since Qt 4.7) javascript-based declarative language called \gls{qml}, similar to the XML-based JavaFX, is used to define the GUI frontend, while C++ classes in the backend are used for performance intensive calculation. The UI is then rendered in a so-called scenegraph using a platform specific graphics backend like OpenGL or OpenGL ES. Though no formal study of performance differences between both \gls{api}s exists, documentation by the QtCompany\furl{http://doc.qt.io/qt-5/qtquick-performance.html} suggests performance between both models is comparable if some guidelines are followed.
+	\item [QWidgets] The main API of Qt. It is similar to Java SWING and handles \gls{gui} design and functionality in C++ using Qt-provided or custom QWidget-derived classes. Each widget handles rendering itself.
+	\item [QtQuick] A relatively new (since Qt 4.7) javascript-based declarative language called \gls{qml}, similar to the XML-based JavaFX, is used to define the \gls{gui} frontend, while C++ classes in the backend are used for performance intensive calculation. Drawing information of QQuickItems is composed to a scenegraph, which is then handed to the platform specific graphics backend like OpenGL or OpenGL ES for rendering. Though no formal study of performance differences between both \gls{api}s exists, documentation by the QtCompany\furl{http://doc.qt.io/qt-5/qtquick-performance.html} suggests performance between both models is comparable if some guidelines are followed.
 \end{description}
 
-Since the additional model-/view abstraction is conducive to extensibility of the tool, as the declarative \gls{qml} language makes GUI extensions simple, QtQuick is selected for the implementation.
-
+Since the additional model-/view abstraction is conducive to extensibility of the tool, as the declarative \gls{qml} language makes \gls{gui} extensions simple, QtQuick is selected for the implementation.
 
 The following methods of drawing to these APIs are offered:
 \begin{description}
@@ -64,7 +63,7 @@ The following methods of drawing to these APIs are offered:
 	\item [QtQuick HTML5 canvas] Draws on top of a HTML5 canvas embedded into the qt app.
 	\item [QtQuickItem with custom scene graph node] Instantiates a QQuickItem with custom appearance by directly setting vertices and material for the underlying OpenGL to render.
 	\item [QQuickPaintedItem] An adaptation of the QPainter API for the SceneGraph based QtQuick. 
-	\item [QNanoPainter] A third party plugin, offering a mixture of QPainter and HTML5 canvas API to draw on an OpenGL framebuffer object or QSGRenderNode to be placed in the QtQuick scene graph. Offers Painter-like productivity with less performance overhead.
+	\item [QNanoPainter]\furl{https://github.com/QUItCoding/qnanopainter} A third party plugin, offering a mixture of QPainter and HTML5 canvas API to draw on an OpenGL framebuffer object or QSGRenderNode to be placed in the QtQuick scene graph. Offers Painter-like productivity with less performance overhead.
 \end{description}
 
 The QML and HTML5 APIs were disregarded due to their interpreted and thus slow nature.
@@ -85,44 +84,42 @@ Each plugin is required to publish and read its configuration options from this 
 We define the following possibilities of setting options to the central store, in order of execution and inverse order of precedence:
 \begin{enumerate}
 	\item Options and state information are read from disk
-	\item Options can be given on the Command line
-	\item Options can be set from within the GUI
+	\item Options can be given on the command line
+	\item Options can be set from within the \gls{gui}
 \end{enumerate}
 
-\subsubsection{QSettings}
-The Qt framework comes with a provider for storing settings called QSettings 
+\subsubsection{Persistent Filesystem Storage - QSettings}
+The Qt framework comes with a provider for storing settings called QSettings. It abstracts the programmer from platform specific storage solutions of a configuration store and provides a simple \cmd{save()} and \cmd{restore()} \gls{api} for the backing store it manages on its own. Configuration data is made available as a map of configuration identifier and configuration value.
 
-\todo{asd}
-
-\subsubsection{QCommandlineParser}
-Parsing of the commandline is one of the first steps in program execution. Since successfully parsing given arguments (and generating \cmd{- -help} documentation on available options) requires all available options to be known, it follows that all plugins must be loaded on startup to query them for their config options.
+\subsubsection{Commandline Parsing - QCommandlineParser}
+Parsing of the commandline is one of the first steps in program execution. Since successfully parsing given arguments (and generating documentation on available options accessible by running \cmd{pfcrender --help}) requires all available options to be known, it follows that all plugins must be loaded on startup to query them for their config options.
 
 While this is not computationally efficient, as not all plugins will necessarily be executed during program runtime and thus get loaded in vain, maintainability outweighs this performance issue.
-Loading all plugins is a once-per-execution process and the number of plugins is fairly small. Also, loading all plugins at startup allows for automatically gathering a available functionality on startup, omitting the need for a separate configuration file of plugins and their locations.
+Loading all plugins is a once-per-execution process only delaying application startup, not normal operation. Also, the number of plugins is fairly small. A benefit of loading all plugins at startup allows for automatically gathering available functionality on startup, omitting the need for a separate configuration file of plugins and their locations.
 
-It is thus defined that plugin libraries will be located in a Plugins subfolder below the binary executable and are loaded at runtime each time the program executes.
+It is thus defined that plugin libraries will be located in a Plugins subfolder below the binary executable that contains no files other than plugins, so they can be crawled and loaded each time the program executes.
 
 This design allows for a \emph{self-documenting, truly runtime extensible} plugin system, where plugins can be added/removed from the program without additional configuration steps.
 
-Due to it supporting our use-case, being easily extensible and not introducing any more dependencies into the project above the already used Qt Framework libraries, the QtCommandLineParser was chosen to provide the main CLI-based interface to the program.
+Due to it supporting our use-case, being easily extensible and not introducing any more dependencies into the project above the already used Qt Framework libraries, the QtCommandLineParser is chosen to provide the main CLI-based interface to the program.
 
-A drawback of QCommandlineParser is the batch parsing of the commandline, making it impossible to group \-\-switches by their position of occurrence.
+A drawback of QCommandlineParser is batch parsing of the commandline, making it impossible to group configuration switches (denoted by - -switch syntax) by their position of occurrence in the argument string.
 
 We thus define the following:
 \begin{enumerate}
-	\item Actions taken by the program shall be specified on the commandline as positional arguments (with no - prefix), to guarantee their execution in order
-	\item configuration options are specified with \-\-prefix and shall be unique throughout the application (including all plugins)
+	\item Actions taken by the program shall be specified on the commandline as positional arguments (with no preceding \cmd{-}), to guarantee their execution in order
+	\item configuration options are specified with - -prefix and shall be unique throughout the application (including all plugins)
 \end{enumerate}
 
-\subsubsection{GUI configuration}
-In order to make configuration possible from the GUI, a plugin shall expose a configuration screen QQuickItem object through its plugin interface that contains all logic for setting configuration options on the plugin for the GUI to display.
+\subsubsection{GUI configuration - QQuickItem}
+In order to make configuration possible from the \gls{gui}, a plugin shall expose a configuration screen described in \gls{qml} as a QQuickItem through its plugin interface, that contains all logic for setting configuration options on the plugin for the \gls{gui} to display.
 
 \section{Non-functional Requirements}
 
 \subsection{Qt Unit Testing Framework}
 Qt comes with its own unit-testing framework integrated into QtCreator. The following code presents an example test for a fictional Counter class:
 
-\begin{lstlisting}
+\begin{lstlisting}[caption=Unit Test for a Counter class,language=c++]
 #include <QtTest>
 #include "Counter.h"
 
@@ -161,34 +158,59 @@ QTEST_MAIN(MyTest)
 \end{lstlisting}
 
 This builds an executable (main routine provided by the QTEST\_MAIN macro) that runs the given test routines.
-It is integrated with QtCreator, which gathers test apps created in this way automatically and can run them from the \gls{gui} and display PASS/FAIL status depending on QVERIFY() and return value.
-\begin{figure}[h]
-\end{figure}
-	\todo{qtcreatbild}
+It is integrated with QtCreator, which gathers test executables created in this way automatically, can run them from the \gls{gui} and display PASS/FAIL status depending on QVERIFY() and return value as shown in figure \ref{fig:qtctest}.
 
-Since it is a standalone executable, it can also be run by other testing environments like CMake's CTest, and can thus be automated and integrated into \gls{ci} builds.
-
-\begin{figure}[h]
+Since it is a standalone executable, it can also be run by other testing environments like CMake's CTest, and thus be automated and integrated into \gls{ci} builds as shown in figure \ref{fig:travistest}
+\begin{figure}[htb]
+	\includegraphics[width=\textwidth]{qtcreator_testing}
+	\caption{Unit Testing Output of QtCreator}
+	\label{fig:qtctest}
 \end{figure}
-	\todo{travis buildlog}
+
+\begin{figure}[htb]
+	\includegraphics[width=\textwidth]{travis_testlog}
+	\caption{Unit Testing Output of a \gls{ci} build using Travis CI}
+	\label{fig:travistest}
+\end{figure}
 
 \subsection{Makefile Generator - CMake}
 Though as described in section \ref{sec:resMakefileGen} Qt has its own makefile generator with qmake, CMake was selected for the following reasons
 \begin{description}
-	\item[good support in \gls{ci} software] Both selected \gls{ci} solutions support 
-	\item[widespread use] CMake is extensively documented 
+	\item[Widespread Use] Though more feature-rich than QMake, CMake is extensively documented
 	\item[CTest Test-Runner] Allows to define available unit tests in CMake configuration files and automatically run them after build completion 
 \end{description}
 
-Especially the last argument is a large gain for maintainability when integrated with \gls{ci}, as it makes automated builds more informative.
-A \gls{ci} build will not only report failure on changes that break compilation, but also on changes that break functionality for which tests exist. This in turn encourages contributors to actually write unit tests, since they don't need to be run manually.
-
+Especially the test runner is a large gain for maintainability when integrated with \gls{ci} as shown in figure \ref{fig:travistest}, as it makes automated builds more informative.
+A build will not only report failure on changes that break compilation, but also on changes that break runtime functionality for which tests exist. This in turn encourages contributors to actually write unit tests, since they don't need to be run manually.
 
 \subsection{Version Control System}
-Due to the useful issue tracking feature of github and its extensive third party infrastructure integration with the services like \gls{ci}, git was chosen as \gls{vcs} and github as the central repository provider.
+Due to the useful issue tracking feature of \gls{github} and its extensive third party infrastructure integration with services like \gls{ci}, \gls{git} is selected as \gls{vcs} and \gls{github} as the central repository provider.
 
-\subsection{CI provider}
-Github integration, and free-for-open source service, led to Appveyor being selected as \gls{ci} provider for windows builds, and Travis CI for Linux and MacOS X.
+The project can be found at \url{https://github.com/Garandor/pfcrender}
+
+\begin{figure}[htb]
+	\includegraphics[width=\textwidth]{github_issues}
+	\caption{GitHub issue tracking board}
+	\label{fig:githubissues}
+\end{figure}
+
+We leverage \gls{github}'s integration by connecting it to the \gls{ci} providers Appveyor for windows builds, and Travis CI for Linux and MacOS X, due to their free-for-open source service.
+
+\gls{ci} services for our repository are located at
+\begin{itemize}
+	\item \url{https://travis-ci.org/Garandor/pfcrender}
+	\item \url{https://ci.appveyor.com/project/Garandor/pfcrender}
+\end{itemize}
+
+Furthermore, \gls{ci} runs are used to run a CTest suite of unit tests generating \gls{coverage} reports as described in section \ref{sec:autotest}, which are then uploaded to cloud coverage dashboard codecov.io at \url{https://codecov.io/gh/Garandor/pfcrender}.
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{codecov.png}
+	\caption{Codecov.io coverage dashboard}
+	\label{fig:codecov}
+\end{figure}
+
+Documentation for this project is also automatically generated from Doxygen structured comments in the code (see sec. \ref{sec:resdoxygen}) on every \gls{ci} build of the master branch on github, which is then uploaded to github-pages. A website/documentation hosting service of \gls{github}\furl{https://pages.github.com/}.
 
 \section{Architecture Hierarchy}
 \begin{figure}
@@ -198,6 +220,6 @@ Github integration, and free-for-open source service, led to Appveyor being sele
 \end{figure}
 A plugin architecture as described in \ref{sec:resplug} was chosen, as plugins to \cmd{pfcrender} will mainly consist of new Import/Export formats with limited intrinsic complexity and no dependencies on other plugins, avoiding aforementioned \textit{plugin hell} scenario.
 
-The resulting component architecture is shown in figure \ref{fig:comp}. While the GUI could in theory be designated an export plugin as well and extracted from the main application, leaving the possibility to configure operation from the GUI was deemed useful. As this would depend on the GUI plugin receiving the QQuickItem config screen from the plugins, it would lead to dependencies among plugins, potentially leading to the \textit{plugin hell} situation described in \ref{earlier}.
+The resulting component architecture is shown in figure \ref{fig:comp}. While the \gls{gui} could in theory be designated an export plugin as well and extracted from the main application, leaving the possibility to configure operation from the \gls{gui} was deemed useful. As this would depend on the \gls{gui} plugin receiving the QQuickItem config screen from the plugins, it would lead to dependencies among plugins, potentially leading to the \textit{plugin hell} situation described in \ref{sec:resplug}.
 
-The big benefit of not binding the application to model import from the LSYS iterator module is in extensibility. This architecture can also easily support a use-case, where a library of pre-iterated strings describing \gls{pfc}s is held in a different "PFC library tool" - e.g. categorized by their canonical names - like \textsc{Gosper's flowsnake} presented earlier - and can be easily integrated into the renderer by providing a plugin.
+A key benefit of not binding the application to model import from the \gls{lsys} generator module is in extensibility. This architecture can also easily support a use-case, where a library of pre-iterated strings describing \gls{pfc}s is held in a different "PFC library tool" - e.g. categorized by their canonical names - like \textsc{Gosper's flowsnake} presented earlier - and can be easily integrated with the renderer by providing a new import plugin.

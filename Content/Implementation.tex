@@ -3,6 +3,10 @@
 
 During development the reversing functionality was found to not work reliably, leading a standard model-driven design approach.
 
+\begin{quote}
+Theory and practice sometimes clash. And when that happens, theory loses. Every single time.\\
+- Torvalds, Linus (2009-03-25). Message to Linux kernel mailing list
+\end{quote}
 \subsection{QtCreator}
 
 QtCreator is an \gls{ide} originally created for creating GUI apps using the Qt libraries. It brings integration with many useful third-party tools though.
@@ -22,20 +26,69 @@ It integrates support to automatically format code with clang-format and astyle,
 \subsection{Build System}
 Setting up the \gls{ci} environment is a pain, mainly caused by Travis using a 6 year old Linux distribution by default, where the standard version of gcc is 4.8, which does not even support C++11.
 
+\subsection{CI}
+Since switching to the NanoVG based QNanoPainter, Appveyor windows builds are failing with unresolved externals, all of which are gl*() OpenGL functions.
+Some research into why this happens lead to the following post
+\begin{quote}
+Unfortunately AppVeyor build worker VMs support only OpenGL 1.1.
 
+You might consider private build cloud to use your own VMs or real hardware machines. However this option is available for Premium plan customers only (free to try).
+\end{quote}\furl{http://help.appveyor.com/discussions/problems/11450-open-gl-version}
 
-\section{Application configuration}
+CI support for windows was dropped for the time being.
 
-\section{Plugin Interface abstraction}
-\subsubsection{Inheritance in Qt}
-Implementing interfaces that are supposed to be used with Qt's meta object system is a slightly awkward procedure, as Qt's macros used to notify the moc about interface definitions and implementations are not namespace aware. 
+On Ubuntu 14.04, no GLES3 installation is present, this could be worked around by forcing QNanoPainter to use GLESv2.
 
-This limitation pertains to interfaces exposing functionality from the Qt MetaObject system like signals/slots.
+This was non-trivial to set up though, as Qt is by default not linked to a specific graphics backend - i.e. linking has to be done manually for QNanopainter to work
 
-\section{Curve Creation}
+Thankfully developers encountered the same problem and solved it for the qmake buildsystem, fixing it amounted to adapting their solution to CMAke.
 
-\section{Graphical Output}
-\subsection{Rendering the Model Curve}
+\subsection{QNanoPainter Performance}
+It turned out, that QNanoPainter forces the scene graph managed by Qt to call the paint function, which in our case is used to create the texture from the model string, on every frame, leading to a unusable \gls{gui} on complex models.
+
+\todo{maybe elaborate on the scene graph in architecture def}
+When the scene graph collects data for rendering, it reuses cached data if it has not changed for efficiency. To indicate changes that need redrawing, dirty bits are set on that node, which specify in which way a node's data has changed. In the case of QNanoPainter 
+
+\begin{lstlisting}[language=c++,caption=QNanoQuickItem as of commit de45f31e]
+QSGNode *QNanoQuickItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeData *nodeData)
+{
+    Q_UNUSED(nodeData)
+    QNanoQuickItemPainter *n = static_cast<QNanoQuickItemPainter *>(node);
+    if (!n) {
+        n = createItemPainter();
+    }
+    n->synchronizePainter(this);
+    n->markDirty(QSGNode::DirtyMaterial);
+    return n;
+}
+\end{lstlisting}
+This code calls \code{markDirty()} on every execution, forcing the scene graph to call the QNanoCurvePainter::paint() function to redraw the geometry.
+
+We resolved this problem by forking QNanoPainter, removing this call from \code{updatePaintNode()} and calling it in the QNanoCurvePainter::synchronize method instead, which is called by synchronizePainter() in the above snippet, but is a class implemented by the user, thus exposing control over whether to redraw or not to the user. A pull request to the official repository will be submitted shortly.
+
+\section{Automated Unit Testing and Coverage Reporting}
+A main benefit of using Github - as already stated, is the third party tool integration offered.
+
+Regarding unit testing, this results in the possibility to not only automatically run tests on each build of Travis CI, but also visualize the \gls{coverage} of the tests executed using \url{codecov.io}, which hooks into Travis completed builds that generated code output with coverage information and generates a graphical report on which lines of code were actually executed during testing.
+
+They turned out to eat up about as much productivity in maintenance as they freed
+
+Travis CI runs on Ubuntu 12.04LTS which reached End-of-Life in 2017. Ubuntu 14.04LTS support is still experimental, but even with the updated OS, the available tools are heavily outdated.
+
+Huge benefit to maintainability, clear insight on testing, fast feedback whether changes work.
+
+Standard gcc is a v4 with no support for C++11
+Manually updating tools had ramifications as gcov was now ouptutting coverage data from gcov-5, lcov was using the old gcov-4 leading to no coverage being reported. Manually setting the gcov tool path resolved this issue, which - along with the time spent identifying the problem - was a significant time drain.
+
+Still, the great benefit of this tool is that once it has been set up, it "just works" - running alongside the projects dev flow unintrusively and gives good insight into areas of improvement.
+\todo{lolwut}
+
+\section{Main Application}
+
+\subsection{Curve Creation}
+
+\subsection{Graphical Output}
+\subsubsection{Rendering the Model Curve}
 While a PFC can be constructed segment by segment, the final size and position of the curve is not known until after the full curve is constructed.
 
 The smallest rectangle fitting around a curve rendering is called its  \gls{bounding box}
@@ -55,10 +108,18 @@ A way was found to avoid reparsing the model string for the sole purpose of obta
 The bounding box is instead calculated in the the same parsing pass used to draw the geometry. The drawing frameworks can not translate after drawing, but the Qt SceneGraph can.
 
 Using the translate property, which - under the hood - prepends the actual scenegraph node with a QSGTransformNode, the rendering can be done without concern for target coordinates and moved to fit the window after drawing.
+\subsubsection{Custom Geometry dun werk liek it should}
+direct node creation
 
-\subsection{Custom Geometry dun werk liek it should}
 \label{sec:implrenderprob}
 arcs bezier
+
+\section{Plugins}
+\subsubsection{Inheritance in Qt}
+Implementing interfaces that are supposed to be used with Qt's meta object system is a slightly awkward procedure, as Qt's macros used to notify the moc about interface definitions and implementations are not namespace aware. 
+
+This limitation pertains to interfaces exposing functionality from the Qt MetaObject system like signals/slots.
+
 \section{SVG Output}
 \label{sec:svg}
 
@@ -66,40 +127,3 @@ arcs bezier
 \label{sec:pdf}
 
 
-\section{Automated Unit Testing and Coverage Reporting}
-A main benefit of using Github - as already stated, is the third party tool integration offered.
-
-Regarding unit testing, this results in the possibility to not only automatically run tests on each build of Travis CI, but also visualize the \gls{coverage} of the tests executed using \url{codecov.io}, which hooks into Travis completed builds that generated code output with coverage information and generates a graphical report on which lines of code were actually executed during testing.
-
-They turned out to eat up about as much productivity in maintenance as they freed
-
-Travis CI runs on Ubuntu 12.04LTS which reached End-of-Life in 2017. Ubuntu 14.04LTS support is still experimental, but even with the updated OS, the available tools are heavily outdated.
-
-Huge benefit to maintainability, clear insight on testing, fast feedback whether changes work.
-
-Standard gcc is a v4 with no support for C++11
-Manually updating tools had ramifications as gcov was now ouptutting coverage data from gcov-5, lcov was using the old gcov-4 leading to no coverage being reported. Manually setting the gcov tool path resolved this issue, which - along with the time spent identifying the problem - was a significant time drain.
-
-Still, the great benefit of this tool is that once it has been set up, it "just works" - running alongside the projects dev flow unintrusively and gives good insight into areas of improvement.
-\todo{lolwut}
-
-\section{CI pains}
-
-
-
-
-Since switching to the NanoVG based QNanoPainter, Appveyor windows builds are failing with unresolved externals, all of which are gl*() OpenGL functions.
-Some research into why this happens lead to the following post
-\begin{quote}
-Unfortunately AppVeyor build worker VMs support only OpenGL 1.1.
-
-You might consider private build cloud to use your own VMs or real hardware machines. However this option is available for Premium plan customers only (free to try).
-\end{quote}\furl{http://help.appveyor.com/discussions/problems/11450-open-gl-version}
-
-CI support for windows was dropped for the time being.
-
-On Ubuntu 14.04, no GLES3 installation is present, this could be worked around by forcing QNanoPainter to use GLESv2.
-
-This was non-trivial to set up though, as Qt is by default not linked to a specific graphics backend - i.e. linking has to be done manually for QNanopainter to work
-
-Thankfully developers encountered the same problem and solved it for the qmake buildsystem, fixing it amounted to adapting their solution to CMAke.

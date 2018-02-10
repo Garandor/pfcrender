@@ -3,7 +3,31 @@
 \subsection{fxtlib}
 \subsection{move semantics when operating on model}
 \section{Problems}
-\section{redraw every frame on QNanoPainter}
+\section{QNanoPainter Performance}
+It turned out that QNanoPainter forces the scene graph managed by Qt to call QNanoQuickItemPainter::paint() function, which in our case is used to create the texture from the model string, on every frame, leading to a unusable \gls{gui} on complex models.
+
+\todo{maybe elaborate on the scene graph in architecture def}
+When the scene graph collects data for rendering, it reuses cached data if it has not changed for efficiency. To indicate changes that need redrawing, dirty bits are set on that node, which specify in which way a node's data has changed. In the case of QNanoPainter 
+
+\begin{lstlisting}[language=c++,caption=QNanoQuickItem as of commit de45f31e]
+QSGNode *QNanoQuickItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeData *nodeData)
+{
+    Q_UNUSED(nodeData)
+    QNanoQuickItemPainter *n = static_cast<QNanoQuickItemPainter *>(node);
+    if (!n) {
+        n = createItemPainter();
+    }
+    n->synchronizePainter(this);
+    n->markDirty(QSGNode::DirtyMaterial);
+    return n;
+}
+\end{lstlisting}
+This code calls \code{markDirty()} on every execution, forcing the scene graph to call the QNanoCurvePainter::paint() function to redraw the geometry.
+
+This behavior is probably intended, as QNanoPainter can also draw on QQuickFramebufferObject as a backend, which does not have the notion of dirtyness, so this was likely inplemented for consistency in user code.
+
+We resolved this problem by forking QNanoPainter, removing this call from \code{updatePaintNode()} and calling it in the QNanoCurvePainter::synchronize method instead, which is called by synchronizePainter() in the above snippet, but is a class implemented by the user, thus exposing control over whether to redraw or not to the user. A pull request to the official repository will be submitted shortly.
+
 
 \subsection{Angle calculation}
 \begin{quote}

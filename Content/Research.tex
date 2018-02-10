@@ -49,7 +49,7 @@ Like GTK+ it has a widget-based API, but since Qt5 additionally brings a JavaFX-
 
 In addition to providing graphics and \gls{gui} abstractions, it also provides a platform-independent library loading wrapper.
 
-Asynchronous GUI programming is provided through an extension to the C++ language called the \text{Meta-Object System}.
+Asynchronous GUI programming is provided through an extension to the C++ language called the \gls{mos}.
 
 \subsection{Build System Generators}
 \label{sec:resMakefileGen}
@@ -193,7 +193,7 @@ Tools like clang-format\footnote{\url{https://clang.llvm.org/docs/ClangFormat.ht
 
 When used in conjunction with a \gls{vcs}, formatting can be automatically applied before publishing changes (e.g. git pre-commit hook) to other parties, completely abstracting the developer from the process - and thus enabling him to freely disregard code style guidelines during development, without violating them on check-in.
 
-\subsection{Automated Unit Testing Frameworks}
+\subsection{Automated Unit Testing Frameworks}\label{sec:autotest}
 
 Research into this field was mostly motivated by a blog post\furl{https://medium.com/@fatboyxpc/the-hard-truth-nobody-has-time-to-write-tests-68a122a1a0e3}, preseting compelling arguments for devoting time to creating an automated testing environment, closing with the following words
 \begin{quote}
@@ -242,13 +242,7 @@ During research, only a single open source / free-for-education \gls{uml} modeli
 
 Exporting a model to C++ code is provided as core functionality, import from code through a plugin\furl{http://astah.net/features/cpp-reverse-plugin}.
 
-
-\begin{quote}
-Theory and practice sometimes clash. And when that happens, theory loses. Every single time.\\
-- Torvalds, Linus (2009-03-25). Message to Linux kernel mailing list
-\end{quote}
-
-\subsection{Automatically Generated Documentation}
+\subsection{Automatically Generated Documentation}\label{sec:resdoxygen}
 The necessity of documenting code is a topic of heated discussion among programmers. Some argue today's high-level programming languages are mostly self-documenting, so why restate the obvious.
 
 Others claim that stating the intent of a section of code clearly in plain language can make code much easier to understand, and is - for this very reason - a part of the \textit{maintainability index} presented in section \ref{sec:maintainability}.
@@ -303,7 +297,7 @@ We thus need a method of configuration that is easily extensible with new option
 \label{sec:ston}
 Whenever a piece of information needs to be known in global scope, i.e. across the whole application and exist only once - as is the case for a store of configuration information - the Singleton, described in \citet[pp. 127ff]{Gamma1994} is a very useful design pattern. 
 
-\begin{lstlisting}
+\begin{lstlisting}[caption=Singleton Implementation in C++, language=c++]
 class Config_Registry {
 private:
     static Config_Registry* instance; 
