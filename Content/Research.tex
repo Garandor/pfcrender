@@ -1,16 +1,16 @@
 \chapter{Research on Architecture Design Options}
 
-We discuss the requirements in detail and show research on possible implementations of architecture design goals imposed by the former.
+We discuss the given requirements, derive architecture design goals and and research possibilities of implementating those goals.
 
-\section{Maintainability}
+\section{Maintainability}\label{sec:maintainability}
 Maintainability was declared a main goal in the requirements, and this is an issue with much broader reach than writing clean code.
 
-The term describes the ease of performing maintenance tasks on software, the latter of which is defined in \citet{Bray1997} :
+The term describes the ease of performing maintenance tasks on software, the latter of which is defined in \citet[p.234]{Bray1997} :
 \begin{definition}[maintenance]
 the modification of a software product after delivery to correct faults, improve performance or other attributes, or to adapt the product to a changed environment
 \end{definition}
 
-It is a highly subjective term, \citet{Bray1997} mention coefficients like  average extended cyclomatic complexity per module, average number of lines of code per module and average lines of comments per module for a \textit{maintainability index} - an attempt at quantizing maintainability.
+It is a highly subjective term, \citet[p.231]{Bray1997} mention coefficients like average extended cyclomatic complexity per module, average number of lines of code per module and average lines of comments per module for a \textit{maintainability index} - an attempt at quantizing maintainability.
 
 Apart from the actual code, non-coding factors also impact the maintainability of a software project, e.g.
 \begin{itemize}
@@ -21,7 +21,7 @@ Apart from the actual code, non-coding factors also impact the maintainability o
 \end{itemize}
 
 The importance of such "meta-programming" techniques is testified by the fact that a job field for software engineers called \gls{DevOps} exists, which engages in finding ways to optimize coding workflow.
-A definition by \citet{Bass2015}:
+A definition by \citet[p.23]{Bass2015}:
 \begin{definition}[DevOps]
 	DevOps is a set of practices intended to reduce the time between committing a change to a system and the change being placed into normal production, while ensuring high quality.
 \end{definition}
@@ -34,7 +34,7 @@ Understandability, though distinct from maintainability in \citet{Bray1997}, con
 	\item common code formatting guidelines, i.e. making sure code from different contributors "looks the same"
 	\item consistent code documentation
 \end{itemize}
-And will also be considered in this work, as adhering to above rules increases productivity of developers and lowers the barrier of entry for new coders.
+We will also consider matters of understandability in this work, as adhering to above rules increases productivity of developers and lowers the barrier of entry for new coders.
 
 \subsection{Version Control}
 \gls{Version Control System}s  are used in \gls{scm} to keep track of changes to a codebase. They provide featues like
@@ -66,25 +66,24 @@ Like with Mercurial, key benefits are
 \begin{description}
 	\item[Decentralization] No reliance on availability of a central server for daily work
 	\item[Smart merging] Conflict resolution algorithms are fairly good at finding and automatically fixing trivial conflicts, keeping developer interaction on merges to a minimum
-	\item[Central repository support] Though git operates locally, it supports pushing code to and pulling from remote repositories, enabling the use of a central "synchronization" repository, which is the Basis for the popular \gls{github} 
+	\item[Central repository support] Though git operates locally, it supports pushing code to and pulling from remote repositories, enabling the use of a central "synchronization" repository, which forms the basis for the popular \gls{github} 
 \end{description}
 
-The distinguishing factor is the huge userbase that has resulted in git integration to a multitude of third-party tools centered around github\furl{http://github.com}, the open-source \gls{cloud}-repository provider for git.
+Distinguishing factor of \gls{git} is the large existing userbase, that has resulted in a multitude of third-party tools integrating the \gls{vcs}, mostly via its \gls{cloud}-repository provider \gls{github}\furl{http://github.com}.
 
 \subsection{Continuous Integration}
 \gls{ci} is a concept popularized in the rise of agile software development. In classical development structures, features are are coded to perceived completion before they are introduced into the codebase of a product, their functionality maybe tested in unit-tests. Integrations of features are performed on a fixed schedule, e.g. quarterly with integration tests following the procedure, leading to an eventual release.
 
-It is a method to avoid the time- and effort-consuming "big-bang" integrations, by testing changes under development on the current state of the main codebase \textit{continuously}. This is made possible by \gls{vcs}es and their branching functionality, and works by taking the local branch of the developers code on each change, trying to build the code and running available tests on it. Breaking changes thus get reported to the developer much quicker than they would classically, limiting the possible causes of the build failure, thus reducing the time spent bug hunting.
+A method of avoiding those time- and effort-consuming "big-bang" integrations is offered by \gls{ci}, by testing changes under development on the current state of the main codebase \textit{continuously}. This is made possible by \gls{vcs}es and their branching functionality, and works by taking the local branch of the developers code on each change, trying to build the code and running available tests on it. Breaking changes thus get reported to the developer much quicker than they would classically, which limits the possible causes of the build failure, reducing the time loss of bug hunting.
 
-Since \gls{ci} needs an always-on system in a consistent configuration for each of the target systems that are to be supported, that is always ready to build the code once a change it committed to a \gls{vcs}.
-This technique relies on virtualization through solutions like docker\furl{https://www.docker.com/} and VMWare\furl{https://www.vmware.com/}.
+\gls{ci} relies on having one or more systems in a consistent "ready to build/run" configuration for each of the target systems that are to be supported. Since running the application may change the target system's configuration, obtaining reproducible results without manual re-configuration of the build system is made possible through use of virtualization solutions like docker\furl{https://www.docker.com/} and VMWare\furl{https://www.vmware.com/}.
 
-It is rarely feasible for small projects to maintain such build system farms themselves, especially when software is targeted for multiple platforms - as a developer usually has one development environment and can not necessarily access machines running the other implementation targets. In this particular case for example, development was done on linux, with no access to MacOS devices to test the code on.
+It is rarely feasible for small projects to maintain such build system farms themselves. On the other hand, \gls{ci} offers the possibility of testing the software on all to-be-supported platforms, without the developer needing physical access to a machine in that configuration. In this particular case for example, development was done on linux, with no access to MacOS devices to test the code on.
 
-Thankfully, \gls{cloud} providers exist that provide build systems in various configurations as a service, often free for open-source projects
+Thankfully, \gls{cloud} providers exist that provide build systems in various configurations as a service, often free for open-source projects.
 
 \subsubsection{Travis CI}
-Travis \gls{ci}\furl{https://travis-ci.org} at the time of writing provides virtual machines running Linux (Ubuntu 12.04 and 14.04) and Mac OS X to provide builds on their cloud platform.
+Travis \gls{ci}\furl{https://travis-ci.org} at the time of writing provides virtual machines running Linux (Ubuntu 12.04 and 14.04) and Mac OS X to provide builds on their \gls{cloud} platform.
 
 It integrates with github for starting a build on each commit and reports completion status back to github.
 
@@ -101,16 +100,16 @@ One Linux-based container is free, allowing one build at a time. MacOS X is paid
 Like with Travis, they integrate with Github.
 
 \subsubsection{Appveyor CI}
-Appveyor\furl{https://ci.appveyor.com/login} is a Windows-only \gls{ci} provider, enabling builds on the various Microsoft Visual Studio version.
+Appveyor\furl{https://ci.appveyor.com/login} is a Windows-only \gls{ci} provider, enabling builds on the various Microsoft Visual Studio compilers.
 
 It provides github integration, the build is configured through an appveyor.yml file in the sources, and is free for open source projects.
 
 \subsection{Code formatting guidelines}
 \label{sec:resformat}
-Creating a common code format can be as simple as writing down a set of rules in a code-of-conduct letter for coders to adhere to. What constitutes a "good" formatting guideline is a highly subjective matter however, which is the reason for "different looking code" in the first place.
+Creating a common code format can be as simple as writing down a set of rules in a code-of-conduct letter for coders to adhere to. What constitutes a "good" formatting guideline is a highly subjective matter however, which is the reason for "different looking code" in the first place, and differences in opinion are difficult to overcome..
 
-While it is unlikely that consensus will be reached on coding style in the full C++ community, companies and larger \gls{floss} projects often define guidelines for their employees / contributors,
-e.g. the WebKit project\footnote{\url{https://webkit.org/code-style-guidelines/}} and Google\footnote{\url{https://github.com/google/styleguide}}
+While it is unlikely that consensus will be reached on a coding style standard throughout the full C++ community due to the very different use-cases C++ is being used in, companies and larger \gls{floss} projects often define guidelines for their employees / contributors,
+e.g. the WebKit project\footnote{\url{https://webkit.org/code-style-guidelines/}} and Google\footnote{\url{https://github.com/google/styleguide}}.
 
 Though it is possible to manually review every contribution and deny it if it violates code syle guidelines, doing so is unproductively used developer time. Since reformatting code (in the case of C++) simply consists of parsing and reorganizing characters in a text file, it can be automated.
 
@@ -120,36 +119,54 @@ When used in conjunction with a \gls{vcs}, formatting can be automatically appli
 
 \subsection{Automated Unit Testing Frameworks}
 
-Research into this field was mostly motivated by a blog post\furl{https://medium.com/@fatboyxpc/the-hard-truth-nobody-has-time-to-write-tests-68a122a1a0e3}, closing with the following words
+Research into this field was mostly motivated by a blog post\furl{https://medium.com/@fatboyxpc/the-hard-truth-nobody-has-time-to-write-tests-68a122a1a0e3}, preseting compelling arguments for devoting time to creating an automated testing environment, closing with the following words
 \begin{quote}
 Nobody has the time to write tests, but true professionals make the time. 
 \end{quote}
 
-\todo{"nobody has the time to write tests"}
+While manual testing of software is expensive for large corporations, it is strictly infeasible for small-scale software projects, to do so, because the development time lost on a single developer doing repetitive testing becomes a significant factor impeding progress of the project, if this developer is the only one. 
 
+Having an automated testing suite results in front-loading some amount of work to set up a self-running network of tests, and then forgetting about it - until something breaks, at which point the benefit of testing becomes apparent, as the localized nature of unit tests gives a good indication on what functionality actually broke, reducing bug hunting time.
+
+The main benefit of having an automated testing suite covering most of the software as given in above post is the fact that - while manual testing would only concern itself with parts of the software supposedly affected by changes - the full test suite can run on every check-in without causing significant cost to the project, incresing the chance to discover accidental cross-influences of changes to other parts of the software, which would normally remain undetected.
+
+Having automated testing requires a software that can automatically run said tests. Many such frameworks exist, mostly differing in the way tests are created. Some of those available for the C++ language are:
+\begin{description}
+	\item[QtTest]\furl{http://doc.qt.io/qt-5/qttest-index.html} The native unit testing framework of Qt (described in \ref{sec:resqt}), integrated into its QtCreator IDE.
+	\item[CTest]\furl{https://www.vtk.org/Wiki/index.php?title=CTest:FAQ&oldid=9429} Due to unit testing being closely related to building the actual software, CTest is distributed with the CMake buildtool presented in \ref{sec:rescmake}. It shares syntax with CMake, i.e. test definitions can be integrated into the same files describing how to build the software.
+	\item[Google Test] \furl{https://github.com/google/googletest/} An open source standalone testing framework aiming to keep test definition overhead low while staying platform-neutral.
+\end{description}
+
+Simply having tests does not confer much confidence in functional integrity of a program by itself, it is possible to run a program in such a way to report on which lines of code were actually executed though. These reports can be generated when running tests, and present a \gls{coverage} report - i.e. give insight into which parts of the program were actually executed during testing and are thus proven to work.
+
+Generating coverage information during program execution is possible by compiling the program with gcc and including the following flags\furl{https://cmake.org/Wiki/index.php?title=CTest/Coverage&oldid=57013}
+\begin{lstlisting}
+	g++ -fprofile-arcs -ftest-coverage program.cpp
+\end{lstlisting}
+
+This adds instrumentation to the compiled program, which will dump \cmd{.gcno} and \cmd{.gcda} files to the filesystem, that can then be compiled to a report with other tools like gcov\furl{https://gcc.gnu.org/onlinedocs/gcc/Gcov.html} and either viewed directly with lcov\furl{http://ltp.sourceforge.net/coverage/lcov.php} or uploaded to a testing/coverage dashboard like cdash\furl{https://www.cdash.org/} or codecov.io\furl{https://codecov.io/} for visualization.
+
+In combination with \gls{ci} and a test suite close to 100\% \gls{coverage} ran on every check-in, a solution like this is a great indicator that the program still works as intended after changes have been performed while costing close-to-0 ongoing time investment from developers.
 
 \subsection{Model-driven Design and Round-Trip Engineering}
-Modeling is often the first step of implementing a fairly complex architecture, 
-\todo{describe UML}
-decomposing the goal into subobjectives and defining clear interfaces, enabling parallel execution when working in a team.
+First step to writing a understandable program is understanding it yourself. Since most problems in programming today are fairly large in scope, it is often conducive to this process to decompose the main problem into several smaller subproblems. While this approach reduces the complexity of each individual problem and enables parallel work on each subproject, it introduces the overhead of keeping track of the relationships between all subproblems and guaranteeing interoperability between the individual solutions. A graphical method of mapping those relations is often conducive to understanding and maintaining synchronization. One such method ist the \gls{uml} standard by the \gls{omg}, purpose of which - as taken from the specification\furl{http://www.omg.org/spec/UML/2.5.1/PDF} is 
+\begin{quote}
+to provide system architects, software engineers, and software developers with tools for analysis, design, and implementation of software-based systems as well as for modeling business and similar processes
+\end{quote}
 
-UML
+While certainly helpful in the intial phases of system architecture, models - like documentation - when manually created are cumbersome to maintain and keep synchronized with the running changes to the architecture.
 
-Models - when, like documentation, manually created - are cumbersome to maintain and keep synchronized with necessary changes to the architecture discovered during implementation.
+In model-driven design, the UML model is used to generate boilerplate parts of the code that map to elements of the model (e.g. class / namespace declarations), saving the implementer from writing boilerplate code. Changes in the code need to be manually introduced to the model though, which is at the discretion of the programmer, can not be enforced and often leads to the model desyncing from the code. 
 
-In classic Model-driven Design, the UML model can be used to generate boilerplate parts of the code (e.g. class / namespace declarations) to save the implementers some work.
+\gls{rte} tooling helps alleviate this problem, by automatically feeding changes from the code back into the UML model.
 
-Architectural changes made in the code have to be manually introduced in the model as well, which can not be enforced and often leads to the model desyncing. Because of that, often a waterfall model of project design is adopted, where the model is created as a starting point of implementation, and after it has been reviewed and implementation begins, discarded.
+Depending on the target language, the task of reintroducing changes can be very difficult. C++, being a very syntactically complex language is notoriously difficult to round-trip engineer, the effect of which is that the investment of time necessary to write an \gls{rte} tool is only feasible for companies, making \gls{floss} tools supporting \gls{rte} very rare.
 
-\gls{rte} Tooling helps alleviate this problem, by automatically feeding changes from the code back into the UML model.
-
-Depending on the target language, the task of reintroducing changes can be very difficult. C++, being a very syntactically complex language is notoriously difficult to round-trip engineer, reflecting in bad tool support.o
-
-In research, only a single open source / free-for-education modeling tool could be identified that offers \gls{rte} for C++: Astah\furl{http://astah.net}
+During research, only a single open source / free-for-education \gls{uml} modeling tool could be identified that offers \gls{rte} for C++: Astah\furl{http://astah.net}
 
 Exporting a model to C++ code is provided as core functionality, import from code through a plugin\furl{http://astah.net/features/cpp-reverse-plugin}.
 
-During development the reversing functionality was found to not work reliably, so \gls{rte} was not used.
+During development the reversing functionality was found to not work reliably, leading a standard model-driven design approach.
 
 \begin{quote}
 Theory and practice sometimes clash. And when that happens, theory loses. Every single time.\\
@@ -157,11 +174,16 @@ Theory and practice sometimes clash. And when that happens, theory loses. Every 
 \end{quote}
 
 \subsection{Autogenerated Docs}
-\todo{docs}
+Documenting is not something programmers like doing. After all, they know their code and high-level language code is fairly self-documenting, so why restate the obvious.
+
+
+Clearly stating the intent of a section of code in plain language can make code much easier to understand, and is - for this very reason - a part of the \textit{maintainability index} presented in section \ref{sec:maintainability}
+
+Documenting code is most unintrusively done directly in the code and can - when using one of the available documentation generators like Doxygen\furl{https://github.com/doxygen/doxygen} or Sphinx\furl{http://www.sphinx-doc.org/en/stable/} can lead to great documentation for people not wanting to sift through source code, while not overly distracting a developer from his work.
 
 \section{Extensibility}
 
-A definition of extensibility in \citet{Johansson}
+A definition of extensibility by \citet{Johansson}:
 \begin{definition}
 We define extensibility as the ability of a system to be extended with new functionality with minimal or no effects on its internal structure and data flow
 \end{definition}
