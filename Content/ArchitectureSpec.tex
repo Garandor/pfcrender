@@ -1,6 +1,6 @@
 \chapter{Chosen Application Architecture}
 
-After researching available technologies, an architecture to build the pfcrender tool on was selected. The implementation is shown alongside the original requirements in the following graphs, split between functional- (figure \ref{fr}) and non-functional (figure \ref{nfr}) requirements. As before, direct requirements are highlighted in green. Take note that each direct requirement is satisfied or verified through an implementation requirement or test case.
+After researching available technologies, an architecture to build the pfcrender tool on was selected. The implementation is shown alongside the original requirements in the following graphs, split between functional- (figure \ref{fr}) and non-functional (figure \ref{nfr}) requirements. As in figure \ref{fig:directreq}, direct requirements are highlighted in green. Take note that each direct requirement is satisfied or verified through an implementation requirement or test case.
 
 The architecture is discussed in detail in the following sections.
 
@@ -22,7 +22,7 @@ Selection was driven by three main concerns: extensibility, performance and ease
 
 Ultimately, the Qt Framework was chosen for the following reasons:
 \begin{itemize}
-	\item Platform-independent dynamic library loading abstraction provided, which is useful for implementing a plugin architecture as described in \ref{sec:pluginarch}
+	\item Platform-independent dynamic library loading abstraction provided, which is useful for implementing a plugin architecture as described in section \ref{sec:resplug}
 	\item Classes provided for exporting e.g. to SVG and PDF
 	\item The QtQuick API exposes direct OpenGL access, i.e. rendering performance is assumed to be comparable to the more light-weight frameworks like \gls{sdl}
 	\item Multiple quality-of-life improvements like the QtCreator \gls{ide} with \gls{gui} designer
@@ -31,7 +31,7 @@ Ultimately, the Qt Framework was chosen for the following reasons:
 
 Qt provides most of the wanted features in one framework, reducing the amount of necessary dependencies to provide all required functionality. The only additional dependency to Qt introduced to the project is the drawing \gls{api} QNanoPainter(\ref{sec:qnanopainter}), which was introduced as manipulating OpenGL geometry directly proved unwiedly for rendering arcs (see \ref{sec:implrenderprob})
 
-A description of the Qt provided mechanisms used in this tool follows
+A description of the Qt provided mechanisms used in this tool follows.
 
 \subsection{Dynamic Library Loading}
 Windows DLL API mandates symbols callable from outside a library to be prefixed with a macro on export and import. The \gls{msdn}\furl{https://msdn.microsoft.com/en-us/library/3y1sfaz2.aspx} defines it the following way
@@ -42,7 +42,9 @@ __declspec( dllexport ) declarator
 
 Linux compilers like gcc will not be able to parse this keyword and fail compilation. While it is possible to work around this issue by wrapping the keyword in a preprocessor macro that expands to nothing on Linux, this mechanism is cumbersome to implement.
 
-Qt provides a wrapper around this functionality with QPluginLoader. This mechanism involves some extra steps compared to loading a shared library directly, which pertain to making the Qt MetaObject system aware of the plugin\furl{http://doc.qt.io/qt-5/plugins-howto.html}, but spares the effort of including platform specific adapter code/preprocessor instructions to each plugin.
+Qt provides a wrapper around this functionality with a class called QPluginLoader\furl{http://doc.qt.io/qt-5/qpluginloader.html}.
+
+Making a library compatible to use with this mechanism involves some extra steps compared to loading a shared library directly, which pertain to making the Qt MetaObject system aware of the plugin\furl{http://doc.qt.io/qt-5/plugins-howto.html}, but spares the effort of including platform specific adapter code/preprocessor instructions to each plugin.
 
 \subsection{Rendering in Qt}
 \label{sec:qtrender}
@@ -57,19 +59,19 @@ Since the additional model-/view abstraction is conducive to extensibility of th
 
 The following methods of drawing to these APIs are offered:
 \begin{description}
-	\item [QPainter] Oldest drawing API of Qt, used in QWidgets. Not directly usable in QtQuick. Offers highest amount of integration to other Qt classes (notably QPrinter and QSVGGenerator)
-	\item [QtQuick/QML shape] Placing line segments directly in a \gls{qml} file and loading it to the SceneGraph (creating quadratic bezier curves added in Qt 5.10 (late 2017), too late for this work\furl{https://blog.qt.io/blog/2017/08/10/let-there-be-more-shapes/})
+	\item [QPainter] Oldest drawing API of Qt used in QWidgets. Offers a high-level API (e.g. drawLine(), drawArc() ), is not directly usable in QtQuick though. Offers highest amount of integration to other Qt classes (notably QPrinter and QSVGGenerator)
+	\item [QtQuick/QML shape] Placing line segments directly in a \gls{qml} file and loading it to the SceneGraph (creating quadratic bezier curves added in Qt 5.10 (late 2017), too late to consider for this work\furl{https://blog.qt.io/blog/2017/08/10/let-there-be-more-shapes/})
 	\item [QtQuick HTML5 canvas] Draws on top of a HTML5 canvas embedded into the qt app.
-	\item [QtQuick Item with custom scene graph node] Instantiates a QQuickItem with a custom appearance by setting vertices and material directly\todo{explain what those are}
+	\item [QtQuickItem with custom scene graph node] Instantiates a QQuickItem with custom appearance by directly setting vertices and material for the underlying OpenGL to render.
 	\item [QQuickPaintedItem] An adaptation of the QPainter API for the SceneGraph based QtQuick. 
-	\item [QNanoPainter] A third party plugin, offering a mixture of QPainter and HTML5 canvas API to draw on an OpenGL framebuffer object to be placed in the QtQuick scene graph. Offers Painter-like productivity with less performance overhead.
+	\item [QNanoPainter] A third party plugin, offering a mixture of QPainter and HTML5 canvas API to draw on an OpenGL framebuffer object or QSGRenderNode to be placed in the QtQuick scene graph. Offers Painter-like productivity with less performance overhead.
 \end{description}
 
 The QML and HTML5 APIs were disregarded due to their interpreted and thus slow nature.
 
 This leaves direct QuickItem implementation, QQuickPaintedItem and QNanoPainter-based QuickItem as viable options.
 
-Due to performance measurements\furl{https://www.vikingsoftware.com/qtquick-custom-item-performance/}, a direct implementation was chosen intially (see \ref{somewhere}). The operations performed using this \gls{api} were too inflexible to allow for generation of quadratic bézier curves necessary to implement rounded edges (see \ref{somewhere}), so a higher level \gls{api} was selected.
+Due to performance measurements\furl{https://www.vikingsoftware.com/qtquick-custom-item-performance/}, a direct implementation was chosen intially (see \ref{sec:implQQuickItem}). The operations performed using this \gls{api} were too inflexible to allow for generation of quadratic bézier curves necessary to implement rounded edges, so a higher level \gls{api} was selected.
 
 Further performance benchmarks\furl{http://kgronholm.blogspot.com/2017/12/qt-510-rendering-benchmarks.html} led to preferring QNanoPainter over the built-in QQuickPaintedItem, even though it meant introducing an additional dependency into the project.
 
@@ -80,9 +82,9 @@ It was decided to introduce a central store of configuration that will be access
 
 Each plugin is required to publish and read its configuration options from this central store.
 
-We define the following possibilities of setting options in this this central store:
+We define the following possibilities of setting options to the central store, in order of execution and inverse order of precedence:
 \begin{enumerate}
-	\item A configuration file stores set options and persists application state between runs
+	\item Options and state information are read from disk
 	\item Options can be given on the Command line
 	\item Options can be set from within the GUI
 \end{enumerate}
@@ -93,7 +95,7 @@ The Qt framework comes with a provider for storing settings called QSettings
 \todo{asd}
 
 \subsubsection{QCommandlineParser}
-Parsing of the commandline is one of the first steps in program execution. Since successfully parsing given arguments (and generating --help documentation on available options) requires all available options to be known, it follows that all plugins must be loaded on startup to query them for their config options.
+Parsing of the commandline is one of the first steps in program execution. Since successfully parsing given arguments (and generating \cmd{- -help} documentation on available options) requires all available options to be known, it follows that all plugins must be loaded on startup to query them for their config options.
 
 While this is not computationally efficient, as not all plugins will necessarily be executed during program runtime and thus get loaded in vain, maintainability outweighs this performance issue.
 Loading all plugins is a once-per-execution process and the number of plugins is fairly small. Also, loading all plugins at startup allows for automatically gathering a available functionality on startup, omitting the need for a separate configuration file of plugins and their locations.
@@ -194,7 +196,8 @@ Github integration, and free-for-open source service, led to Appveyor being sele
 	\caption{Main application and plugin separation}
 	\label{fig:comp}
 \end{figure}
+A plugin architecture as described in \ref{sec:resplug} was chosen, as plugins to \cmd{pfcrender} will mainly consist of new Import/Export formats with limited intrinsic complexity and no dependencies on other plugins, avoiding aforementioned \textit{plugin hell} scenario.
 
-The definitions from this chapter lead to the component architecture showin in figure \ref{fig:comp}. While the GUI could in theory be designated an export plugin as well and extracted from the main application, leaving the possibility to configure operation from the GUI was deemed useful. As this would depend on the GUI plugin receiving the QQuickItem config screen from the plugins, it would lead to dependencies among plugins, potentially leading to the \textit{plugin hell} situation described in \ref{earlier}.
+The resulting component architecture is shown in figure \ref{fig:comp}. While the GUI could in theory be designated an export plugin as well and extracted from the main application, leaving the possibility to configure operation from the GUI was deemed useful. As this would depend on the GUI plugin receiving the QQuickItem config screen from the plugins, it would lead to dependencies among plugins, potentially leading to the \textit{plugin hell} situation described in \ref{earlier}.
 
 The big benefit of not binding the application to model import from the LSYS iterator module is in extensibility. This architecture can also easily support a use-case, where a library of pre-iterated strings describing \gls{pfc}s is held in a different "PFC library tool" - e.g. categorized by their canonical names - like \textsc{Gosper's flowsnake} presented earlier - and can be easily integrated into the renderer by providing a plugin.

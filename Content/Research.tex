@@ -2,6 +2,82 @@
 
 We discuss the given requirements, derive architecture design goals and and research possibilities of implementating those goals.
 
+\section{Cross-OS Operation}
+
+Writing portable software has historically been difficult, as operating system \gls{api}s differ significantly. 
+
+Linux and MacOS comply with the \gls{posix} standard, which defines an \gls{api} for system calls, while Windows has historically had a non \gls{posix}-compliant proprietary system programming \gls{api}.
+
+Recently, Microsoft is making advances towards \gls{posix} compatibility in Win10\furl{https://blogs.msdn.microsoft.com/wsl/2016/04/22/windows-subsystem-for-linux-overview/}, and the Linux world offers a similar compatiblility layer with WINE\furl{https://en.wikipedia.org/w/index.php?title=Wine_(software)&oldid=823689556}. While the performance of the windows POSIX layer is promising\furl{https://www.phoronix.com/scan.php?page=article&item=windows-10-lxcore&num=2}, neither it, nor WINE\furl{https://wiki.winehq.org/Performance} are on par with programs implementing each system's native interface directly at the time of writing.
+
+As application performance is a requirement, writing the program in a cross-platform way becomes a necessity.
+
+Notable \gls{api} differences between \gls{posix} and Windows are
+\begin{description}
+	\item[Library Loading] \gls{posix} Systems use dlopen(), Windows uses LoadLibrary() and different runtime library layouts (.dll on Windows, .so on \gls{posix})
+	\item[3D Graphics Backend] Windows mainly uses Microsoft GDI or DirectX and - more recently - AMD Vulkan, while the \gls{posix} world mostly uses OpenGL.
+\end{description}
+
+Code depending on any of the above directly is therefore nonportable, which - as these are central concepts in any \gls{gui} app - makes implementing a cross-platform program from-scratch, i.e. without depending on OS-abstracting third-party libraries - an arduous task.
+
+Thankfully, several of those libraries exist that provide a higher-level API abstracting programmers from OS-specific code. They differ wildly in feature-scope, some being abstractions of the graphics layer, some being full-featured cross-platform \gls{gui} toolkits and will be investigated in the following section.
+
+\subsection{Graphics Frameworks Providing OS Abstraction}
+\label{sec:res_frameworks}
+
+\paragraph{Cairo}
+\label{sec:cairo}
+Cairo\furl{https://www.cairographics.org/} is a C-based 2D vector graphics library which is widely used in open-source projects like GTK+, WebKit and the Poppler PDF rendering library.
+
+\paragraph{SFML}
+The C++ written \gls{sfml}\furl{https://en.wikipedia.org/w/index.php?title=Simple_and_Fast_Multimedia_Library&oldid=820377932} is a relative newcomer to the multi-OS application landscape, with v1 released in 2007.
+
+While its core is a 2D graphics engine, add-ons exist for providing GUI application functionality.  
+
+At the time of writing, it is mainly used in in free or indie game releases.
+
+\paragraph{SDL}
+The \gls{sdl}\furl{https://www.libsdl.org/} is a cross-platfrom \gls{hal} library for 3D graphics created in 1998, with extensive use in games industry\furl{https://en.wikipedia.org/w/index.php?title=List_of_games_using_SDL&oldid=819037514} to provide 2D \& 3D rendering.
+
+\paragraph{GTK+}
+Unlike above solutions, GTK+\furl{https://www.gtk.org/}, written in C - is a full GUI application toolkit, providing not only a \gls{hal}, but also graphical control elements, called widgets. Since 2005 it uses cairo (\ref{sec:cairo}) to provide its low-level rendering functionality.
+
+\paragraph{Qt Framework}
+The Qt Framework, like GTK+ is a full-featured GUI application development toolkit and offers extensive functionality.
+
+Like GTK+ it has a widget-based API, but since Qt5 additionally brings a JavaFX-like declarative API called QtQuick.
+
+In addition to providing graphics and \gls{gui} abstractions, it also provides a platform-independent library loading wrapper.
+
+Asynchronous GUI programming is provided through an extension to the C++ language called the \text{Meta-Object System}.
+
+\subsection{Build System Generators}
+\label{sec:resMakefileGen}
+Having cross-platform compilable sources is not the only requirement to getting a program developable and deployable cross-platform.
+In addition to sources and headers provided with the project, compiling needs information on 
+\begin{itemize}
+	\item which compiler/linker toolchain is available and where
+	\item location of all dependecies/libraries the project links to
+	\item if any platform specific preprocessor directives or linker flags have to be set
+	\item Build type (Debug/Release) and architecture ( arm, x86, amd64 etc.)
+\end{itemize}
+
+This information is typically stored in "project stores" like Visual Studio's solution, or makefiles. Since those are inherently platform-specific, and manually creating one for each project type and platform is cumbersome at best, so-called makefile generators were created, which parse build information from script files written by the programmer and then identify actual locations of dependencies and availabe tools automatically. If the process is successful and all dependencies are found, they output a build definition (makefile, Visual Studio solution or similar) that runs the compiler with all necessary options. Often those tools can also create automated deployments for the software they are building, e.g. generate a make install target. The most widely used ones are discussed here
+
+\paragraph{GNU autotools}
+A collection of the \gls{gnu} utilities \cmd{autoconf}, \cmd{automake} and \cmd{libtool}\furl{https://www.gnu.org/software/automake/manual/html_node/GNU-Build-System.html\#GNU-Build-System}. It is the first widely used cross-platform build configurator, existing since the 1980s. It is used to generate a \cmd{./configure} script, that can be executed on any system that provides a bourne-shell (standard on POSIX systems) and generates a makefile.
+
+Its reliance on the bourne-shell makes it unsuitable for use on Windows systems, which don't provide this \gls{posix} utility.
+
+\paragraph{QMake}
+The native makefile generator of Qt\furl{http://doc.qt.io/qt-5/qmake-manual.html}. Defines build definitions in .pro files and handles Qt specific tools like the \gls{moc} - necessary to translate the Qt-specific C++ language extensions into code parseable by a standard C++ compiler - automatically as needed, giving a straightforward experience when building Qt programs.
+
+\paragraph{CMake}
+A build generator with widespread usage in open source and commercial projects, CMake\furl{https://cmake.org/} gathers information on what/how to build from CMakeLists.txt files added to the project's sources.
+CMake can generate projects in an plethora of formats, including Visual Studio, \gls{gnu} make, Apple Xcode and Eclipse.
+In addition to being a pure build system generator, CMake can be used to define commands that should be run pre-/postbuild and it comes with a unit testing framework called CTest.
+
+\todo{maybe include a section on how rendering is done}
 \section{Maintainability}\label{sec:maintainability}
 Maintainability was declared a main goal in the requirements, and this is an issue with much broader reach than writing clean code.
 
@@ -51,15 +127,15 @@ Their use is often mandatory in industry due to traceability requirements, but e
 Most major \gls{vcs}es have ecosystems that allow for hosting open-source repositories on the \gls{cloud}\footnote{e.g. \url{https://sourceforge.net/create/}}, selection is mostly a matter of personal preference, though some differences exist.
 An overview over some popular \gls{vcs}es follows that are available on both Windows and Linux.
 
-\subsubsection{Apache Subversion}
+\paragraph{Apache Subversion}
 Subversion\furl{https://subversion.apache.org/} is a centralized \gls{vcs}, changes made locally need to be pushed to a central server, where they are revisioned. It supports branching, tagging and commit messages.
 
 Due to the centralization, no interaction with the \gls{vcs} is possible when the connection to the server is interrupted.
 
-\subsubsection{Mercurial}
+\paragraph{Mercurial}
 Mercurial\furl{https://www.mercurial-scm.org/} is a decentralized \gls{vcs}, getting a working copy does not fetch only the current status, but rather the complete repository including all versioning information, i.e. all interaction like committing changes, branching, checking out other code revisions can be done locally, while a central repository can be used to synchronize local changes with others.
 
-\subsubsection{Git}
+\paragraph{Git}
 \gls{git}\furl{https://git-scm.com/} is like Mercurial, only popular\furl{https://www.openhub.net/repositories/compare}. It is also a distributed \gls{vcs}, but conceived by Linus Torvalds of Linux kernel fame on a search for ways to manage the large scale of contributors on the project.
 
 Like with Mercurial, key benefits are
@@ -82,7 +158,7 @@ It is rarely feasible for small projects to maintain such build system farms the
 
 Thankfully, \gls{cloud} providers exist that provide build systems in various configurations as a service, often free for open-source projects.
 
-\subsubsection{Travis CI}
+\paragraph{Travis CI}
 Travis \gls{ci}\furl{https://travis-ci.org} at the time of writing provides virtual machines running Linux (Ubuntu 12.04 and 14.04) and Mac OS X to provide builds on their \gls{cloud} platform.
 
 It integrates with github for starting a build on each commit and reports completion status back to github.
@@ -91,7 +167,7 @@ Builds are queued on commit, depending on the load of servers it can take some t
 
 Configuration happens in a .travis.yml file that has to be provided with the sources and the service is free for open source proojects.
 
-\subsubsection{Circle CI}
+\paragraph{Circle CI}
 Circle CI\furl{https://circleci.com} distinguishes itself from Travis through its larger selection of preconfigured docker containers, reducing configuration overhead of the build environment.
 Configuration is through a .circleci file in the sources.
 
@@ -99,12 +175,12 @@ One Linux-based container is free, allowing one build at a time. MacOS X is paid
 
 Like with Travis, they integrate with Github.
 
-\subsubsection{Appveyor CI}
+\paragraph{Appveyor CI}
 Appveyor\furl{https://ci.appveyor.com/login} is a Windows-only \gls{ci} provider, enabling builds on the various Microsoft Visual Studio compilers.
 
 It provides github integration, the build is configured through an appveyor.yml file in the sources, and is free for open source projects.
 
-\subsection{Code formatting guidelines}
+\subsection{Code Formatting guidelines}
 \label{sec:resformat}
 Creating a common code format can be as simple as writing down a set of rules in a code-of-conduct letter for coders to adhere to. What constitutes a "good" formatting guideline is a highly subjective matter however, which is the reason for "different looking code" in the first place, and differences in opinion are difficult to overcome..
 
@@ -149,7 +225,7 @@ This adds instrumentation to the compiled program, which will dump \cmd{.gcno} a
 In combination with \gls{ci} and a test suite close to 100\% \gls{coverage} ran on every check-in, a solution like this is a great indicator that the program still works as intended after changes have been performed while costing close-to-0 ongoing time investment from developers.
 
 \subsection{Model-driven Design and Round-Trip Engineering}
-First step to writing a understandable program is understanding it yourself. Since most problems in programming today are fairly large in scope, it is often conducive to this process to decompose the main problem into several smaller subproblems. While this approach reduces the complexity of each individual problem and enables parallel work on each subproject, it introduces the overhead of keeping track of the relationships between all subproblems and guaranteeing interoperability between the individual solutions. A graphical method of mapping those relations is often conducive to understanding and maintaining synchronization. One such method ist the \gls{uml} standard by the \gls{omg}, purpose of which - as taken from the specification\furl{http://www.omg.org/spec/UML/2.5.1/PDF} is 
+First step to writing a understandable program is understanding it yourself. Since most problems in programming today are fairly large in scope, it is often conducive to this process to decompose the main problem into several smaller subproblems. While this approach reduces the complexity of each individual problem and enables parallel work on each subproject, it introduces the overhead of keeping track of the relationships between all subproblems and guaranteeing interoperability between the individual solutions. A graphical method of mapping those relations is often conducive to understanding and maintaining synchronization. One such method ist the \gls{uml} standard by the \gls{omg}, purpose of which - as taken from the specification\furl{http://www.omg.org/spec/UML/2.5.1/PDF} is .
 \begin{quote}
 to provide system architects, software engineers, and software developers with tools for analysis, design, and implementation of software-based systems as well as for modeling business and similar processes
 \end{quote}
@@ -158,44 +234,42 @@ While certainly helpful in the intial phases of system architecture, models - li
 
 In model-driven design, the UML model is used to generate boilerplate parts of the code that map to elements of the model (e.g. class / namespace declarations), saving the implementer from writing boilerplate code. Changes in the code need to be manually introduced to the model though, which is at the discretion of the programmer, can not be enforced and often leads to the model desyncing from the code. 
 
-\gls{rte} tooling helps alleviate this problem, by automatically feeding changes from the code back into the UML model.
+\gls{rte} tooling helps alleviate this problem by automating the process of feeding changes from the code back into the UML model.
 
-Depending on the target language, the task of reintroducing changes can be very difficult. C++, being a very syntactically complex language is notoriously difficult to round-trip engineer, the effect of which is that the investment of time necessary to write an \gls{rte} tool is only feasible for companies, making \gls{floss} tools supporting \gls{rte} very rare.
+Depending on the target prigramming language, the task of reintroducing changes can be very difficult. C++, being a very syntactically complex language, is notoriously difficult to round-trip engineer, the effect of which is that the investment of time necessary to write an \gls{rte} tool is only feasible for companies, making \gls{floss} tools supporting \gls{rte} very rare.
 
 During research, only a single open source / free-for-education \gls{uml} modeling tool could be identified that offers \gls{rte} for C++: Astah\furl{http://astah.net}
 
 Exporting a model to C++ code is provided as core functionality, import from code through a plugin\furl{http://astah.net/features/cpp-reverse-plugin}.
 
-During development the reversing functionality was found to not work reliably, leading a standard model-driven design approach.
 
 \begin{quote}
 Theory and practice sometimes clash. And when that happens, theory loses. Every single time.\\
 - Torvalds, Linus (2009-03-25). Message to Linux kernel mailing list
 \end{quote}
 
-\subsection{Autogenerated Docs}
-Documenting is not something programmers like doing. After all, they know their code and high-level language code is fairly self-documenting, so why restate the obvious.
+\subsection{Automatically Generated Documentation}
+The necessity of documenting code is a topic of heated discussion among programmers. Some argue today's high-level programming languages are mostly self-documenting, so why restate the obvious.
 
-
-Clearly stating the intent of a section of code in plain language can make code much easier to understand, and is - for this very reason - a part of the \textit{maintainability index} presented in section \ref{sec:maintainability}
+Others claim that stating the intent of a section of code clearly in plain language can make code much easier to understand, and is - for this very reason - a part of the \textit{maintainability index} presented in section \ref{sec:maintainability}.
 
 Documenting code is most unintrusively done directly in the code and can - when using one of the available documentation generators like Doxygen\furl{https://github.com/doxygen/doxygen} or Sphinx\furl{http://www.sphinx-doc.org/en/stable/} can lead to great documentation for people not wanting to sift through source code, while not overly distracting a developer from his work.
 
 \section{Extensibility}
 
-A definition of extensibility by \citet{Johansson}:
-\begin{definition}
-We define extensibility as the ability of a system to be extended with new functionality with minimal or no effects on its internal structure and data flow
+A definition of extensibility in \citet[p.3]{Johansson}:
+\begin{definition}[Extensibility]
+We define extensibility as the ability of a system to be extended with new functionality with minimal or no effects on its internal structure and data flow.
 \end{definition}
 
-\subsection{Plugin Architecture}
-Looking at the requirements, it is apparent that almost all component have disjunct responsibilities, the main common element being the string description of the PFC.
+\subsection{Plugin Architecture}\label{sec:resplug}
+Looking at the requirements of figure \ref{fig:directreq}, it becomes apparent that most components have strictly disjunct responsibilities, the main common element being the \textit{production} of the \gls{pfc}.
 
-The \gls{lsys} generator takes some input and outputs a model string. GUI, SVG and PDF renderings all operate on the model, but don't influence each others operation.
+The \gls{lsys} generator takes some input and outputs a \textit{production} that can serve as a data model. GUI, SVG and PDF renderings all operate on this model, but don't influence each others operation.
 
 This characteristic is conducive to segregating those components of the app not just to different classes, but to completely separate compilation units, i.e. standalone libraries called plugins.
 
-In conjunction with a dynamic loading system, this confers several benefits:
+In combination with a dynamic loading system, this confers several benefits:
 
 \begin{itemize}
 	\item  Reduced compilation time of the main application
@@ -209,27 +283,25 @@ Drawbacks to this implementation are
 	\item If plugins have dependencies on other plugins, maintenance complexity grows exponentially and loading sequence must be enforced
 \end{itemize}
 
-The additionally introduced complexity can - in sufficiently complex projects - significantly outweigh modularization benefits, resulting in what is called "plugin hell"\furl{https://queue.acm.org/detail.cfm?id=1053345}.
+The additionally introduced complexity can - in sufficiently complex projects - significantly outweigh modularization benefits, resulting in what is called \textit{plugin hell}\furl{https://queue.acm.org/detail.cfm?id=1053345}.
 The Eclipse IDE, in its core being a plugin loader and all functionality supplied by plugins is a prime example of the possible complexity.
 
-Since plugins to pfcrender will mainly consist of new Import/Export formats with limited intrinsic complexity and no dependencies on other plugins, a plugin architecture was deemed beneficial for increasing extensibility and thus the following architecture was chosen.
 
-\todo{image of Plugin architecture}
 
 \subsection{Configuration}
 The solution is required to be scriptable, which means all configuration options necessary for automated operation must be selectable from the command line.
 This focus on a feature-rich \gls{cli} leads to the necessity of good \gls{cli} documentation, i.e. a form of "help" message that documents the options available to the user.
 Providing and maintaining a help page manually is not only cumbersome, it will, as is the case with all manually maintained documentation eventually become out-of-sync with the code.
 
-This problem is exacerbated by use of a plugin architecture, as available options depend on the presence of plugins that use them. This in turn is runtime information that can not be known at compile time, thus making any of the standard, static methods like "hardcoded" help message, manpage or README files impossible to use.
+This problem is exacerbated by use of a plugin architecture, as available options depend on the presence or absence of plugins that use them. This in turn is runtime information that can not be known at compile time, thus making any of the standard, static methods like "hardcoded" help message, manpage or README files impossible to use.
 
-Though it was not a requirement, it is desirable to provide the \gls{gui} with a method of setting configuration options as well, to eventually enable users that don't need scriptability to operate the application fully from the \gls{gui}
+Though it was not a direct requirement, it is desirable to provide the \gls{gui} with a method of setting configuration options as well, to eventually enable users that don't need scriptability to operate the application fully from the \gls{gui}.
 
 We thus need a method of configuration that is easily extensible with new options, accessible from \gls{cli} and \gls{gui} and generates \gls{cli} documentation automatically at runtime.
 
 \subsubsection{Singleton Pattern}
 \label{sec:ston}
-Whenever a piece of information needs to be known in global scope, i.e. across the whole application and exists only once - as is the case for a store of configuration information - the Singleton, described in \citet{Gamma1994} is a very useful design pattern. 
+Whenever a piece of information needs to be known in global scope, i.e. across the whole application and exist only once - as is the case for a store of configuration information - the Singleton, described in \citet[pp. 127ff]{Gamma1994} is a very useful design pattern. 
 
 \begin{lstlisting}
 class Config_Registry {
@@ -252,116 +324,30 @@ public:
 
 \end{lstlisting}
 Key element of this class is the private constructor, which can only be executed through the class-static getInstance() method, which returns an already existing instance, or creates a new one.
-Copying and moving are prevented by the delete copy and assignment operators - presence of which prevents autogeneration of move constructors by the compiler.
+Copying and moving are prevented by the deleted copy and assignment operators - presence of which prevents autogeneration of move constructors by the compiler.
 It follows that an object so-created can exist only once in the program and can be accessed from any file that can access the getInstance method, i.e. has the header included. 
-This class can then contains a list of config options and other elements of interest to multiple parts of the program. 
+This class can then contain a list of config options and other elements of interest to multiple parts of the program. 
 
-Since the pointer has static duration, the lifetime of its object only ends when delete is called explicity, so care has to be taken to ensure its proper destruction and prevent memory leaks.
+Since the pointer variable storing the singleton has static duration, the lifetime of its object only ends when delete is called on the instane explicity, meaning care has to be taken to ensure its proper destruction and prevent memory leaks.
 
 \subsection{Commandline Parsing}
 Unlike other programming languages (e.g. Python), C++ does not provide a standard built-in facility to provide parsing capability for parsing parameters passed to the program as commandline options.
 
-In a plugin-based architecture, the program must provide a \gls{cli} that is easily extended with additional commandline options, as plugins can need additional configuration and are loaded at runtime.
+It is conducive to extensibility (and mandatory when implementing a plugin-based architecture as described in \ref{sec:resplug}) if the program provides a \gls{cli} that is easily extended with additional commandline options.
 
 The main commandline parsing solution available in any standard C++ environment is getopt(), which is inherited from C and thus brings with it a procedural interface that is not easily extensible.
 
-Alternatives:
-
+Some alternatives to getopt commandline parsing are:
 \begin{description}
-\item [Manually parse argv] building a structure to parse the argv array. While this is the most flexible solution w.r.t. customization, it is reinventing the wheel and also very inflexible with respect to extensibility.
+\item [Manually parse argv] Build a parser for the system-provided commandline parameter array. While this is the most flexible solution w.r.t. customization, it is reinventing the wheel and also very inflexible reagarding extensibility.
 \item [Boost.progam\_options] - A C++ native, highly configurable solution shipped with the open source Boost library\furl{http://www.boost.org/doc/libs/1\_58\_0/doc/html/program\_options.html}
 \item [QCommandLineParser]\furl{http://doc.qt.io/qt-5/qcommandlineparser.html} A Qt native parsing class. Batch-parses all parameters and returns data structures with positional arguments in correct order, and a (reordered) map of switches with their parameters
-	
 \end{description}
 
 
 
-\section{Option Persistency}
-Since it is often unneccessary to set any and all config options for the program on the command line each time it is run, keeping config options persistently over program relaunches is useful. The typical implementation of this persistent store again varies by platform, ranging from putting keys into the Windows registry, over property list files on Mac to plain .ini or .cfg files on Linux.
+\subsection{Option Persistency}
+Since it is often unneccessary and bothersome to set every config option for the program on the command line each time it is run, keeping config options persistently over program relaunches is useful. The typical implementation of this persistent store again varies by platform, ranging from putting keys into the Windows registry, over property list files on Mac to plain .ini or .cfg files on Linux.
 
-Again, Qt comes with a wrapper around this platform disparity
+The Qt Framework Qt comes with a wrapper around this platform disparity named QSettings, which allows for transparent and cross-platform settings and state storage to disk.
 
-
-
-\section{Cross-OS operation}
-
-Writing portable software has historically been difficult, as operating system \gls{api}s differ significantly. 
-
-Linux and MacOS comply with the \gls{posix} standard, which defines an \gls{api} for system calls, while Windows has historically had a non \gls{posix}-compliant proprietary system programming \gls{api}.
-
-Recently, Microsoft is making advances towards \gls{posix} compatibility in Win10\furl{https://blogs.msdn.microsoft.com/wsl/2016/04/22/windows-subsystem-for-linux-overview/}, and the Linux world offers a similar compatiblility layer with WINE\furl{https://en.wikipedia.org/w/index.php?title=Wine_(software)&oldid=823689556}. While the performance of the windows POSIX layer is promising\furl{https://www.phoronix.com/scan.php?page=article&item=windows-10-lxcore&num=2}, neither it, nor WINE\furl{https://wiki.winehq.org/Performance} are on par with programs implementing each systems native interface directly at the time of writing.
-
-Supporting the OS native APIs is thus necessary, since good application performance is a requirement.
-
-Notable \gls{api} differences between \gls{posix} and Windows are
-\begin{description}
-	\item[Library Loading] \gls{posix} Systems use dlopen(), Windows uses LoadLibrary() and different runtime library layouts (.dll on Windows, .so on \gls{posix}
-	\item[3D Graphics Backend] Windows mainly uses Microsoft GDI or DirectX and - more recently - AMD Vulkan, while the \gls{posix} world mostly uses OpenGL.
-\end{description}
-
-Code depending on any of the above directly is therefore nonportable and the multitude of incompatibilities makes implementing a cross-platform program from-scratch, i.e. without depending on OS-abstracting 3rd-party libraries - an arduous task.
-
-Thankfully, several of those libraries exist that provide a higher-level API abstracting programmers from OS-specific code. They differ wildly in feature-scope, some being abstractions of the graphics layer, some being full-featured cross-platform \gls{gui} toolkits and will be investigated in the following section.
-
-\subsection{Graphics Frameworks Providing OS Abstraction}
-\label{sec:res_frameworks}
-
-\subsubsection{Cairo}
-\label{sec:cairo}
-Cairo is a C-based 2D vector graphics library which is widely used in open-source projects\furl{https://en.wikipedia.org/w/index.php?title=Cairo_(graphics)&oldid=812908471} like GTK+, WebKit and the Poppler PDF rendering library.
-
-\subsubsection{SFML}
-The C++ written \gls{sfml} library\furl{https://en.wikipedia.org/w/index.php?title=Simple_and_Fast_Multimedia_Library&oldid=820377932} is a relative newcomer to the multi-OS application landscape, with v1 released in 2007.
-
-While its core is a 2D graphics engine, add-ons exist for providing GUI application functionality.  
-
-At the time of writing, it is mainly used in in free or indie game releases.
-
-\subsubsection{SDL}
-The \gls{sdl} is a cross-platfrom \gls{hal} library created in 1998, with extensive use in games industry\furl{https://en.wikipedia.org/w/index.php?title=List_of_games_using_SDL&oldid=819037514} to provide 2D \& 3D rendering.
-
-\subsubsection{GTK+}
-Unlike above solutions, GTK+\furl{https://en.wikipedia.org/w/index.php?title=GTK\%2B&oldid=822745199}, written in C - is a full GUI application toolkit, providing not only a \gls{hal}, but also graphical control elements, called widgets. Since 2005 it uses cairo (\ref{sec:cairo}) to provide its low-level rendering functionality.
-
-\subsubsection{Qt Framework}
-The Qt Framework, like GTK+ is a full-featured GUI application development toolkit and offers extensive functionality.
-
-Like GTK+ it has a widget-based API, but since Qt5 additionally brings a JavaFX-like declarative API called QtQuick.
-
-In addition to providing graphics and \gls{gui} abstractions, it also provides a platform-independent library loading wrapper.
-
-Asynchronous GUI programming is provided through an event loop and notification system called Signals and Slots
-
-\subsection{Makefile generators}
-\label{sec:resMakefileGen}
-Having cross-platform compilable sources is not the only requirement to getting a program developable and deployable cross-platform.
-In addition to sources and headers provided with the project, compiling needs information on 
-\begin{itemize}
-	\item which compiler/linker toolchain is available and where
-	\item where all the libraries the project links to are located
-	\item if any platform specific preprocessor directives or linker flags have to be set
-	\item Build type (Debug/Release) and architecture ( arm, x86, amd64 etc.)
-\end{itemize}
-
-This information is typically stored in "project stores" like Visual Studio's solution, or makefiles. Since those are inherently platform-specific, and manually creating one for each project type and platform is cumbersome at best, so called makefile generators were created, which parse build information from script files written by the programmer and then identify actual locations of dependencies and availabe tools automatically. If the process is successful and all dependencies are found, they output a build definition (makefile, Visual Studio solution or similar) that runs the compiler with all necessary options. Often those tools can also create automated deployments for the software they are building, e.g. generate a make install target. The most widely used ones are discussed here
-
-\subsubsection{GNU autotools}
-A collection of the GNU utilities autoconf, automake and libtool. It is the first widely used cross platform build configurator, existing since the 1980s. They are used to generate a ./configure script, that can be executed on any system that provides a bourne-shell (standard on POSIX systems) and generates a makefile.
-
-Cross-compilation to Windows from a linux host is possible using MinGW. 
-\todo{asdf}
-\subsubsection{QMake}
-The native makefile generator of Qt. Defines build definitions in .pro files and handles Qt specific tools like the \gls{moc} automatically as needed, giving a straightforward experience when building Qt programs.
-
-Integrated with QtCreator.
-
-\subsubsection{CMake}
-Gathers information on what to build from CMakeLists.txt files added to the project's sources.
-
-Can generate projects in an plethora of formats, including Visual Studio, GNU make,  Apple Xcode and Eclipse
-
-Has widespread usage in open source and commercial projects and QtCreator provides good integration for CMake generated projects.
-
-In addition to being a pure build system generator, CMake can be used to define commands that should be run pre-/postbuild.
-
-It also comes with a facility to gather and run unit tests, called CTest
