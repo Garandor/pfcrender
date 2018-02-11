@@ -12,6 +12,9 @@ set (SVG_SRC
     "SVG.cpp"
     "SVG.h"
 
+    "BboxParse.cpp"
+    "BboxParse.h"
+
     "QPainterParse.cpp"
     "QPainterParse.h"
 

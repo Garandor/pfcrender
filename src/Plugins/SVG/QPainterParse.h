@@ -30,6 +30,7 @@ namespace Export {
             QPainter m_p;
             QPen m_pen;
 
+            QRectF bounding_box;
             //config options
             double seglen, rounding, angle, initial_angle;
             //            const double seglen, rounding, angle, initial_angle;

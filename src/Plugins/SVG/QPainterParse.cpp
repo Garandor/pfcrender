@@ -1,6 +1,8 @@
 #include "QPainterParse.h"
+#include "BboxParse.h"
 #include "Common/Config_Registry.h"
 #include <QColor>
+#include <QDebug>
 #include <gsl/gsl>
 
 namespace Plugins {
@@ -19,6 +21,9 @@ namespace Export {
         {
             Expects(m_p.isActive());
 
+            bounding_box = Export::BboxParse::getBbox(mdl);
+            qDebug() << "SVG BBOX IS " << bounding_box;
+
             parsing_preamble();
             parse_model_string(mdl);
             parsing_finalize();
@@ -28,6 +33,10 @@ namespace Export {
 
         void QPainterParse::parsing_preamble()
         {
+
+            //For SVG, translate so we dont get negative coordinates
+            m_p.translate(-bounding_box.left(), -bounding_box.top());
+
             //Config
             double lineWidth = Common::Config_Registry::getInstance()->getOpt("ViewModel.SegmentWidth").toDouble(nullptr);
 
