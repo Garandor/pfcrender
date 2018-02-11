@@ -4,15 +4,15 @@ We discuss the given requirements, derive architecture design goals and and rese
 
 \section{Cross-OS Operation}
 
-Writing portable software has historically been difficult, as operating system \gls{api}s differ significantly. 
+Writing portable software has historically been difficult, as each \gls{os} has its own, nont necessarily cross-compatible \gls{api}.
 
-Linux and MacOS comply with the \gls{posix} standard, which defines an \gls{api} for system calls, while Windows has historically had a non \gls{posix}-compliant proprietary system programming \gls{api}.
+While Linux and MacOS comply with the \gls{posix} standard - which defines an \gls{api} for system calls and associated utility programs - Microsoft Windows has historically had a non \gls{posix}-compliant proprietary system programming \gls{api}.
 
 Recently, Microsoft is making advances towards \gls{posix} compatibility in Win10\furl{https://blogs.msdn.microsoft.com/wsl/2016/04/22/windows-subsystem-for-linux-overview/}, and the Linux world offers a similar compatiblility layer with WINE\furl{https://en.wikipedia.org/w/index.php?title=Wine_(software)&oldid=823689556}. While the performance of the windows POSIX layer is promising\furl{https://www.phoronix.com/scan.php?page=article&item=windows-10-lxcore&num=2}, neither it, nor WINE\furl{https://wiki.winehq.org/Performance} are on par with programs implementing each system's native interface directly at the time of writing.
 
 As application performance is a requirement, writing the program in a cross-platform way becomes a necessity.
 
-Notable \gls{api} differences between \gls{posix} and Windows are
+Notable \gls{api} differences between \gls{posix} systems and Windows are
 \begin{description}
 	\item[Library Loading] \gls{posix} Systems use dlopen(), Windows uses LoadLibrary() and different runtime library layouts (.dll on Windows, .so on \gls{posix})
 	\item[3D Graphics Backend] Windows mainly uses Microsoft GDI or DirectX and - more recently - AMD Vulkan, while the \gls{posix} world mostly uses OpenGL.
@@ -22,8 +22,16 @@ Code depending on any of the above directly is therefore nonportable, which - as
 
 Thankfully, several of those libraries exist that provide a higher-level API abstracting programmers from OS-specific code. They differ wildly in feature-scope, some being abstractions of the graphics layer, some being full-featured cross-platform \gls{gui} toolkits and will be investigated in the following section.
 
-\subsection{Graphics Frameworks Providing OS Abstraction}
+\subsection{Rendering Frameworks Providing OS Abstraction}
 \label{sec:res_frameworks}
+
+We define rendering as per Wikipedia\furl{https://en.wikipedia.org/w/index.php?title=Rendering_(computer_graphics)&oldid=822283842} to mean
+\begin{definition}[Rendering]
+The automatic process of generating a photorealistic or non-photorealistic image from a 2D or 3D model (or models in what collectively could be called a scene file) by means of computer programs.
+\end{definition}
+It involves the decomposition of the 2D model (in our case - the \gls{lsys} iterate) to graphical primitives (\textit{polygons}) described by points in 2D space (\textit{vertices}) and drawing information like color (\textit{material}) for uploading to the \gls{gpu} which then rasterizes those primitives to colored pixels for display on screen.
+
+An OS abstraction is defined to be an \gls{api} that allows the same source code to run on multiple platforms. In the context of rendering, this means multiple rendering backends, for example OpenGL and DirectX.
 
 \paragraph{Cairo}
 \label{sec:cairo}
@@ -45,7 +53,7 @@ Unlike above solutions, GTK+\furl{https://www.gtk.org/}, written in C - is a ful
 \paragraph{Qt Framework}
 The Qt Framework, like GTK+ is a full-featured GUI application development toolkit and offers extensive functionality.
 
-Like GTK+ it has a widget-based API, but since Qt5 additionally brings a JavaFX-like declarative API called QtQuick.
+Like GTK+ it has a widget-based API, but additionally brings a JavaFX-like declarative API called QtQuick, which provides scene based rendering.
 
 In addition to providing graphics and \gls{gui} abstractions, it also provides a platform-independent library loading wrapper.
 
@@ -105,7 +113,7 @@ A definition by \citet[p.23]{Bass2015}:
 	DevOps is a set of practices intended to reduce the time between committing a change to a system and the change being placed into normal production, while ensuring high quality.
 \end{definition}
 
-While this field is too extensive to thoroughly investigate in the course of this thesis, some DevOps practices w.r.t. automating as much non-development work as possible, while still guaranteeing that changes made don't degrade functionality of the software, will be implemented here. 
+While this field is too extensive to thoroughly investigate in the course of this thesis, some DevOps practices concerning automation of non-development work, while still guaranteeing that changes made don't degrade functionality of the software, will be implemented here. 
 
 Understandability, though distinct from maintainability in \citet{Bray1997}, consists of factors like 
 \begin{itemize}
@@ -116,30 +124,29 @@ Understandability, though distinct from maintainability in \citet{Bray1997}, con
 We will also consider matters of understandability in this work, as adhering to above rules increases productivity of developers and lowers the barrier of entry for new coders.
 
 \subsection{Version Control}
-\gls{Version Control System}s  are used in \gls{scm} to keep track of changes to a codebase. They provide featues like
+\gls{Version Control System}s  are used in \gls{scm} to keep track of changes (called \term{commits}) to a codebase. They provide featues like
 \begin{itemize}
-	\item Bookkeeping of who authored which change
-	\item Messages describing each change (obsoleting changelogs)
-	\item History-keeping of earlier revisions of code
-	\item Automatic conflict resolutions in case two developers changed the same files
-	\item Maintaining different states of codebase in so-called branches
+	\item[Commmit history tracking] Including author, timestamp and commit message 
+	\item[Reverting commits] Returning to an earlier state of the codebase in case problems arise
+	\item[Merging] Automatic conflict resolutions in case two developers changed the same files
+	\item[Branching] Maintaining different states of the codebase in so-called branches
 \end{itemize}
 
-Their use is often mandatory in industry due to traceability requirements, but even single-developer projects can benefit from using, a \gls{vcs}, e.g. because the branching feature coupled with changelog messages allows working on multiple separate features in parallel, merging changes back to the main program after a features has been completed. 
+Using a \gls{vcs} is often mandatory in industry due to traceability requirements and but their use can be beneficial even for single-developer projects. A workflow that is enabled though \gls{vcs}es is working on multiple separate features in parallel, only merging changes back into the main codebase after a feature has been completed. The main codebase can meanwhile keep evolving and the \glss{vcs} will resolve the desynchronization automatically upon merge.
 
-Most major \gls{vcs}es have ecosystems that allow for hosting open-source repositories on the \gls{cloud}\footnote{e.g. \url{https://sourceforge.net/create/}}, selection is mostly a matter of personal preference, though some differences exist.
-An overview over some popular \gls{vcs}es follows that are available on both Windows and Linux.
+Most major \gls{vcs}es have ecosystems that allow for hosting open-source repositories on the \gls{cloud}\footnote{e.g. \url{https://sourceforge.net/create/}} to facilitate contributions. Although a few conceptual differences exist, selection of a \gls{vcs} is mostly a matter of personal preference. 
+An overview over some popular \gls{vcs}es available on both Windows and Linux follows.
 
 \paragraph{Apache Subversion}
-Subversion\furl{https://subversion.apache.org/} is a centralized \gls{vcs}, changes made locally need to be pushed to a central server, where they are revisioned. It supports branching, tagging and commit messages.
+Subversion\furl{https://subversion.apache.org/} is a \gls{vcs} that follows a centralized approach. A SVN client can obtain a working copy by \term{checking out} a specific revision of the codebase from a central server that maintains the revisioning information. The client has no notion of versioning apart from its current working copy, all revisioning happens by interacting with the server, which thus must be available for anything but local changes.
 
-Due to the centralization, no interaction with the \gls{vcs} is possible when the connection to the server is interrupted.
+It supports branching, tagging and commit messages.
 
 \paragraph{Mercurial}
-Mercurial\furl{https://www.mercurial-scm.org/} is a decentralized \gls{vcs}, getting a working copy does not fetch only the current status, but rather the complete repository including all versioning information, i.e. all interaction like committing changes, branching, checking out other code revisions can be done locally, while a central repository can be used to synchronize local changes with others.
+Mercurial\furl{https://www.mercurial-scm.org/} is a decentralized \gls{vcs}, getting a working copy does not fetch only the current status, but rather the complete repository including all versioning information, i.e. all interaction like committing changes, branching and checking out different code revisions can be done locally, while a central repository can be used to synchronize local changes with others.
 
 \paragraph{Git}
-\gls{git}\furl{https://git-scm.com/} is like Mercurial, only popular\furl{https://www.openhub.net/repositories/compare}. It is also a distributed \gls{vcs}, but conceived by Linus Torvalds of Linux kernel fame on a search for ways to manage the large scale of contributors on the project.
+\gls{git}\furl{https://git-scm.com/}, like Mercurial is a distributed \gls{vcs}. It was conceived by Linus Torvalds, founder of the Linux kernel, to manage the large number of contributors on the project.
 
 Like with Mercurial, key benefits are
 \begin{description}
@@ -147,19 +154,18 @@ Like with Mercurial, key benefits are
 	\item[Smart merging] Conflict resolution algorithms are fairly good at finding and automatically fixing trivial conflicts, keeping developer interaction on merges to a minimum
 	\item[Central repository support] Though git operates locally, it supports pushing code to and pulling from remote repositories, enabling the use of a central "synchronization" repository, which forms the basis for the popular \gls{github} 
 \end{description}
-
-Distinguishing factor of \gls{git} is the large existing userbase, that has resulted in a multitude of third-party tools integrating the \gls{vcs}, mostly via its \gls{cloud}-repository provider \gls{github}\furl{http://github.com}.
+Distinguishing factor of \gls{git} is its large existing userbase\furl{https://www.openhub.net/repositories/compare} that has resulted in a multitude of third-party tools integrating the \gls{vcs}, mostly via its \gls{cloud}-repository provider \gls{github}\furl{http://github.com}.
 
 \subsection{Continuous Integration}
-\gls{ci} is a concept popularized in the rise of agile software development. In classical development structures, features are are coded to perceived completion before they are introduced into the codebase of a product, their functionality maybe tested in unit-tests. Integrations of features are performed on a fixed schedule, e.g. quarterly with integration tests following the procedure, leading to an eventual release.
+\gls{ci} is a concept popularized in the rise of agile software development. In classical development structures, features are are coded to perceived completion before they are introduced into the codebase of a product, their functionality maybe tested in unit-tests. Integration of completed features is performed in batches on a fixed schedule with integration tests following the procedure, leading to an eventual release.
 
-A method of avoiding those time- and effort-consuming "big-bang" integrations is offered by \gls{ci}, by testing changes under development on the current state of the main codebase \textit{continuously}. This is made possible by \gls{vcs}es and their branching functionality, and works by taking the local branch of the developers code on each change, trying to build the code and running available tests on it. Breaking changes thus get reported to the developer much quicker than they would classically, which limits the possible causes of the build failure, reducing the time loss of bug hunting.
+A method of avoiding those time- and effort-consuming "big-bang" integrations is offered by \gls{ci}. Instead of batching up features for integration, compilation and testing of code under development is done \textit{continuously} e.g. every day. If changes to the new code break the build or existing functionality, the developer is notified quickly. This limits the number of possible causes for the failure, reducing the time loss of bug hunting.
 
-\gls{ci} relies on having one or more systems in a consistent "ready to build/run" configuration for each of the target systems that are to be supported. Since running the application may change the target system's configuration, obtaining reproducible results without manual re-configuration of the build system is made possible through use of virtualization solutions like docker\furl{https://www.docker.com/} and VMWare\furl{https://www.vmware.com/}.
+\gls{ci} relies on having one or more systems in a consistent "ready to build/run" configuration for each type of target systems to be supported. Since running the application may change the target system's configuration, obtaining reproducible results without manual re-configuration of the build system is made possible through use of virtualization solutions like docker\furl{https://www.docker.com/} and VMWare\furl{https://www.vmware.com/}.
 
-It is rarely feasible for small projects to maintain such build system farms themselves. On the other hand, \gls{ci} offers the possibility of testing the software on all to-be-supported platforms, without the developer needing physical access to a machine in that configuration. In this particular case for example, development was done on linux, with no access to MacOS devices to test the code on.
+It is rarely feasible for small projects to maintain the necessary build systems themselves. Virtualization and \gls{ci} are often the only possibility of testing the software on all to-be-supported platforms though, as the developer will not necessarily have access to machines in all configurations. In this particular case for example, development was done on Linux, with no physical access to MacOS devices to test the code on.
 
-Thankfully, \gls{cloud} providers exist that provide build systems in various configurations as a service, often free for open-source projects.
+Thankfully, existing \gls{cloud} providers offer virtualized build systems in various configurations as a service, often free for open-source projects.
 
 \paragraph{Travis CI}
 Travis \gls{ci}\furl{https://travis-ci.org} at the time of writing provides virtual machines running Linux (Ubuntu 12.04 and 14.04) and Mac OS X to provide builds on their \gls{cloud} platform.
@@ -172,9 +178,7 @@ Configuration happens in a .travis.yml file that has to be provided with the sou
 
 \paragraph{Circle CI}
 Circle CI\furl{https://circleci.com} distinguishes itself from Travis through its larger selection of preconfigured docker containers, reducing configuration overhead of the build environment.
-Configuration is through a .circleci file in the sources.
-
-One Linux-based container is free, allowing one build at a time. MacOS X is paid only.
+Configuration is done through a .circleci file in the sources and one Linux-based docker container is free. MacOS X is paid only.
 
 Like with Travis, they integrate with Github.
 
@@ -185,38 +189,37 @@ It provides github integration, the build is configured through an appveyor.yml 
 
 \subsection{Code Formatting guidelines}
 \label{sec:resformat}
-Creating a common code format can be as simple as writing down a set of rules in a code-of-conduct letter for coders to adhere to. What constitutes a "good" formatting guideline is a highly subjective matter however, which is the reason for "different looking code" in the first place, and differences in opinion are difficult to overcome..
+Creating a common code format can be as simple as writing down a set of rules in a code-of-conduct letter for coders to adhere to. What constitutes a "good" formatting guideline is a highly subjective matter however, which is the reason for "different looking code" in the first place, and differences in opinion are difficult to overcome.
 
-While it is unlikely that consensus will be reached on a coding style standard throughout the full C++ community due to the very different use-cases C++ is being used in, companies and larger \gls{floss} projects often define guidelines for their employees / contributors,
+It is unlikely that consensus will be reached on a coding style standard throughout the full C++ community, as the language is used in very different scenarios ranging from embedded computing to complex scientific computations, and "sensible" formatting differs by use-case. Several companies and larger \gls{floss} projects often define guidelines for their employees / contributors however,
 e.g. the WebKit project\footnote{\url{https://webkit.org/code-style-guidelines/}} and Google\footnote{\url{https://github.com/google/styleguide}}.
 
-Though it is possible to manually review every contribution and deny it if it violates code syle guidelines, doing so is unproductively used developer time. Since reformatting code (in the case of C++) simply consists of parsing and reorganizing characters in a text file, it can be automated.
+Though it is possible to manually review every contribution and deny it if it violates code syle guidelines, doing so occupies a developer's time unproductively. Since reformatting code (in the case of C++) simply consists of parsing and reorganizing characters in a text file, it can be automated.
 
-Tools like clang-format\footnote{\url{https://clang.llvm.org/docs/ClangFormat.html}} and astyle\footnote{\url{http://astyle.sourceforge.net/}} exist that - when supplied a formatting contract and source files, automatically reformat the latter.
+Tools like clang-format\footnote{\url{https://clang.llvm.org/docs/ClangFormat.html}} and astyle\footnote{\url{http://astyle.sourceforge.net/}} automatically reformat source code when supplied with a formatting contract.
 
 When used in conjunction with a \gls{vcs}, formatting can be automatically applied before publishing changes (e.g. git pre-commit hook) to other parties, completely abstracting the developer from the process - and thus enabling him to freely disregard code style guidelines during development, without violating them on check-in.
 
 \subsection{Automated Unit Testing Frameworks}\label{sec:autotest}
-
-Research into this field was mostly motivated by a blog post\furl{https://medium.com/@fatboyxpc/the-hard-truth-nobody-has-time-to-write-tests-68a122a1a0e3}, preseting compelling arguments for devoting time to creating an automated testing environment, closing with the following words
+Research into this field was mostly motivated by a blog post\furl{https://medium.com/@fatboyxpc/the-hard-truth-nobody-has-time-to-write-tests-68a122a1a0e3}, presenting compelling arguments for devoting time to creating an automated testing environment, which closes with the following words
 \begin{quote}
 Nobody has the time to write tests, but true professionals make the time. 
 \end{quote}
 
-While manual testing of software is expensive for large corporations, it is strictly infeasible for small-scale software projects, to do so, because the development time lost on a single developer doing repetitive testing becomes a significant factor impeding progress of the project, if this developer is the only one. 
+While manual testing of software is expensive for large corporations, it is strictly infeasible for small-scale software projects, which don't have the necessary manpower to still make progress while repeatedly testing changes.
 
-Having an automated testing suite results in front-loading some amount of work to set up a self-running network of tests, and then forgetting about it - until something breaks, at which point the benefit of testing becomes apparent, as the localized nature of unit tests gives a good indication on what functionality actually broke, reducing bug hunting time.
+Creating an automated testing suite amounts to a one-time investment of work (not counting the work needed to write tests for new code), at which point the developer can resume devoting his time to coding - until something breaks, at which point the developer benefits of reduced bug hunting time due to the localized nature of unit tests.
 
 The main benefit of having an automated testing suite covering most of the software as given in above post is the fact that - while manual testing would only concern itself with parts of the software supposedly affected by changes - the full test suite can run on every check-in without causing significant cost to the project, incresing the chance to discover accidental cross-influences of changes to other parts of the software, which would normally remain undetected.
 
-Having automated testing requires a software that can automatically run said tests. Many such frameworks exist, mostly differing in the way tests are created. Some of those available for the C++ language are:
+Having automated testing requires a software that can automatically run said tests. Many such frameworks exist, mostly differing in the way how tests are defined. Some of those available for the C++ language are:
 \begin{description}
 	\item[QtTest]\furl{http://doc.qt.io/qt-5/qttest-index.html} The native unit testing framework of Qt (described in \ref{sec:resqt}), integrated into its QtCreator IDE.
 	\item[CTest]\furl{https://www.vtk.org/Wiki/index.php?title=CTest:FAQ&oldid=9429} Due to unit testing being closely related to building the actual software, CTest is distributed with the CMake buildtool presented in \ref{sec:rescmake}. It shares syntax with CMake, i.e. test definitions can be integrated into the same files describing how to build the software.
 	\item[Google Test] \furl{https://github.com/google/googletest/} An open source standalone testing framework aiming to keep test definition overhead low while staying platform-neutral.
 \end{description}
 
-Simply having tests does not confer much confidence in functional integrity of a program by itself, it is possible to run a program in such a way to report on which lines of code were actually executed though. These reports can be generated when running tests, and present a \gls{coverage} report - i.e. give insight into which parts of the program were actually executed during testing and are thus proven to work.
+As the simple presence of tests does not confer any confidence in the functional integrity of a program by itself, it is possible to add instrumentation to a program to compile a report on which lines of code were actually executed during a run. These reports can be generated when running tests, and present a \gls{coverage} report - i.e. give insight into which parts of the program were actually executed during testing and are thus proven to work.
 
 Generating coverage information during program execution is possible by compiling the program with gcc and including the following flags\furl{https://cmake.org/Wiki/index.php?title=CTest/Coverage&oldid=57013}
 \begin{lstlisting}
