@@ -130,13 +130,10 @@ Calls to a virtual function are not made by directly accessing the address of th
 
 This introduces several additional cycles (TODO: Measure how many or find in literature), which can become a significant bottleneck for performance, when the virtual function is called often, e.g. in our case, when parsing a character of the model string.
 
-
-
 \section{Plugins}
-\subsubsection{Inheritance in Qt}
-Implementing interfaces that are supposed to be used with Qt's meta object system is a slightly awkward procedure, as Qt's macros used to notify the moc about interface definitions and implementations are not namespace aware. 
+The interface to a plugin is defined as being given through the implementation of its interface class - currently import or export. Each plugin is supposed to publish its information in a common plugin info structure and is optionally allowed to expose a ConfigScreen item for configuration through the \gls{gui}.
 
-This limitation pertains to interfaces exposing functionality from the Qt MetaObject system like signals/slots.
+In addition to the functional interfaces, a plugin must also inherit from the QObject class and expose some metadata to the \gls{mos} to be importable via the QPluginLoader mechanism.
 
 \begin{figure}[htb]
 	\includegraphics[width=\textwidth]{PluginInterface}
