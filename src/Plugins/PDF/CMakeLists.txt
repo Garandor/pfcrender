@@ -15,6 +15,9 @@ set (SRC
     "pdf.cpp"
     "pdf.h"
 
+    "BboxParse.cpp"
+    "BboxParse.h"
+
     "QPainterParse.cpp"
     "QPainterParse.h"
 

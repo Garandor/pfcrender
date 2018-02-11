@@ -5,9 +5,9 @@
 #include <QDebug>
 #include <QVariant>
 
+#include "BboxParse.h"
 #include "Common/Config_Registry.h"
 #include "QPainterParse.h"
-
 #include "pdf.h"
 
 #include <QPrinter>
@@ -50,7 +50,13 @@ namespace Export {
             printer.setPaperSize(QPrinter::A4);
             printer.setOrientation(QPrinter::Landscape);
             printer.setResolution(QPrinter::HighResolution);
-            QPainterParse qpp(*mdl.getModel(), printer);
+
+            QRectF bounding_box = Export::BboxParse::getBbox(*mdl.getModel());
+
+            QPointF translate = -bounding_box.topLeft();
+            double scale = qMin(printer.pageRect().width() / bounding_box.width(), printer.pageRect().height() / bounding_box.height());
+            qDebug() << "PDF: " << translate << scale;
+            QPainterParse qpp(*mdl.getModel(), printer, translate, scale);
         }
 
     } // namespace SVG

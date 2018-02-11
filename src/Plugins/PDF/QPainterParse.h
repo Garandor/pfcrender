@@ -12,7 +12,7 @@ namespace Export {
         class QPainterParse {
 
         public:
-            explicit QPainterParse(const QString& mdl, QPaintDevice& onto);
+            explicit QPainterParse(const QString& mdl, QPaintDevice& onto, QPointF translate, double scale);
 
         private:
             void parsing_preamble();
@@ -27,6 +27,7 @@ namespace Export {
             void stackPush();
             void stackPop();
 
+            QRectF bounding_box;
             QPainter m_p;
             QPen m_pen;
 

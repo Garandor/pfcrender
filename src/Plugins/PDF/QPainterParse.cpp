@@ -1,23 +1,27 @@
 #include "QPainterParse.h"
+#include "BboxParse.h"
 #include "Common/Config_Registry.h"
 #include <QColor>
+#include <QPrinter>
 #include <gsl/gsl>
 
 namespace Plugins {
 namespace Export {
     namespace PDF {
 
-        QPainterParse::QPainterParse(const QString& mdl, QPaintDevice& onto)
+        QPainterParse::QPainterParse(const QString& mdl, QPaintDevice& onto, QPointF translate, double scale)
             : m_p{ &onto }
             , initial_angle(Common::Config_Registry::getInstance()->getOpt("ViewModel.InitialAngle").toDouble(nullptr))
             , angle(Common::Config_Registry::getInstance()->getOpt("ViewModel.Angle").toDouble(nullptr))
             , seglen(Common::Config_Registry::getInstance()->getOpt("ViewModel.SegmentLength").toDouble(nullptr))
             , rounding(Common::Config_Registry::getInstance()->getOpt("ViewModel.Rounding").toDouble(nullptr))
-
             , coord_final{}
             , coord_last_drawn{}
         {
             Expects(m_p.isActive());
+
+            m_p.scale(scale, scale);
+            m_p.translate(translate);
 
             parsing_preamble();
             parse_model_string(mdl);
