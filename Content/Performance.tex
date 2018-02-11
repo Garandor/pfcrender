@@ -1,72 +1,6 @@
 \chapter{Application Performance}
 
-\subsection{fxtlib}
-\subsection{move semantics when operating on model}
-\section{Problems}
-\section{QNanoPainter Performance}
-It turned out that QNanoPainter forces the scene graph managed by Qt to call QNanoQuickItemPainter::paint() function, which in our case is used to create the texture from the model string, on every frame, leading to a unusable \gls{gui} on complex models.
-
-\todo{maybe elaborate on the scene graph in architecture def}
-When the scene graph collects data for rendering, it reuses cached data if it has not changed for efficiency. To indicate changes that need redrawing, dirty bits are set on that node, which specify in which way a node's data has changed. In the case of QNanoPainter 
-
-\begin{lstlisting}[language=c++,caption=QNanoQuickItem as of commit de45f31e]
-QSGNode *QNanoQuickItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeData *nodeData)
-{
-    Q_UNUSED(nodeData)
-    QNanoQuickItemPainter *n = static_cast<QNanoQuickItemPainter *>(node);
-    if (!n) {
-        n = createItemPainter();
-    }
-    n->synchronizePainter(this);
-    n->markDirty(QSGNode::DirtyMaterial);
-    return n;
-}
-\end{lstlisting}
-This code calls \code{markDirty()} on every execution, forcing the scene graph to call the QNanoCurvePainter::paint() function to redraw the geometry.
-
-This behavior is probably intended, as QNanoPainter can also draw on QQuickFramebufferObject as a backend, which does not have the notion of dirtyness, so this was likely inplemented for consistency in user code.
-
-We resolved this problem by forking QNanoPainter, removing this call from \code{updatePaintNode()} and calling it in the QNanoCurvePainter::synchronize method instead, which is called by synchronizePainter() in the above snippet, but is a class implemented by the user, thus exposing control over whether to redraw or not to the user. A pull request to the official repository will be submitted shortly.
-
-
-\subsection{Angle calculation}
-\begin{quote}
-Sometimes "pi = 3.14" is (a) infinitely faster than the "correct" answer and (b) the difference between the "correct" and the "wrong" answer is meaningless. And this is why I get upset when somebody dismisses performance issues based on "correctness". The thing is, some specious value of "correctness" is often irrelevant because it doesn't matter. While performance almost always matters. And I absolutely detest the fact that people so often dismiss performance concerns so readily.
-
-- Git mailing list, Fri, 8 Aug 2008
-\end{quote}
-\subsection{Model Creation}
-QQuickPaintedItem uses a given painter, explicitly calling functions on it to draw on a paint device.
-We want the finished image though, not something that draws based on input. We would need to embed the LSYS string into the model if that were the case.
-
-Und jetzt habe ich die Wahl was ich in der GUI als Modell der PFC speichere, bisherige Überlegungen:
-- Den String selbst
-Die Ideen sind wohl halbwegs speicheroptimal, müssen aber wohl entweder ein ViewModel zwischengeschaltet bekommen, bevor sie renderbar werden, was den Speichervorteil zunichte macht, oder auf ein Canvasobjekt "gemalt" werden
-- Als SVG. Einfach zu rendern, aber den SVG overhead zu parsen ist sicher alles andere als performant.
-
-Model: - 2D - Matrix in der jeder Index ein Segment mit Richtung und Farbe repräsentiert
-
-- Ein QML-Objekt (QQuickPaintedItem), das den LSYS String als member enthält und neu zeichnen lässt (bessere Austauschbarkeit des Modells - nicht limitiert auf PFCs)
-- Ein generisches QQuickItem, das als Information direkte OpenGL drawing calls enthält (QSGGeometry)
-
-Das Model muss weiterhin nicht nur als Bitmap renderbar, sondern in verlustfreier Form z.B. nach SVG exportierbar sein - die Daten z.B. nur in einer QSGGeometry vorzuhalten ist praktisch zum rendern (automatisch in Qt), aber unmöglich aus dem Quickitem wieder zu extrahieren
-\subsubsection{QQuickItem + Custom Geometry vs QQuickPaintedItem}
-While QQuickPaintedItem allows us to use the QPainter API to generate the model for viewing, which is great, since it is also used by the SVG and PDF exporters, it is also painfully slow, as running callgrind on two parallel implementations shows.
-do\_paint, which renders using QPainter API is a factor of 10 slower than manual creation of the OpenGL Vertex/Colordata
-
-IMAGE : Callgrind cost
-
-For this reason, a parallel implementation of both approaches was selected, with the GUI using rendering directly, and Painter based exporters using the QPainter API.
-
-While this means that the GUI viewmodel can not be reused and the curve has to be rebuilt using qpainter on export, the GUI becomes responsive more quickly / scales to more iterates. As far as UX goes, the user can wait for file export, but not for an interactive GUI.
-Especially since export is threadable/backgroundable.
-
-\subsubsection{Encapsulation of Functionality (OOP) vs. Method Call overhead}
-A lot of the OOP functionalites C++ offers, come at a performance cost.
-While some of those classically named ones like stl containers are almost equivalent to plain C data, there are still very costly abstractions present in C++ wwhich can slow down a program significantly.
-The gaming world programs C++ without exceptions for this exact reason (TODO: Reference), while those don't come into play here, method call overhead does.
-
-
+\section{General Optimization}
 \subsubsection{Runtime Optimization}
 When optimizing a program for performance, it is essential to know where in the code the program spends the most time during typical execution, as optimizing 80\% of usecases by 20\% will be much more noticeable by users than speeding up 20\% of usecases by 80\% and is thus a better target for engineering effort.
 
@@ -101,15 +35,5 @@ Insead of optimizing on a TU base, it optimizes llvm bytecode (TODO: llvm erkär
 
 -flto=full
 
-
-\subsubsection{Polymorphism and Performance}
-Polymorphic classes are a key abstraction of C++ and are distinct from simple inheritance by the presence of the virtual keyword on at least some of their members.
-
-This keyword enables a derived class, referred to through a pointer to the base class to execute its own implementation (a so called override) of the virtual member instead of the one (possibly, but not necessarily) implemented by the base class.
-
-While this mechanism is fundamental to enabling C++ to provide the so called interface abstraction (TODO:Define), it comes with a performance cost.
-
-Calls to a virtual function are not made by directly accessing the address of the callee, but access the so-called vtable instead. which is tasked with resolving the address of the member function.
-
-This introduces several additional cycles (TODO: Measure how many or find in literature), which can become a significant bottleneck for performance, when the virtual function is called often, e.g. in our case, when parsing a character of the model string.
+\section{Timing Measurements}
 
