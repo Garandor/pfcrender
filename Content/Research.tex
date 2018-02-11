@@ -219,7 +219,7 @@ Having automated testing requires a software that can automatically run said tes
 	\item[Google Test] \furl{https://github.com/google/googletest/} An open source standalone testing framework aiming to keep test definition overhead low while staying platform-neutral.
 \end{description}
 
-As the simple presence of tests does not confer any confidence in the functional integrity of a program by itself, it is possible to add instrumentation to a program to compile a report on which lines of code were actually executed during a run. These reports can be generated when running tests, and present a \gls{coverage} report - i.e. give insight into which parts of the program were actually executed during testing and are thus proven to work.
+As the simple presence of tests does not confer any confidence in the functional integrity of a program by itself, it is possible to add instrumentation to a program to compile a report on which lines of code were actually executed during a run. These reports can be generated when running tests, and in sum constitutea \gls{coverage} report - i.e. give insight into which parts of the program were actually executed during testing and are thus proven to work as tested.
 
 Generating coverage information during program execution is possible by compiling the program with gcc and including the following flags\furl{https://cmake.org/Wiki/index.php?title=CTest/Coverage&oldid=57013}
 \begin{lstlisting}
@@ -231,14 +231,14 @@ This adds instrumentation to the compiled program, which will dump \cmd{.gcno} a
 In combination with \gls{ci} and a test suite close to 100\% \gls{coverage} ran on every check-in, a solution like this is a great indicator that the program still works as intended after changes have been performed while costing close-to-0 ongoing time investment from developers.
 
 \subsection{Model-driven Design and Round-Trip Engineering}
-First step to writing a understandable program is understanding it yourself. Since most problems in programming today are fairly large in scope, it is often conducive to this process to decompose the main problem into several smaller subproblems. While this approach reduces the complexity of each individual problem and enables parallel work on each subproject, it introduces the overhead of keeping track of the relationships between all subproblems and guaranteeing interoperability between the individual solutions. A graphical method of mapping those relations is often conducive to understanding and maintaining synchronization. One such method ist the \gls{uml} standard by the \gls{omg}, purpose of which - as taken from the specification\furl{http://www.omg.org/spec/UML/2.5.1/PDF} is .
+First step to writing a understandable program is understanding it yourself. Since most problems in programming today are fairly large in scope, it is often conducive to this process to decompose the main problem into several smaller subproblems. While this approach reduces the complexity of each individual problem and enables parallel work on each subproject, it introduces the overhead of keeping track of the relationships between all subproblems and guaranteeing interoperability between the individual solutions. A graphical method of mapping those relations is often conducive to understanding an architecture and maintaining synchronization between code and model. One such method is the \gls{uml} standard by the \gls{omg}, purpose of which - as taken from the specification\furl{http://www.omg.org/spec/UML/2.5.1/PDF} is .
 \begin{quote}
 to provide system architects, software engineers, and software developers with tools for analysis, design, and implementation of software-based systems as well as for modeling business and similar processes
 \end{quote}
 
 While certainly helpful in the intial phases of system architecture, models - like documentation - when manually created are cumbersome to maintain and keep synchronized with the running changes to the architecture.
 
-In model-driven design, the UML model is used to generate boilerplate parts of the code that map to elements of the model (e.g. class / namespace declarations), saving the implementer from writing boilerplate code. Changes in the code need to be manually introduced to the model though, which is at the discretion of the programmer, can not be enforced and often leads to the model desyncing from the code. 
+In model-driven software design, the /gls{uml} model can be used to generate boilerplate parts of the code that map to elements of the model (e.g. class / namespace declarations), saving the implementer from writing boilerplate code. Architectural changes made in the code need to be manually introduced to the model though, which is at the discretion of the programmer and can not be enforced, which often leads to the model desynchronizing from the codebase. 
 
 \gls{rte} tooling helps alleviate this problem by automating the process of feeding changes from the code back into the UML model.
 
@@ -246,14 +246,14 @@ Depending on the target prigramming language, the task of reintroducing changes 
 
 During research, only a single open source / free-for-education \gls{uml} modeling tool could be identified that offers \gls{rte} for C++: Astah\furl{http://astah.net}
 
-Exporting a model to C++ code is provided as core functionality, import from code through a plugin\furl{http://astah.net/features/cpp-reverse-plugin}.
+Exporting a model to C++ code is a core functionality of Astah, import from C++ is provided through a plugin\furl{http://astah.net/features/cpp-reverse-plugin}.
 
 \subsection{Automatically Generated Documentation}\label{sec:resdoxygen}
-The necessity of documenting code is a topic of heated discussion among programmers. Some argue today's high-level programming languages are mostly self-documenting, so why restate the obvious.
+The necessity of documenting code is a topic of heated discussion among programmers. Some argue that today's high-level programming languages are mostly self-documenting, so why restate the obvious.
 
 Others claim that stating the intent of a section of code clearly in plain language can make code much easier to understand, and is - for this very reason - a part of the \textit{maintainability index} presented in section \ref{sec:maintainability}.
 
-Documenting code is most unintrusively done directly in the code and can - when using one of the available documentation generators like Doxygen\furl{https://github.com/doxygen/doxygen} or Sphinx\furl{http://www.sphinx-doc.org/en/stable/} can lead to great documentation for people not wanting to sift through source code, while not overly distracting a developer from his work.
+Documenting is most unintrusively done directly in the code and can - when using one of the available documentation generators like Doxygen\furl{https://github.com/doxygen/doxygen} or Sphinx\furl{http://www.sphinx-doc.org/en/stable/} - lead to great documentation for people not wanting to sift through source code, while not overly distracting a developer from his work.
 
 \section{Extensibility}
 
@@ -263,9 +263,9 @@ We define extensibility as the ability of a system to be extended with new funct
 \end{definition}
 
 \subsection{Plugin Architecture}\label{sec:resplug}
-Looking at the requirements of figure \ref{fig:directreq}, it becomes apparent that most components have strictly disjunct responsibilities, the main common element being the \textit{production} of the \gls{pfc}.
+It is apparent from the requirements in figure \ref{fig:directreq} most components have strictly disjunct responsibilities, the main common element being the \textit{iterate} of the \gls{lsys}.
 
-The \gls{lsys} generator takes some input and outputs a \textit{production} that can serve as a data model. GUI, SVG and PDF renderings all operate on this model, but don't influence each others operation.
+The \gls{lsys} generator takes some input and outputs a \textit{iterate} that can serve as a data model. GUI, SVG and PDF renderings all operate on this model, but don't influence each others operation.
 
 This characteristic is conducive to segregating those components of the app not just to different classes, but to completely separate compilation units, i.e. standalone libraries called plugins.
 
@@ -291,13 +291,13 @@ The Eclipse IDE, in its core being a plugin loader and all functionality supplie
 \subsection{Configuration}
 The solution is required to be scriptable, which means all configuration options necessary for automated operation must be selectable from the command line.
 This focus on a feature-rich \gls{cli} leads to the necessity of good \gls{cli} documentation, i.e. a form of "help" message that documents the options available to the user.
-Providing and maintaining a help page manually is not only cumbersome, it will, as is the case with all manually maintained documentation eventually become out-of-sync with the code.
+Providing and maintaining a help page manually is not only cumbersome, it runs the risk of going out-of-sync with the codebase.
 
-This problem is exacerbated by use of a plugin architecture, as available options depend on the presence or absence of plugins that use them. This in turn is runtime information that can not be known at compile time, thus making any of the standard, static methods like "hardcoded" help message, manpage or README files impossible to use.
+This problem becomes more significant when using a plugin architecture, as available options depend on the presence or absence of plugins that use them. This in turn is runtime information that can not be known at compile time, thus making any of the standard, static methods like "hardcoded" help message, manpage or README files impossible to use.
 
 Though it was not a direct requirement, it is desirable to provide the \gls{gui} with a method of setting configuration options as well, to eventually enable users that don't need scriptability to operate the application fully from the \gls{gui}.
 
-We thus need a method of configuration that is easily extensible with new options, accessible from \gls{cli} and \gls{gui} and generates \gls{cli} documentation automatically at runtime.
+Thus, a method of configuration is needed that is easily extensible with new options, accessible from \gls{cli} and \gls{gui} and generates \gls{cli} documentation automatically at runtime.
 
 \subsubsection{Singleton Pattern}
 \label{sec:ston}
@@ -323,19 +323,19 @@ public:
 }
 
 \end{lstlisting}
-Key element of this class is the private constructor, which can only be executed through the class-static getInstance() method, which returns an already existing instance, or creates a new one.
+Key element of this class is the private constructor, which can only be executed through the class-static \code{getInstance()} method, which returns an already existing instance, or creates a new one.
 Copying and moving are prevented by the deleted copy and assignment operators - presence of which prevents autogeneration of move constructors by the compiler.
-It follows that an object so-created can exist only once in the program and can be accessed from any file that can access the getInstance method, i.e. has the header included. 
+It follows that an object so-created can exist only once in the program and can be accessed from any file that can access the \code{getInstance()} method, i.e. has the header included. 
 This class can then contain a list of config options and other elements of interest to multiple parts of the program. 
 
-Since the pointer variable storing the singleton has static duration, the lifetime of its object only ends when delete is called on the instane explicity, meaning care has to be taken to ensure its proper destruction and prevent memory leaks.
+Since the pointer variable storing the singleton has static duration, the lifetime of its object only ends when delete is called on the instance explicity, meaning care has to be taken to ensure its proper destruction and prevent memory leaks.
 
 \subsection{Commandline Parsing}
-Unlike other programming languages (e.g. Python), C++ does not provide a standard built-in facility to provide parsing capability for parsing parameters passed to the program as commandline options.
+C++ does not provide a standard built-in facility to provide parsing capability for parsing parameters passed to the program as commandline options.
 
 It is conducive to extensibility (and mandatory when implementing a plugin-based architecture as described in \ref{sec:resplug}) if the program provides a \gls{cli} that is easily extended with additional commandline options.
 
-The main commandline parsing solution available in any standard C++ environment is getopt(), which is inherited from C and thus brings with it a procedural interface that is not easily extensible.
+The main commandline parsing solution available in any standard C++ environment is getopt(), which is inherited from C and has a procedural interface that is not easily extensible.
 
 Some alternatives to getopt commandline parsing are:
 \begin{description}

@@ -1,6 +1,5 @@
 \chapter{Chosen Application Architecture}
-
-After researching available technologies, an architecture to build the pfcrender tool on was selected. The implementation is shown alongside the original requirements in the following graphs, split between functional- (figure \ref{fr}) and non-functional (figure \ref{nfr}) requirements. As in figure \ref{fig:directreq}, direct requirements are highlighted in green. Note that each direct requirement is satisfied or verified through an implementation requirement or test case.
+After researching available technologies, an architecture to build the pfcrender tool on is selected from the alternatives found. It is shown alongside the original requirements in the following graphs, split between functional- (figure \ref{fr}) and non-functional (figure \ref{nfr}) requirements. As in figure \ref{fig:directreq}, direct requirements are highlighted in green. Note that each direct requirement is satisfied or verified through an implementation requirement or test case.
 
 The architecture is discussed in detail in the following sections.
 
@@ -17,7 +16,7 @@ The architecture is discussed in detail in the following sections.
 \end{figure}
 
 \section{Functional Requirements}
-The main decision to make on the software architecture side was which of the framework libraries discussed in section \ref{sec:res_frameworks} to use.
+The decision with the widest implications to the software architecture is selection of the appropriate graphics framework library from the ones discussed in section \ref{sec:res_frameworks}.
 Selection was driven by three main concerns: \emph{extensibility, performance and ease-of-use}.
 
 Ultimately, the Qt Framework was chosen for the following reasons:
