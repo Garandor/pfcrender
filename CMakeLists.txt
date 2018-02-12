@@ -9,14 +9,20 @@ project(pfcrender)
 
 # The project version number.
 set(VERSION_MAJOR   0   )
-set(VERSION_MINOR   8   )
+set(VERSION_MINOR   9   )
 set(VERSION_PATCH   0   )
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+option(DEBUG_VERBOSE_MAKEFILE "Enable verbose makefile generation" OFF )
 option(GENERATE_UNITTESTS "Enable building and running of ctest unit testing files" ON)
 option(GENERATE_DOCS "Enable building and running of Doxygen doc creation" ON)
+
+if(DEBUG_VERBOSE_MAKEFILE)
+    set( CMAKE_VERBOSE_MAKEFILE on )
+endif()
+
 
 #--- START SUBMODULES
 #gsl
@@ -48,4 +54,3 @@ endif()
 #update version in all relevant files
 configure_file("conf/README.md.in" "${CMAKE_SOURCE_DIR}/README.md")
 configure_file("conf/appveyor.yml.in" "${CMAKE_SOURCE_DIR}/appveyor.yml")
-

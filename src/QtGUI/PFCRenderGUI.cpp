@@ -36,9 +36,9 @@ PFCRenderGUI::PFCRenderGUI(QQmlApplicationEngine* eng)
 
     post_status(QString(walker.m_stepNames.count()));
 
-    walker.execute(m_mdl);
+    connect(&m_mdl, SIGNAL(modelChanged(QString)), this, SLOT(onModelChanged()));
 
-    onModelChanged(); //Notify VM that the model changed
+    walker.execute(m_mdl);
 
     //now that everything is in place, connect all necessary signals so we can resume normal GUI operation
 }
