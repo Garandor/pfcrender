@@ -16,6 +16,7 @@ class QNanoCurvePainter : public QObject, public QNanoQuickItemPainter {
 
 signals:
     void boundingBoxChanged(QRectF newBox);
+    void painting_done();
 
 public:
     QNanoCurvePainter()

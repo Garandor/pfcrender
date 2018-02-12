@@ -7,13 +7,16 @@
 
 #include "Model/LSYSModelImpl.h"
 
+#include <chrono>
 namespace QtGUI {
 
 class PFCRenderGUI : public QObject {
     Q_OBJECT
-
+    std::chrono::high_resolution_clock timer;
 public slots:
     void onModelChanged();
+    void onTimeout();
+    void onPaintingDone();
 
 public:
     PFCRenderGUI(QQmlApplicationEngine*);

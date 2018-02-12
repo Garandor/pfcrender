@@ -22,6 +22,17 @@ void PFCRenderGUI::onModelChanged()
     }
 }
 
+void PFCRenderGUI::onTimeout()
+{
+    timer->start(100);
+    onModelChanged(); //Notify VM that the model changed
+}
+
+void PFCRenderGUI::onPaintingDone()
+{
+    timer->stop();
+}
+
 void PFCRenderGUI::post_status(const QString& what)
 {
     p_eng->rootObjects()[0]->findChild<QQuickItem*>(QStringLiteral("status"))->setProperty("text", what);
@@ -36,9 +47,13 @@ PFCRenderGUI::PFCRenderGUI(QQmlApplicationEngine* eng)
 
     post_status(QString(walker.m_stepNames.count()));
 
-    walker.execute(m_mdl);
+    QTimer* timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
 
-    onModelChanged(); //Notify VM that the model changed
+    QString flosnek{ "L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R-L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R+L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R+L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R-L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R-L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R-L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R+L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R-L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R+L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R+" };
+    auto* mdlItem = qobject_cast<QtGUI::QNanoPaintedCurve*>(p_eng->rootObjects()[0]->findChild<QQuickItem*>(QStringLiteral("model")));
+
+    m_mdl.setModel(flosnek);
 
     //now that everything is in place, connect all necessary signals so we can resume normal GUI operation
 }

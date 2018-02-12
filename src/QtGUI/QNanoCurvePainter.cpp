@@ -30,6 +30,7 @@ void QtGUI::QNanoCurvePainter::paint(QNanoPainter* pe)
 
     boundingBox = QRectF(min, max);
     emit boundingBoxChanged(boundingBox);
+    emit painting_done();
 }
 
 void QtGUI::QNanoCurvePainter::synchronize(QNanoQuickItem* item)

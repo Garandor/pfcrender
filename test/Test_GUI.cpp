@@ -1,37 +1,45 @@
 #include <QString>
 #include <QtTest>
 
+#include "PFCRenderGUI.h"
 #include <QList>
-#include <QSGGeometry>
-#include <QSGGeometryNode>
 
 #include "Common/Config_Registry.h"
-
+#include "QtGUI/QNanoPaintedCurve.h"
 class Test_GUI : public QObject {
     Q_OBJECT
 
     //    QSGGeometryNode* n;
 
+    QString modelString{ "L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R-L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R+L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R+L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R-L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R-L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R-L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R+L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R-L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R++-L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R+L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L--LL-R+L+R++R-L--LL-R+--L+RR++R+L--L-R+--L+R++R-L--LL-R++-L+RR++R+L--L-R-L+RR++R+L--L-R++-L+RR++R+L--L-R+L+R++R-L--LL-R+--L+R++R-L--LL-R+--L+RR++R+L--L-R+" };
+
 private slots:
-    void initTestCase();
+    void
+    initTestCase();
 
     void createGeometry_90deg();
     void createGeometry_different_letters();
     void createGeometry_6colors();
-
     void cleanupTestCase();
+
+    LSYSModelImpl model;
 };
 
 void Test_GUI::initTestCase()
 {
-    //    n = new QSGGeometryNode;
-    //    n->setFlag(QSGGeometryNode::OwnsGeometry);
-    //    n->setFlag(QSGGeometryNode::OwnsMaterial);
+    //Register custom QML Types
+    qmlRegisterType<QtGUI::QNanoPaintedCurve>("sci.pfcrender.qnanorenderedcurve", 1, 0, "QNanoRenderedCurve");
 
-    Common::Config_Registry::getInstance()->setOpt("ViewModel.SegmentLength", "10");
-    Common::Config_Registry::getInstance()->setOpt("ViewModel.Rounding", "0");
-    Common::Config_Registry::getInstance()->setOpt("ViewModel.InitialAngle", "0");
-    Common::Config_Registry::getInstance()->setOpt("ViewModel.Angle", "90");
+    QtGUI::PFCRenderGUI desktop_obj(&qeng);
+
+    return app.exec();
+
+    auto* mdlItem = qobject_cast<QtGUI::QNanoPaintedCurve*>(p_eng->rootObjects()[0]->findChild<QQuickItem*>(QStringLiteral("model")));
+    if (mdlItem) {
+        mdlItem->onModelChanged(m_mdl.getModel());
+    } else {
+        qDebug() << "Not currently displaying a curve, ignoring model change";
+    }
 }
 
 void Test_GUI::cleanupTestCase()

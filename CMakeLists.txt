@@ -49,3 +49,4 @@ endif()
 configure_file("conf/README.md.in" "${CMAKE_SOURCE_DIR}/README.md")
 configure_file("conf/appveyor.yml.in" "${CMAKE_SOURCE_DIR}/appveyor.yml")
 
+message(STATUS Used ${CMAKE_CXX_FLAGS_RELEASE} for build)

@@ -16,6 +16,7 @@ class QNanoPaintedCurve : public QNanoQuickItem {
 
 signals:
     void boundingBoxChanged(QRectF newBox); //Forwarding signal to qml
+    void paintingDone();
 
 public slots:
     void onConfigChanged()
@@ -30,6 +31,7 @@ public slots:
         setSize(newBox.size());
         //        setTransformOriginPoint(newBox.topLeft());
         emit boundingBoxChanged(newBox);
+        emit paintingDone();
     }
 
 public:
