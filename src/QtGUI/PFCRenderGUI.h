@@ -13,16 +13,15 @@ class PFCRenderGUI : public QObject {
     Q_OBJECT
 
 public slots:
-    void onModelChanged();
+    void onModelChanged(const QString& mdl);
 
 public:
-    PFCRenderGUI(QQmlApplicationEngine*);
+    PFCRenderGUI(QQmlApplicationEngine*, LSYSModel&);
     ~PFCRenderGUI();
 
     void post_status(const QString& what);
 
 public:
-    Model::LSYSModelImpl m_mdl;
     QQmlApplicationEngine* p_eng;
 };
 

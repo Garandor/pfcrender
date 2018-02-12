@@ -1,3 +1,5 @@
+#include <gsl/gsl>
+
 #include <QDebug>
 #include <QQmlApplicationEngine>
 #include <QQuickItem>
@@ -12,11 +14,11 @@
 
 namespace QtGUI {
 
-void PFCRenderGUI::onModelChanged()
+void PFCRenderGUI::onModelChanged(const QString& mdl)
 {
     auto* mdlItem = qobject_cast<QtGUI::QNanoPaintedCurve*>(p_eng->rootObjects()[0]->findChild<QQuickItem*>(QStringLiteral("model")));
     if (mdlItem) {
-        mdlItem->onModelChanged(m_mdl.getModel());
+        mdlItem->onModelChanged(&mdl);
     } else {
         qDebug() << "Not currently displaying a curve, ignoring model change";
     }
@@ -27,18 +29,17 @@ void PFCRenderGUI::post_status(const QString& what)
     p_eng->rootObjects()[0]->findChild<QQuickItem*>(QStringLiteral("status"))->setProperty("text", what);
 }
 
-PFCRenderGUI::PFCRenderGUI(QQmlApplicationEngine* eng)
+PFCRenderGUI::PFCRenderGUI(QQmlApplicationEngine* eng, LSYSModel& mdl)
     : p_eng(eng)
-    , m_mdl()
 {
     //Instantiate everything from the provided sequence
     Common::Sequence_Walker walker;
 
     post_status(QString(walker.m_stepNames.count()));
 
-    connect(&m_mdl, SIGNAL(modelChanged(QString)), this, SLOT(onModelChanged()));
+    connect(&mdl, SIGNAL(modelChanged(const QString&)), this, SLOT(onModelChanged(const QString&)));
 
-    walker.execute(m_mdl);
+    walker.execute(mdl);
 
     //now that everything is in place, connect all necessary signals so we can resume normal GUI operation
 }

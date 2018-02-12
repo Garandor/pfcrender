@@ -6,13 +6,12 @@
 
 namespace QtCLI {
 
-PFCRenderCLI::PFCRenderCLI()
-    : m_mdl{}
+PFCRenderCLI::PFCRenderCLI(LSYSModel& mdl)
 {
     //Execute the provided sequence and quit
     Common::Sequence_Walker walker;
 
-    walker.execute(m_mdl);
+    walker.execute(mdl);
 }
 
 PFCRenderCLI::~PFCRenderCLI()

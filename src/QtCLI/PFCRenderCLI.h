@@ -11,11 +11,8 @@ class PFCRenderCLI : public QObject {
     Q_OBJECT
 
 public:
-    PFCRenderCLI();
+    PFCRenderCLI(LSYSModel&);
     ~PFCRenderCLI();
-
-public:
-    Model::LSYSModelImpl m_mdl;
 };
 
 } // namespace QtCLI
