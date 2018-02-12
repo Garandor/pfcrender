@@ -1,39 +1,38 @@
 \chapter{Application Performance}
+A short study of the rendering performance of our solution is conducted to check for reaching the targeted 10fps for a "simple image". As simple is a subjective term, we define the fourth iterate of \textsc{Gosper's flowsnake} to be a "simple curve" and conduct testing on it, the curve being generated as shown (no rounding).
 
-\section{General Optimization}
-\subsubsection{Runtime Optimization}
-When optimizing a program for performance, it is essential to know where in the code the program spends the most time during typical execution, as optimizing 80\% of usecases by 20\% will be much more noticeable by users than speeding up 20\% of usecases by 80\% and is thus a better target for engineering effort.
+\begin{lstlisting}[language=bash]
+$ ./pfcrender lsys  --rules "L L L+R++R-L--LL-R+ R -L+RR++R+L--L-R + + - - _ _ ~ ~" --sw 2 --sl 10  --it 4 --rd 0 --ia -60 --a 60
+\end{lstlisting}
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.8\textwidth]{simp_flosnek}
+\end{figure}
 
-While measuring the overall execution time of a program is as simple as starting and stopping a timer, looking for timings inside of executable, i.e. at the function level, needs additional instrumentation of the code that is executing. Tools that provide this instrumentation are called application profilers.
-
-%TODO: WHAT DO PROFILERS DO EXACTLY?
-
-One such tool - callgrind - is part of the valgrind analysis suite and well integrated into QtCreator.
-
-\subsubsection{Compiler Optimizations and Inlining}
-%TODO: Define stack frame
-If a method is simple, but executes a billion times, the cycles spent saving and restoring stack frames while jumping between functions will make up a significant portion of the execution time of the program.
-
-This is where so called inlining can help improve the runtime performance - as with all optimizations - at a cost. The tradeoff in this case being executable size.
-
-Inlining a function means copying the content of its body to the place where it is executed. This skips stack frame saving and a jump/return instruction pair, but (TODO: show assembler of inlined for-loop) leads to the function body being duplicated, i.e. increasing code size with each execution.
-
-While compilers do this type of optimization automatically, a keyword inline exists, that serves as a compiler hint and actually makes gcc/clang more likely to inline a function. Care has to be taken though, since inline has a different meaning when used on a function declaration. (in this case setting the function's definition as local to this translation unit, i.e. other TUs that include the header need to provide their own, identical function definition.
-
-Since - contrary to embedded systems - program space and RAM are usually not a bottleneck on desktop systems, it often makes sense to optimize a program for runtime performance and ignore the larger executable size.
-
-Modern compilers are able to optimize a program by several methods automatically, a user just needs to tell them how much of a tradeoff he is willing to take. The configuration (e.g. on GCC) for this feature is a commandline switch called optimization level. This can be -OS (optimize for size), nothing or -O0 (dont optimize) or -O1 through -O3, optimizing for performance with increasing aggressiveness / tolerance for increses in codesize.
-
-The standard mode for release software is -O2.
-
-\subsubsection{Link-Time Optimization}
-Compilers can only optimize on the code they know, i.e. the code in the current translation unit.
-
-Some optimizations (TODO: Which) only become possible when the full program is known, which is link-time. LTO is thus also known as full-program-optimization.
-
-Insead of optimizing on a TU base, it optimizes llvm bytecode (TODO: llvm erkären?)
-
--flto=full
+Measurements are taken in an Archlinux virtual machine on an Intel Xeon E5 system at 3.5Ghz clock frequency and the program is compiled in release configuration aggressive, full program optimization.
+\begin{lstlisting}
+-O3 -DNDEBUG -flto=full 
+\end{lstlisting}
 
 \section{Timing Measurements}
+The following measurements are taken using a slightly unwieldy shell command based on the unix \cmd{time} utility. It executes the application 100 times in batch mode and averages the reported execution times of each run.
+\begin{lstlisting}
+for i in {1..100}; do { time ( ./pfcrender --clear --batch lsys  --rules "L L L+R++R-L--LL-R+ R -L+RR++R+L--L-R + + - - _ _ ~ ~" --sw 2 --sl 10  --it 4 --rd 0 --ia -60 --a 60 ) } 2>&1 |tail -1| sed 's/.*  //'|cut -d" " -f1|cut -c1-4 ;done | awk '{ total += $1; count++ } END { print total/count }'
+\end{lstlisting}
+
+We compare the runtime executing different plugins in batch mode.
+\begin{table}[h]
+	\centering
+	\begin{tabular}{r|l}
+		Testcase & Application runtime[s]\\\hline
+		Import only & 0.0687\\\hline
+		Import \& SVG output & 0.0733\\\hline
+		Import \& PDF output & 0.0761
+	\end{tabular}
+	\caption{Batchmode execution timings for the 4th iterate of \textsc{Gosper's flowsnake}}
+\end{table}
+
+It is apparent from these results, that the actual execution of a plugin's routine has a low impact on application runtime when the model is simple, as timings are dominated by application startup overhead. Irrespective of this effect, the proposed 10ms rendering time target is reached, even though SVG and PDF use the slow QPainter drawing engine and access the filesystem.
+
+As the rendering time in the \gls{gui} can not be as easily benchmarked, we write a test case that triggers 100 model changed signals and reports the timing of  
 

@@ -1,5 +1,6 @@
 \chapter{Architecture Implementation}
-In the following chapter we present the implementation of the individual decompositions as described in figure \ref{fig:comp}.
+In the following chapter we comment on the implementation of the individual decompositions as described in figure \ref{fig:comp}.
+Current source code can be found on the project \gls{github} presented in section \ref{sec:archvcs} and a frozen state is attached to this thesis on compact disk.
 
 It should be noted, that although Astah claimed \gls{rte} support for C++, it was found to be unreliable, due to poor support of the C++ namespace feature.
 The application was thus developed using a conventional model-driven design approach.
@@ -13,7 +14,7 @@ The core functionality of the program was established in section \ref{sec:archpl
 	\item \gls{cli} parsing
 \end{itemize}
 
-These components lead to a further decomposition as per figure \ref{fig:main}.
+These components lead to a further decomposition shown in figure \ref{fig:main}.
 
 \begin{figure}[htb]
 	\includegraphics[width=\textwidth]{MainAppClassDiagram}
@@ -22,18 +23,18 @@ These components lead to a further decomposition as per figure \ref{fig:main}.
 \end{figure} 
 
 \paragraph{Initialization and Operation}
-The main entry point into the application is not shown here in the class diagram, but it involves creating a Qt specific QGuiApplication object and a PFCRenderGUI or PFCRenderCLI object.
+The main entry point into the application is not shown in the static class diagram, but it involves creating a Qt specific QGuiApplication object and a PFCRenderGUI or PFCRenderCLI object.
 
-In case of \gls{gui} operation, a QQmlEngine is instantiated to handle the declarative \gls{gui} part and the Qt event loop is executed through the QGuiApplication. A SequenceWalker then handles requested operations, upon completion of which the \gls{gui} starts handling all further interaction asynchronously through a Qt specific messaging system called Signals and Slots, which utilizes said event loop.
+In case of \gls{gui} operation, a QQmlEngine is instantiated to handle the declarative \gls{gui} part and the Qt event loop is executed through the QGuiApplication. A SequenceWalker then handles requested operations like \gls{lsys} import or PDF export, upon completion of which the \gls{gui} starts handling all further interaction asynchronously through a \gls{mos} based messaging system called Signals and Slots.
 
-In batch mode, the PFCRenderCLI simply calls the SequenceWalker class, which handles all requested operations and then exits.
+In batch mode, the PFCRenderCLI simply calls the SequenceWalker class which handles requested operations and then exits the program.
 
 \paragraph{Configuration}
 Config\_Registry is the central store of configuration information as outlined in \ref{sec:archconf} and - upon creation of its instance (which happens the first time some class wants to access configuration data) resolves the sequence of reading settings from file, creating the Plugin\_Registry to query for options, and parsing the CLI. It is also available to the QML part of the application as an exported QML type, allowing GUI screens written in QML to access config data.
 
 \paragraph{Plugins} Since Plugins need to be loaded to query for config information anyway, it makes sense to hold references to them active, so they do not have to be loaded a second time once accessed for execution. Plugin\_Registry is a second Singleton tasked with resolving all available plugins and holds this reference associated with plugin name for easy lookup.
 
-\paragraph{Model Creation} The model is created once on startup of the application via the PFCRender* objects. Once the sequence walker executes an import plugin, it will be given a ModelStringBuilder object to execute. Upon completion, it pushes an owning \cmd{std::unique\_ptr<>} to that string to the model to avoid potentially costly string copying.
+\paragraph{Model Creation} The model is created once on startup of the application via the PFCRender* objects. Once the sequence walker executes an import plugin, it will be given a ModelStringBuilder object to execute. Upon completion, it pushes an owning \code{std::unique\_ptr<>} to that string to the model to avoid potentially costly string copying.
 
 Benefit of a returned builder object instead of direct plugin invocation is deferred/delegated execution, as it becomes simple for the sequence walker to hand the builder over to a thread. This helps with keeping the \gls{gui} responsive while computation occurs in the background. This feature is planned for a subsequent release, as it was not a direct requirement.
 
@@ -50,45 +51,21 @@ An alternative was ultimately adopted with of using QNanoPainter.
 
 We will now discuss challenges faced with both rendering methods.
 
-\subsubsection{Direct node instertion into the scene graph}
-While QQuickPaintedItem allows us to use the QPainter API to generate the model for viewing, which is great, since it is also used by the SVG and PDF exporters, it is also painfully slow, as running callgrind on two parallel implementations shows.
-do\_paint, which renders using QPainter API is a factor of 10 slower than manual creation of the OpenGL Vertex/Colordata
+\subsubsection{QSGGeometryNode - Direct Geometry Insertion into the Scene Graph}
 
-IMAGE : Callgrind cost
+First approach was direct creation of a \cmd{QSGGeometryNode}, which is a Qt SceneGraph frontend for direct specification of graphical primitives (\term{vertices} and \term{material}), providing a very low-level abstraction on top of the rendering backends.
+The code used in this approach is available on the \cmd{rendermethod\_QSGGeometry} branch of the git repository.
 
-For this reason, a parallel implementation of both approaches was selected, with the GUI using rendering directly, and Painter based exporters using the QPainter API.
+Drawing a curve from straight lines (i.e. no rounding of corners) including on-the-fly \gls{bounding box} creation and rescaling of the rendering to screen size through a \cmd{QSGTransformNode} was elegantly possible using this approach. As the OpenGL(ES) graphics backend support a LineStrip rendering style, coordinates of curve segments could be directly specified as vertices.
 
-While this means that the GUI viewmodel can not be reused and the curve has to be rebuilt using qpainter on export, the GUI becomes responsive more quickly / scales to more iterates. As far as UX goes, the user can wait for file export, but not for an interactive GUI.
-Especially since export is threadable/backgroundable.
+As for drawing arcs though, no \gls{api} is provided. While a manual solution could be implemented by manually calculating coordinates along an arc and connecting them with straight lines, this "reinventing the wheel" approach was dropped in favor of a higher-level drawing \gls{api} that provides a bezier curve/arc drawing command. 
 
-rcs bezier
-\subsubsection{Calculating the bounding box}
-Drawing the geometry from the string is an iterative process in nature. The the final size and position of the curve is not known until after the full curve is constructed.
+\subsubsection{QNanoPainter - Constant Redrawing}
+During implementation, it was found that QNanoPainter forces the scene graph managed by Qt to call the \cmd{QNanoQuickItemPainter::paint()} function on every frame, with no regards whether the underlying geometry changed or not. In our case, this leads to needlessly reparsing the model string, wasting system resources and making the \gls{gui} unresponsive on long model strings.
 
-It is necessary to relocate and rescale the drawing in order to fit it on the output device used  (screen, printer page size). There are two approaches to this:
-\begin{itemize}
-	\item Go through the string once, just to gather min and max coordinates to create the bounding box. Apply coordinate transformation to the drawing tool and reparse the string.
-	\item Pick up the bounding box while drawing the geometry. Apply the necessary transformation afterwards.
-\end{itemize}
-Regarding the performance impact of iterating through a potentially very long string a second time, the latter is obviously preferable. The iterative drawing frameworks QPainter and QNanoPainter do not provide any facility to apply scaling after drawing has been done, as they place actual rendering calls using the current rendering engine (OpenGL or OpenGLES).
+When the scene graph collects data for rendering, it reuses cached data of a node if it has not changed for efficiency. To indicate changes that need redrawing, \text{dirty bits} are set on that node, which specify in which way a node's data has changed. Listing \ref{lst:qnano} shows the method called by the scene graph to query for new data as implemented in QNanoPainter. 
 
-For the \gls{gui}, which required to load fast, a solution for this problem was found. As QNanoPainter does not issue drawing calls directly upon execution, but queues them up to be drawn when the scene graph reaches the current node, it is possible to apply the necessary transformations in a parent node, which - as per the logic of the scene graph - applies to all child nodes.
-
-As no such deferred drawing is possible when using QPainter to print to PDF, the bounding box is precalculated and applied to the calls directly. Since file export is not a time critical operation, this reparsing is considered tolerable.
-
-Using the translate property, which - under the hood - prepends the actual scenegraph node with a QSGTransformNode, the rendering can be done without concern for target coordinates and moved to fit the window after drawing.
-
-\subsection{QNanoPainter Stringcopy}
-
-Copying the model string cna nnot be avoided!
-
-
-It turned out that QNanoPainter forces the scene graph managed by Qt to call QNanoQuickItemPainter::paint() function, which in our case is used to create the texture from the model string, on every frame, leading to a unusable \gls{gui} on complex models.
-
-\todo{maybe elaborate on the scene graph in architecture def}
-When the scene graph collects data for rendering, it reuses cached data if it has not changed for efficiency. To indicate changes that need redrawing, dirty bits are set on that node, which specify in which way a node's data has changed. In the case of QNanoPainter 
-
-\begin{lstlisting}[language=c++,caption=QNanoQuickItem as of commit de45f31e]
+\begin{lstlisting}[language=c++,caption=QNanoQuickItem as of commit de45f31e,label=lst:qnano,float]
 QSGNode *QNanoQuickItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeData *nodeData)
 {
     Q_UNUSED(nodeData)
@@ -103,37 +80,66 @@ QSGNode *QNanoQuickItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintN
 \end{lstlisting}
 This code calls \code{markDirty()} on every execution, forcing the scene graph to call the QNanoCurvePainter::paint() function to redraw the geometry.
 
-This behavior is probably intended, as QNanoPainter can also draw on QQuickFramebufferObject as a backend, which does not have the notion of dirtyness, so this was likely inplemented for consistency in user code.
+This behavior is probably intended for user code compatibility in QNanoPainter, as it can also draw on a \cmd{QQuickFramebufferObject} as a backend, which does not have a notion of dirtyness, as it is rendered directly (as an overlay to the scene graph).
 
-We resolved this problem by forking QNanoPainter, removing this call from \code{updatePaintNode()} and calling it in the QNanoCurvePainter::synchronize method instead, which is called by synchronizePainter() in the above snippet, but is a class implemented by the user, thus exposing control over whether to redraw or not to the user. A pull request to the official repository will be submitted shortly.
+We resolved this problem by forking QNanoPainter, removing the call to \code{markDirty()}, adding it to the \cmd{QNanoCurvePainter::synchronize()} method instead, which is called by \cmd{synchronizePainter()} in listing \ref{lst:qnano}. \cmd{QNanoCurvePainter} is a class to be implemented by the user of QNanoPainter, thus exposing control over whether to redraw or not to the user. A pull request to the official QNanoPainter repository, maintaining compatibility between the two backends by flipping the logic of \cmd{markDirty()} to \cmd{markUnchanged()} will be submitted shortly.
 
-\subsection{Angle calculation}
-\begin{quote}
-Sometimes "pi = 3.14" is (a) infinitely faster than the "correct" answer and (b) the difference between the "correct" and the "wrong" answer is meaningless. And this is why I get upset when somebody dismisses performance issues based on "correctness". The thing is, some specious value of "correctness" is often irrelevant because it doesn't matter. While performance almost always matters. And I absolutely detest the fact that people so often dismiss performance concerns so readily.
+\subsubsection{QNanoPainter - Calculating the \gls{bounding box}}\label{sec:bbcalc}
+Drawing the geometry from the string is an iterative process, where the model string has to be parsed character by character. The final size and position of the curve is not known until after the full curve has been constructed.
+It then becomes necessary to relocate and rescale the drawing in order to fit it on the output device used  (e.g. screen, printer page size). There are two approaches to this:
+\begin{itemize}
+	\item Go through the string once, just to gather min and max coordinates to create the bounding box. Apply a coordinate transformation calculated from the bounding box to the drawing tool and reparse the string, drawing the geometry at its final size and position.
+	\item Pick up the bounding box while drawing the geometry. Apply a transformation on the already drawn geometry afterwards.
+\end{itemize}
+Regarding the performance impact of iterating through a potentially very long string a second time, the latter is obviously preferable. The iterative drawing frameworks QPainter and QNanoPainter do not provide any facility to apply transformations after drawing has been done, as they place actual rendering calls using the current rendering engine.
 
-- Git mailing list, Fri, 8 Aug 2008
-\end{quote}
+A workaround to this problem was found for the \gls{gui}, where rendering performance is critical. Using the \cmd{QSGRenderNode} backend, QNanoPainter does not issue drawing calls directly upon execution, but queues them up to be drawn when the scene graph reaches the current node. It is possible to apply the bounding box transformations to a parent node an the scene graph, which - as per the logic of the scene graph - applies to all child nodes and transforms the coordinate system of the executed drawing calls.
 
-\subsubsection{Encapsulation of Functionality (OOP) vs. Method Call overhead}
-A lot of the OOP functionalites C++ offers, come at a performance cost.
-While some of those classically named ones like stl containers are almost equivalent to plain C data, there are still very costly abstractions present in C++ wwhich can slow down a program significantly.
-The gaming world programs C++ without exceptions for this exact reason (TODO: Reference), while those don't come into play here, method call overhead does.
+As no such deferred drawing is possible when using \class{QPainter} to print to PDF or \class{QSVGGenerator} for \gls{svg}, the bounding box is precalculated and applied to the calls directly. Since file export is not a time critical operation, reparsing is considered tolerable in this case.
+
+\subsubsection{QNanoPainter - Copying of the Model String}
+A problem introduced by using the QtQuick scene graph to render the geometry is threaded execution. Due to Qt being a \gls{gui} framework, where it is desirable to decouple \gls{gui} operations from rendering for responsiveness of the application, this results in the \cmd{QNanoCurvePainter::paint()} function, which parses the model string to be executed on the rendering thread. QNanoPainter provides a \cmd{QNanoCurvePaintedItem:::synchronize()} method, which can be used to synchronize variables from the \gls{gui} context to the Painter object while the \gls{gui} thread is blocked, as accessing shared variables from different threads is unsafe.
+
+Due to this safety measure, copying the model string from the model to the QNanoCurvePainter every time it changes can not be avoided.
+
+\subsubsection{\gls{oop} - Encapsulation of Functionality (\gls{oop}) vs. Method Call overhead}
+
+Switching execution context - i.e. calling a subroutine - is a multistep process\furl{https://en.wikipedia.org/w/index.php?title=Call_stack&oldid=824753306}, which can in some cases impede program performance.
+
+If a method is simple but executes a billion times, the cycles spent saving and restoring stack frames will add up to become a significant percentage of the execution time of the program.
+
+As methods / subroutines are an essential abstraction of high-level programming languages and usage can rarely be avoided unless code duplication is tolerated, modern compilers help mitigate this problem by automatically \term{inlining} function calls where useful.
+
+\term{Inlining} a function means copying the content of its body to the place its place of execution, avoiding the indirection of the function call. This skips stack frame saving and a jump/return instruction pair, but leads to the function body being duplicated on every execution, increasing executable size.
+
+While compilers do this type of optimization automatically, C++ syntax has a keyword \term{inline}, which - when prepended the function definition - hints to the compiler that this function \emph{should} be inlined for performance.
+
+Since - contrary to embedded systems - program space and RAM are usually not a bottleneck on desktop systems, it often makes sense to optimize a program for runtime performance (e.g. by supplying \cmd{g++ -O2 program.cpp} ) leading to various optimizations like inlining being performed automatically and ignore the larger executable size.
+
+\term{Inlining} is extensively used in model string parsing to encapsulate character handling code in methods, without incurring the performance overhead.
 
 \subsubsection{Polymorphism and Performance}
-Polymorphic classes are a key abstraction of C++ and are distinct from simple inheritance by the presence of the virtual keyword on at least some of their members.
+Although C++ strives to provide zero-performance-overhead abstractions, some functionalities come at a performance cost.
 
-This keyword enables a derived class, referred to through a pointer to the base class to execute its own implementation (a so called override) of the virtual member instead of the one (possibly, but not necessarily) implemented by the base class.
+Polymorphic classes are a key abstraction of C++ and are distinct from simple inheritance by the presence of the virtual keyword on one or more of their members.
 
-While this mechanism is fundamental to enabling C++ to provide the so called interface abstraction (TODO:Define), it comes with a performance cost.
+This keyword enables a derived class, referred to through a pointer to the base class to execute its own implementation (an \term{override}) of the virtual member instead of the one (possibly, but not necessarily) implemented by the base class.
 
-Calls to a virtual function are not made by directly accessing the address of the callee, but access the so-called vtable instead. which is tasked with resolving the address of the member function.
+While this mechanism is fundamental to enabling C++ to provide the so called \term{interface abstraction}, it comes at a performance cost.
 
-This introduces several additional cycles (TODO: Measure how many or find in literature), which can become a significant bottleneck for performance, when the virtual function is called often, e.g. in our case, when parsing a character of the model string.
+Calls to a virtual function are not made by directly jumping to the address of the callee as in the above case after saving the stack frame. They access a so-called \term{vtable} first, which is tasked with resolving the address of the member function.
+ and basicallly additional runtime overhead, which can become a significant bottleneck for performance when the virtual function is called often, e.g. in our case, when parsing a character of the model string.
+
+Parsing the model string was originally done in its own class to keep the code for parsing encapsulated and localized. Since this parsing is accessed by multiple other classes (QNanoCurvePainter and every export plugin), each have their own implementations for handling specific actions, e.g. \cmd{AddSegment()}. The standard \gls{oop} way to implement this functionality is in having the ModelStringParser be a class with virtual members. For long model strings, this - as explained above - would result in countless \term{vtable} resolutions, significantly hampering parsing performance as \term{vtable} calls are runtime dependent and \emph{can not be inlined} by the compiler.
+
+As a solution to this encapsulation vs. performance problem, we opted to implement the common functionality as a class member in a declaration/definition preprocessor macro pair, which is then included in each class that uses the parser.
+
+The macro is located in \cmd{src/Model/ModelStringParser.h} and basicallly amounts to copying the parsing code to each implementation class. It avoids code duplication and makes the parser function local to each implementing object at compile time, allowing inlining.
 
 \section{Plugins}
-The interface to a plugin is defined as being given through the implementation of its interface class - currently import or export. Each plugin is supposed to publish its information in a common plugin info structure and is optionally allowed to expose a ConfigScreen item for configuration through the \gls{gui}.
+A plugin is defined through the implementation of its interface class - currently import or export. Each plugin is supposed to publish its information in a common \class{PluginInfo} structure and is optionally allowed to expose a \class{ConfigScreen} item for configuration through the \gls{gui}.
 
-In addition to the functional interfaces, a plugin must also inherit from the QObject class and expose some metadata to the \gls{mos} to be importable via the QPluginLoader mechanism.
+In addition to the functional interfaces, a plugin must also inherit from the \class{QObject} class and expose some metadata to the \gls{mos} to be importable via the \class{QPluginLoader} mechanism.
 
 \begin{figure}[htb]
 	\includegraphics[width=\textwidth]{PluginInterface}
@@ -141,43 +147,52 @@ In addition to the functional interfaces, a plugin must also inherit from the QO
 	\label{fig:plugint}
 \end{figure}
 
-\section{\gls{lsys} Input}
+Four plugins were implemented in the course of this thesis
+\begin{itemize}
+	\item \gls{lsys} Import
+	\item Export to \gls{svg}
+	\item Export to PDF
+	\item Export to STDOUT
+\end{itemize}
+
+With the exception of the STDOUT exportert, which is trivial and will not be discussed here, we discuss the plugin implementations.
+
+\subsection{\gls{lsys} Input}
 \label{sec:lsys}
-\section{SVG Output}
+
+This plugin implements the iteration of a given \gls{lsys} description as shown in table \ref{desc:lsysit} to generate a model string.
+As this task is critical to overall application performance, an efficient algorithm for iteration has to be selected. 
+use
+We decided to use the \class{stringsubst} algorithm from the \term{fxtlib}\furl{https://jjj.de/fxt/fxtpage.html} as recommended by Prof. Arndt.
+
+\subsection{\gls{svg} Output}
 \label{sec:svg}
+As stated in section \ref{sec:bbcalc}, \gls{svg} and PDF output both precalculate the bounding box and apply the resulting transformation to \class{QPainter} before issuing drawing calls.
 
-\section{PDF Output}
+A \gls{svg} - unlike PDF - does not have a fixed maximum drawing or paper size, thus the painter need only be translated to avoid drawing at negative coordinates.
+
+Figure \ref{fig:plugsvg} shows a rendering of the \textsc{R5-Dragon}, a \gls{pfc} on the square grid, whose \gls{lsys} is given in \citet{Arndt2016}[p.23] and was created using 
+\begin{lstlisting}[language=bash]
+$ ./pfcrender lsys --clear   --it 5 --rules "F F F+F+F-F-F_ + + - - _ _ ~ ~" --sw 2 --sl 10 --rd 0.33 --batch svg --a 90
+\end{lstlisting}
+
+\begin{figure}
+	\includesvg[width=\textwidth]{SVGexport.svg}
+	\caption{\gls{svg} Output of a 5th iterate \textsc{R5-Dragon}}
+	\label{fig:plugsvg}
+\end{figure}
+\subsection{PDF Output}
 \label{sec:pdf}
+PDF Output is implemented to print to a DIN A4 landscape page and scale to fill it while keeping the aspect ratio of the original curve.
+In subsequent releases, configuration of the output parameters will be implemented as \gls{cli} and \gls{gui} configuration options.
 
+Figure \ref{fig:plugpdf} shows a pdf rendering of \textsc{Gosper's Flowsnake} obtained by running
+\begin{lstlisting}[language=bash]
+$ ./pfcrender lsys  --rules "L_L L L+R++R-L--LL-R+ R -L+RR++R+L--L-R + + - - _ _ ~ ~" --sw 2 --sl 10  --it 4 --rd 0.5 --ia -60 --a 60 pdf --batch
+\end{lstlisting}
 
-\subsection{Build System}
-As stated previously, Travis CI
-Setting up the \gls{ci} environment is a pain, mainly caused by Travis using a 6 year old Linux distribution by default, where the standard version of gcc is 4.8, which does not even support C++11.
-
-\subsection{CI}
-Since switching to the NanoVG based QNanoPainter, Appveyor windows builds are failing with unresolved externals, all of which are gl*() OpenGL functions.
-
-
-On Ubuntu 14.04, no GLES3 installation is present, this could be worked around by forcing QNanoPainter to use GLESv2.
-
-This was non-trivial to set up though, as Qt is by default not linked to a specific graphics backend - i.e. linking has to be done manually for QNanopainter to work
-
-Thankfully developers encountered the same problem and solved it for the qmake buildsystem, fixing it amounted to adapting their solution to CMAke.
-
-\section{Automated Unit Testing and Coverage Reporting}
-A main benefit of using Github - as already stated, is the third party tool integration offered.
-
-Regarding unit testing, this results in the possibility to not only automatically run tests on each build of Travis CI, but also visualize the \gls{coverage} of the tests executed using \url{codecov.io}, which hooks into Travis completed builds that generated code output with coverage information and generates a graphical report on which lines of code were actually executed during testing.
-
-They turned out to eat up about as much productivity in maintenance as they freed
-
-Travis CI runs on Ubuntu 12.04LTS which reached End-of-Life in 2017. Ubuntu 14.04LTS support is still experimental, but even with the updated OS, the available tools are heavily outdated.
-
-Huge benefit to maintainability, clear insight on testing, fast feedback whether changes work.
-
-Standard gcc is a v4 with no support for C++11
-Manually updating tools had ramifications as gcov was now ouptutting coverage data from gcov-5, lcov was using the old gcov-4 leading to no coverage being reported. Manually setting the gcov tool path resolved this issue, which - along with the time spent identifying the problem - was a significant time drain.
-
-Still, the great benefit of this tool is that once it has been set up, it "just works" - running alongside the projects dev flow unintrusively and gives good insight into areas of improvement.
-\todo{lolwut}
-
+\begin{figure}
+	\includegraphics[width=\textwidth]{PDFexport}
+	\caption{PDF Output of \term{Gosper's flowsnake}}
+	\label{fig:plugpdf}
+\end{figure}

@@ -182,7 +182,7 @@ Though as described in section \ref{sec:resMakefileGen} Qt has its own makefile 
 Especially the test runner is a large gain for maintainability when integrated with \gls{ci} as shown in figure \ref{fig:travistest}, as it makes automated builds more informative.
 A build will not only report failure on changes that break compilation, but also on changes that break runtime functionality for which tests exist. This in turn encourages contributors to actually write unit tests, since they don't need to be run manually.
 
-\subsection{Version Control System}
+\subsection{Version Control System}\label{sec:archvcs}
 Due to the useful issue tracking feature of \gls{github} and its extensive third party infrastructure integration with services like \gls{ci}, \gls{git} is selected as \gls{vcs} and \gls{github} as the central repository provider.
 
 The project can be found at \url{https://github.com/Garandor/pfcrender}

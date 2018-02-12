@@ -95,12 +95,7 @@
     menucolor=red, % Acrobat-Menüpunkte
     urlcolor=cyan, 
 % diese Farbdefinitionen sollten für den Druck verwendet werden (alles schwarz)
-    %linkcolor=black, % einfache interne Verknüpfungen
-    %anchorcolor=black, % Ankertext
-    %citecolor=black, % Verweise auf Literaturverzeichniseinträge im Text
-    %filecolor=black, % Verknüpfungen, die lokale Dateien öffnen
-    %menucolor=black, % Acrobat-Menüpunkte
-    %urlcolor=black, 
+    %hidelinks = true,
     backref,
     plainpages=false, % zur korrekten Erstellung der Bookmarks
     pdfpagelabels, % zur korrekten Erstellung der Bookmarks
@@ -142,3 +137,5 @@
 
 % sorgt dafür, dass Leerzeichen hinter parameterlosen Makros nicht als Makroendezeichen interpretiert werden
 \usepackage{xspace}
+\usepackage{svg}
+\svgpath{{Bilder/}}

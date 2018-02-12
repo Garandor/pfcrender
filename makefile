@@ -1,6 +1,6 @@
 all:
-	pdflatex thesis.tex
+	pdflatex -shell-escape thesis.tex 
 	bibtex thesis
 	makeglossaries thesis
-	pdflatex thesis.tex
-	pdflatex thesis.tex
+	pdflatex -shell-escape thesis.tex
+	pdflatex -shell-escape thesis.tex

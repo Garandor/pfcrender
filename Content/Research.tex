@@ -31,7 +31,7 @@ The automatic process of generating a photorealistic or non-photorealistic image
 \end{definition}
 It involves the decomposition of the 2D model (in our case - the \gls{lsys} iterate) to graphical primitives (\textit{polygons}) described by points in 2D space (\textit{vertices}) and drawing information like color (\textit{material}) for uploading to the \gls{gpu} which then rasterizes those primitives to colored pixels for display on screen.
 
-An OS abstraction is defined to be an \gls{api} that allows the same source code to run on multiple platforms. In the context of rendering, this means multiple rendering backends, for example OpenGL and DirectX.
+An OS abstraction is defined to be an \gls{api} that allows the same high-level source code to run on multiple low-level, platform-specific rendering backends, for example OpenGL and DirectX.
 
 \paragraph{Cairo}
 \label{sec:cairo}
@@ -57,7 +57,7 @@ Like GTK+ it has a widget-based API, but additionally brings a JavaFX-like decla
 
 In addition to providing graphics and \gls{gui} abstractions, it also provides a platform-independent library loading wrapper.
 
-Asynchronous GUI programming is provided through an extension to the C++ language called the \gls{mos}.
+Asynchronous GUI programming is provided through an extension to the C++ language called the \gls{mos} and an event loop.
 
 \subsection{Build System Generators}
 \label{sec:resMakefileGen}
@@ -85,10 +85,6 @@ A build generator with widespread usage in open source and commercial projects, 
 CMake can generate projects in an plethora of formats, including Visual Studio, \gls{gnu} make, Apple Xcode and Eclipse.
 In addition to being a pure build system generator, CMake can be used to define commands that should be run pre-/postbuild and it comes with a unit testing framework called CTest.
 
-\subsection{Rendering}
-The smallest rectangle fitting around a curve rendering is called its  \gls{bounding box}
-\todo{maybe include a section on how rendering is done}
-\todo{explain bounding box}
 \section{Maintainability}\label{sec:maintainability}
 Maintainability was declared a main goal in the requirements, and this is an issue with much broader reach than writing clean code.
 
@@ -132,7 +128,7 @@ We will also consider matters of understandability in this work, as adhering to 
 	\item[Branching] Maintaining different states of the codebase in so-called branches
 \end{itemize}
 
-Using a \gls{vcs} is often mandatory in industry due to traceability requirements and but their use can be beneficial even for single-developer projects. A workflow that is enabled though \gls{vcs}es is working on multiple separate features in parallel, only merging changes back into the main codebase after a feature has been completed. The main codebase can meanwhile keep evolving and the \glss{vcs} will resolve the desynchronization automatically upon merge.
+Using a \gls{vcs} is often mandatory in industry due to traceability requirements and but their use can be beneficial even for single-developer projects. A workflow that is enabled though \gls{vcs}es is working on multiple separate features in parallel, only merging changes back into the main codebase after a feature has been completed. The main codebase can meanwhile keep evolving and the \gls{vcs} will resolve the desynchronization automatically upon merge.
 
 Most major \gls{vcs}es have ecosystems that allow for hosting open-source repositories on the \gls{cloud}\footnote{e.g. \url{https://sourceforge.net/create/}} to facilitate contributions. Although a few conceptual differences exist, selection of a \gls{vcs} is mostly a matter of personal preference. 
 An overview over some popular \gls{vcs}es available on both Windows and Linux follows.
