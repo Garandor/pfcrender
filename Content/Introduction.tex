@@ -9,10 +9,10 @@ Figure \ref{fig:flosnek} shows a rendering of one such geometry called \textsc{G
 It is a single, uninterrupted curve on a triangular grid, which is
 
 \begin{description}
-	\item [self similar] The macroscopic behaviour of the curve is the same as its microscopic behaviour
-	\item [self avoiding] The curve is made from one continuous line that never intersects with itself.
-	\item [edge covering] The curve travels across every cell of its grid, i.e. it fills up a given, arbitrary area completely
-	\item [plane filling] The curve grows outward on the 2D plane without bounds. Infinitely iterated it covers the full plane.
+	\item [self-similar] The macroscopic behavior of the curve is the same as its microscopic behavior
+	\item [self-avoiding] The curve is made from one continuous line that never intersects with itself.
+	\item [edge-covering] The curve travels across every cell of its grid, i.e. it fills up a given, arbitrary area completely
+	\item [plane-filling] The curve grows outward on the 2D plane without bounds. Infinitely iterated it covers the full plane.
 \end{description}
 
 \begin{figure}[h]
@@ -39,7 +39,7 @@ It is a single, uninterrupted curve on a triangular grid, which is
 The curve is obtained by iterating a so-called \gls{lsys}.
 
 Originally introduced by biologist \textsc{Aristid Lindenmayer} in 1968 "as a foundation for an axiomatic theory of development"\citep[Preface]{Prusinkiewicz2013}. Originally intended to describe the growth of plants, it was found to be a useful language for a wide class of fractal geometries.
-An \gls{lsys} consists of an inital string - the \textit{\gls{axiom}} - which is manipulated via a set of substitution \textit{rules}, the result of which is a called the first \textit{iterate} of the \gls{lsys}. Subsequent \textit{iterates} are obtained by applying the \textit{rules} to the current \textit{iterate}.
+An \gls{lsys} consists of an initial string - the \textit{axiom} - which is manipulated via a set of substitution \textit{rules}, the result of which is a called the first \textit{iterate} of the \gls{lsys}. Subsequent \textit{iterates} are obtained by applying the \textit{rules} to the current \textit{iterate}.
 
 The \gls{lsys} for figure \ref{fig:flosnek} is given in \citet[p.7]{Arndt2016} to be 
 \begin{quote}
@@ -50,7 +50,7 @@ The \gls{lsys} for figure \ref{fig:flosnek} is given in \citet[p.7]{Arndt2016} t
 It yields the following \textit{iterates}:\\
 \begin{table}[htb]
 \begin{tabular}{r|l}\hline
-\textit{\gls{axiom}}& L\\\hline
+\textit{axiom}& L\\\hline
 First iterate 	& L+R++R-L--LL-R+\\\hline
 Second iterate 	& L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+\\
 		& RR++R+L--L-R-L+R++R-L--LL-R+--L+R++R-L\\
@@ -62,11 +62,11 @@ Second iterate 	& L+R++R-L--LL-R++-L+RR++R+L--L-R++-L+\\
 
 The characters in this string are assigned special meaning with respect to the curve:
 \begin{description}
-	\item[Alphabetic character] Denotes drawing a line from the current position forward by on a defined length. Forward being defined as the current direction
+	\item[Alphabetic character] Denotes drawing a line from the current position forward by a defined length. Forward being defined as the current direction
 	\item[+ -] Characters denoting changes in direction by a set amount, e.g. in figure \ref{fig:flosnek} by $\pm60^\circ$, creating a triangular grid of movement
 \end{description}
 
-Those rules define a way to render a curve given by an \textit{iterate} of a \gls{lsys}, and can be extended by other, auxilliary characters, discussed in \ref{sec:implementation}, e.g. \_ which changes color of subsequent segments.
+Those rules define a way to render a curve given by an \textit{iterate} of a \gls{lsys}, and can be extended by other, auxiliary characters, e.g. \_ which changes color of subsequent segments.
 
 \begin{figure}[hb]
 	\centering
@@ -77,7 +77,7 @@ Those rules define a way to render a curve given by an \textit{iterate} of a \gl
 \section{Problem Statement}
 In 2016, Prof. Jörg Arndt, the supervisor of this thesis, conducted research on finding plane-filling curves for \gls{lsys} with one non-constant character \citep{Arndt2016} and presented 2D renderings of the curves found.
 
-The tools used to get from an \gls{lsys} description to a graphical, pdf-embeddable rendering of the iterated curve were assortments of chained commandline scripts, leaving much to be desired in flexibility and ease-of-use.
+The tools used to get from a \gls{lsys} description to a graphical, pdf-embeddable rendering of the iterated curve were assortments of chained commandline scripts, leaving much to be desired in flexibility and ease-of-use.
 
 Thus, a request was issued for the creation of a \emph{cross-platform, maintainable and extensible} software that is able to create, visualize and export a \gls{pfc} from its \gls{lsys} description.
 
@@ -93,17 +93,19 @@ Since the additional requirements introduce significant complexity on top of the
 \end{enumerate}
 
 \section{Requirements to a Solution}
-In order for the tool to be useful in research, requirements to a satisfactory solution were discussed with and agreed upon by Prof. Arndt, which are given in figure \ref{fig:directreq}. Two possible workflows are shown in the use-case diagram \ref{fig:uc}
+In order for the tool to be useful in research, requirements to a satisfactory solution were discussed with and agreed upon by Prof. Arndt, which are given in figure \ref{fig:directreq}. Two possible workflows are shown in the use-case diagram \ref{fig:uc}.
 
-\begin{figure}[p]
-	\includegraphics[width=\textwidth]{DirectRequirements}
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.8\textwidth]{DirectRequirements}
 	\caption{Direct user requirements to a solution}
 	\label{fig:directreq}
 \end{figure}
 
 
-\begin{figure}[p]
-	\includegraphics[width=\textwidth]{UseCaseDiagram}
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=0.8\textwidth]{UseCaseDiagram}
 	\caption{Workflow with the pfcrender tool}
 	\label{fig:uc}
 \end{figure}

@@ -95,7 +95,7 @@
     menucolor=red, % Acrobat-Menüpunkte
     urlcolor=cyan, 
 % diese Farbdefinitionen sollten für den Druck verwendet werden (alles schwarz)
-    %hidelinks = true,
+    hidelinks,
     backref,
     plainpages=false, % zur korrekten Erstellung der Bookmarks
     pdfpagelabels, % zur korrekten Erstellung der Bookmarks
@@ -104,11 +104,10 @@
 ]{hyperref}
 % Befehle, die Umlaute ausgeben, führen zu Fehlern, wenn sie hyperref als Optionen übergeben werden
 \hypersetup{
-    pdftitle={\titel \untertitel},
+    pdftitle={\titel},
     pdfauthor={\autor},
     pdfcreator={\autor},
-    pdfsubject={\titel \untertitel},
-    pdfkeywords={\titel \untertitel},
+    pdfsubject={\titel},
 }
 
 % glossaries term definition ----------------------------------

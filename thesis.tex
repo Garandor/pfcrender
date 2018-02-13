@@ -9,7 +9,6 @@
 % ------------------------------------------------------------------------------
 \documentclass[
     11pt, % Schriftgröße
-    DIV10,
     english, % für Umlaute, Silbentrennung etc.
     a4paper, % Papierformat
     oneside, % einseitiges Dokument
@@ -54,7 +53,7 @@
 %   und Kapitel werden in eigene Dateien ausgelagert und hier nur inkludiert.
 % ------------------------------------------------------------------------------
 \begin{document}
-\listoftodos
+%\listoftodos
 % auch subsubsection nummerieren
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{3}
@@ -93,6 +92,12 @@
 % die Inhaltskapitel werden in "Inhalt.tex" inkludiert -------------------------
 \input{Content}
 
+\clearpage
+\pagenumbering{roman}
+\label{sec:Appendix}
+% Rand der Aufzählungen in Tabellen anpassen
+%\setdefaultleftmargin{1em}{}{}{}{}{}
+
 % Literaturverzeichnis ---------------------------------------------------------
 %   Das Literaturverzeichnis wird aus der BibTeX-Datenbank "Bibliographie.bib"
 %   erstellt.
@@ -100,23 +105,10 @@
 \bibliography{Bibliography} % Aufruf: bibtex Masterarbeit
 \bibliographystyle{abbrvnat} % DIN-Stil des Literaturverzeichnisses
 
-% Anhang -----------------------------------------------------------------------
-%   Die Inhalte des Anhangs werden analog zu den Kapiteln inkludiert.
-%   Dies geschieht in der Datei "Anhang.tex".
-% ------------------------------------------------------------------------------
-\begin{appendix}
-    \clearpage
-    \pagenumbering{roman}
-    \chapter{Appendix}
-    \label{sec:Appendix}
-    % Rand der Aufzählungen in Tabellen anpassen
-    \setdefaultleftmargin{1em}{}{}{}{}{}
-    \input{Appendix}
 
 \listoffigures % Abbildungsverzeichnis
 \listoftables % Tabellenverzeichnis
 \lstlistoflistings % Listings-Verzeichnis
-\end{appendix}
 
 % Index ------------------------------------------------------------------------
 %   Zum Erstellen eines Index, die folgende Zeile auskommentieren.

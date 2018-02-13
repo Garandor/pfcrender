@@ -1,8 +1,14 @@
 \chapter{Summary}
 \label{cha:Summary}
+This work originated from the need for an \emph{extensible, maintainable, cross-platform} solution for rendering \gls{pfc}s to facilitate ongoing research in the field.
+These criteria span a wide range of software engineering techniques. The most accessible to small-scale open-source projects of these were selected for implementation of the architecture.
+The result is a \emph{self-documenting, self-testing and self-deploying open-source project that encourages collaboration}.
 
-The main driver in the decision to use the Qt framework was the decision to introduce a plugin architecture, because of the QLibrary abstraction they offer. Qt is not the most lightweight framework though, so if runtime extensibility is sacrificed, it would be possible to go with one of the much leaner frameworks like \ref{sfml} or \ref{cairo}, and possibly gain application performance.
+The software architecture itself was designed specifically for extensibility by isolating non-core functionality to plugins and holding configuration information in a central, automatically filled repository and guarantees cross-platform operation by building on top of the Qt Framework.
 
-\section{Followups}
-\label{sec:Followups}
-A followup on this thesis could be integration of model rendering to a OpenGL framebuffer object using a 3rd-party graphics library (e.g. \ref{cairo} or \ref{sdl}) and rendering that as a QQuickFramebufferObject\furl{http://doc.qt.io/qt-5/qquickframebufferobject.html} - thus evaluating performance of more drawing engines than the Qt-native QPainter.
+The resulting implementation is a solution to most requirements given in fig \ref{fig:directreq} by design, the required rendering performance of 10 frames per second was verified via benchmarking.
+
+
+At the time of writing, SVG (section \ref{sec:svg}) and PDF (section \ref{sec:pdf}) plugins are in a proof-of-concept state and a possibility of configuration via \gls{gui} has not been implemented. Along with extending the application, e.g. by implementing a \term{PFC library tool} like proposed in section \ref{sec:archplug}, refining \gls{gui} functionality and increasing the configurability of the export plugins are recommended improvements to the existing solution.
+
+Rendering performance of the application currently is limited through the one-shot characteristic of model creation, as no in-program facility of generating a new \gls{pfc} yet exists apart from specification on the \gls{cli}, resulting in rendering of multiple \gls{pfc}s requires application restarts. This incurrs the startup time delay of plugin loading each time. A \gls{gui} embedded configuration screen for the import plugin or a facility for rerunning imports from within the application would thus be a desirable extension.

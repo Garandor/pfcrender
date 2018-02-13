@@ -1,14 +1,14 @@
 \chapter{Research on Architecture Design Options}
 
-We discuss the given requirements, derive architecture design goals and and research possibilities of implementating those goals.
+We discuss the given requirements, derive architecture design goals and research possibilities of implementing those goals.
 
 \section{Cross-OS Operation}
 
-Writing portable software has historically been difficult, as each \gls{os} has its own, nont necessarily cross-compatible \gls{api}.
+Writing portable software has historically been difficult, as each \gls{os} has its own, not necessarily cross-compatible \gls{api}.
 
 While Linux and MacOS comply with the \gls{posix} standard - which defines an \gls{api} for system calls and associated utility programs - Microsoft Windows has historically had a non \gls{posix}-compliant proprietary system programming \gls{api}.
 
-Recently, Microsoft is making advances towards \gls{posix} compatibility in Win10\furl{https://blogs.msdn.microsoft.com/wsl/2016/04/22/windows-subsystem-for-linux-overview/}, and the Linux world offers a similar compatiblility layer with WINE\furl{https://en.wikipedia.org/w/index.php?title=Wine_(software)&oldid=823689556}. While the performance of the windows POSIX layer is promising\furl{https://www.phoronix.com/scan.php?page=article&item=windows-10-lxcore&num=2}, neither it, nor WINE\furl{https://wiki.winehq.org/Performance} are on par with programs implementing each system's native interface directly at the time of writing.
+Recently, Microsoft is making advances towards \gls{posix} compatibility in Win10\furl{https://blogs.msdn.microsoft.com/wsl/2016/04/22/windows-subsystem-for-linux-overview/}, and the Linux world offers a similar compatibility layer with WINE\furl{https://en.wikipedia.org/w/index.php?title=Wine_(software)&oldid=823689556}. While the performance of the windows POSIX layer is promising\furl{https://www.phoronix.com/scan.php?page=article&item=windows-10-lxcore&num=2}, neither it, nor WINE\furl{https://wiki.winehq.org/Performance} are on par with programs implementing each system's native interface directly at the time of writing.
 
 As application performance is a requirement, writing the program in a cross-platform way becomes a necessity.
 
@@ -20,7 +20,7 @@ Notable \gls{api} differences between \gls{posix} systems and Windows are
 
 Code depending on any of the above directly is therefore nonportable, which - as these are central concepts in any \gls{gui} app - makes implementing a cross-platform program from-scratch, i.e. without depending on OS-abstracting third-party libraries - an arduous task.
 
-Thankfully, several of those libraries exist that provide a higher-level API abstracting programmers from OS-specific code. They differ wildly in feature-scope, some being abstractions of the graphics layer, some being full-featured cross-platform \gls{gui} toolkits and will be investigated in the following section.
+Thankfully, several of those libraries exist that provide a higher-level \gls{api}, abstracting programmers from OS-specific code. They differ wildly in feature-scope, some being abstractions of the graphics layer, some being full-featured cross-platform \gls{gui} toolkits and will be investigated in the following section.
 
 \subsection{Rendering Frameworks Providing OS Abstraction}
 \label{sec:res_frameworks}
@@ -44,8 +44,8 @@ While its core is a 2D graphics engine, add-ons exist for providing GUI applicat
 
 At the time of writing, it is mainly used in in free or indie game releases.
 
-\paragraph{SDL}
-The \gls{sdl}\furl{https://www.libsdl.org/} is a cross-platfrom \gls{hal} library for 3D graphics created in 1998, with extensive use in games industry\furl{https://en.wikipedia.org/w/index.php?title=List_of_games_using_SDL&oldid=819037514} to provide 2D \& 3D rendering.
+\paragraph{SDL}\label{sec:sdl}
+The \gls{sdl}\furl{https://www.libsdl.org/} is a cross-platform \gls{hal} library for 3D graphics created in 1998, with extensive use in games industry\furl{https://en.wikipedia.org/w/index.php?title=List_of_games_using_SDL&oldid=819037514} to provide 2D \& 3D rendering.
 
 \paragraph{GTK+}
 Unlike above solutions, GTK+\furl{https://www.gtk.org/}, written in C - is a full GUI application toolkit, providing not only a \gls{hal}, but also graphical control elements, called widgets. Since 2005 it uses cairo (\ref{sec:cairo}) to provide its low-level rendering functionality.
@@ -65,14 +65,14 @@ Having cross-platform compilable sources is not the only requirement to getting 
 In addition to sources and headers provided with the project, compiling needs information on 
 \begin{itemize}
 	\item which compiler/linker toolchain is available and where
-	\item location of all dependecies/libraries the project links to
+	\item location of all dependencies/libraries the project links to
 	\item if any platform specific preprocessor directives or linker flags have to be set
 	\item Build type (Debug/Release) and architecture ( arm, x86, amd64 etc.)
 \end{itemize}
 
-This information is typically stored in "project stores" like Visual Studio's solution, or makefiles. Since those are inherently platform-specific, and manually creating one for each project type and platform is cumbersome at best, so-called makefile generators were created, which parse build information from script files written by the programmer and then identify actual locations of dependencies and availabe tools automatically. If the process is successful and all dependencies are found, they output a build definition (makefile, Visual Studio solution or similar) that runs the compiler with all necessary options. Often those tools can also create automated deployments for the software they are building, e.g. generate a make install target. The most widely used ones are discussed here
+This information is typically stored in "project stores" like Visual Studio's solution, or makefiles. Since those are inherently platform-specific, and manually creating one for each project type and platform is cumbersome at best, so-called makefile generators were created, which parse build information from script files written by the programmer and then identify actual locations of dependencies and available tools automatically. If the process is successful and all dependencies are found, they output a build definition (makefile, Visual Studio solution or similar) that runs the compiler with all necessary options. Often those tools can also create automated deployments for the software they are building, e.g. generate a make install target. The most widely used ones are discussed here
 
-\paragraph{GNU autotools}
+\paragraph{GNU Autotools}
 A collection of the \gls{gnu} utilities \cmd{autoconf}, \cmd{automake} and \cmd{libtool}\furl{https://www.gnu.org/software/automake/manual/html_node/GNU-Build-System.html\#GNU-Build-System}. It is the first widely used cross-platform build configurator, existing since the 1980s. It is used to generate a \cmd{./configure} script, that can be executed on any system that provides a bourne-shell (standard on POSIX systems) and generates a makefile.
 
 Its reliance on the bourne-shell makes it unsuitable for use on Windows systems, which don't provide this \gls{posix} utility.
@@ -83,24 +83,24 @@ The native makefile generator of Qt\furl{http://doc.qt.io/qt-5/qmake-manual.html
 \paragraph{CMake}
 A build generator with widespread usage in open source and commercial projects, CMake\furl{https://cmake.org/} gathers information on what/how to build from CMakeLists.txt files added to the project's sources.
 CMake can generate projects in an plethora of formats, including Visual Studio, \gls{gnu} make, Apple Xcode and Eclipse.
-In addition to being a pure build system generator, CMake can be used to define commands that should be run pre-/postbuild and it comes with a unit testing framework called CTest.
+In addition to being a pure build system generator, CMake can be used to define commands that should be run pre-/post build and it comes with a unit testing framework called CTest.
 
 \section{Maintainability}\label{sec:maintainability}
 Maintainability was declared a main goal in the requirements, and this is an issue with much broader reach than writing clean code.
 
-The term describes the ease of performing maintenance tasks on software, the latter of which is defined in \citet[p.234]{Bray1997} :
+The term describes the ease of performing maintenance tasks on software, the latter of which is defined in \citet[p.234]{Bray1997} as
 \begin{definition}[maintenance]
-the modification of a software product after delivery to correct faults, improve performance or other attributes, or to adapt the product to a changed environment
+The modification of a software product after delivery to correct faults, improve performance or other attributes, or to adapt the product to a changed environment
 \end{definition}
 
 It is a highly subjective term, \citet[p.231]{Bray1997} mention coefficients like average extended cyclomatic complexity per module, average number of lines of code per module and average lines of comments per module for a \textit{maintainability index} - an attempt at quantizing maintainability.
 
 Apart from the actual code, non-coding factors also impact the maintainability of a software project, e.g.
 \begin{itemize}
-	\item ease of collaboration with other developers
-	\item tracking of open issues and logging of modifications
-	\item early indication of breaking changes
-	\item incremental integration of changes with possibility to roll back to an earlier point in history
+	\item Ease of collaboration with other developers
+	\item Tracking of open issues and logging of modifications
+	\item Early indication of breaking changes
+	\item Incremental integration of changes with possibility to roll back to an earlier point in history
 \end{itemize}
 
 The importance of such "meta-programming" techniques is testified by the fact that a job field for software engineers called \gls{DevOps} exists, which engages in finding ways to optimize coding workflow.
@@ -120,9 +120,9 @@ Understandability, though distinct from maintainability in \citet{Bray1997}, con
 We will also consider matters of understandability in this work, as adhering to above rules increases productivity of developers and lowers the barrier of entry for new coders.
 
 \subsection{Version Control}
-\gls{Version Control System}s  are used in \gls{scm} to keep track of changes (called \term{commits}) to a codebase. They provide featues like
+\gls{Version Control System}s  are used in \gls{scm} to keep track of changes (called \term{commits}) to a codebase. They provide features like
 \begin{itemize}
-	\item[Commmit history tracking] Including author, timestamp and commit message 
+	\item[Commit history tracking] Including author, timestamp and commit message 
 	\item[Reverting commits] Returning to an earlier state of the codebase in case problems arise
 	\item[Merging] Automatic conflict resolutions in case two developers changed the same files
 	\item[Branching] Maintaining different states of the codebase in so-called branches
@@ -148,12 +148,12 @@ Like with Mercurial, key benefits are
 \begin{description}
 	\item[Decentralization] No reliance on availability of a central server for daily work
 	\item[Smart merging] Conflict resolution algorithms are fairly good at finding and automatically fixing trivial conflicts, keeping developer interaction on merges to a minimum
-	\item[Central repository support] Though git operates locally, it supports pushing code to and pulling from remote repositories, enabling the use of a central "synchronization" repository, which forms the basis for the popular \gls{github} 
+	\item[Central repository support] Though \gls{git} operates locally, it supports pushing code to and pulling from remote repositories, enabling the use of a central "synchronization" repository, which forms the basis for the popular \gls{github} 
 \end{description}
 Distinguishing factor of \gls{git} is its large existing userbase\furl{https://www.openhub.net/repositories/compare} that has resulted in a multitude of third-party tools integrating the \gls{vcs}, mostly via its \gls{cloud}-repository provider \gls{github}\furl{http://github.com}.
 
 \subsection{Continuous Integration}
-\gls{ci} is a concept popularized in the rise of agile software development. In classical development structures, features are are coded to perceived completion before they are introduced into the codebase of a product, their functionality maybe tested in unit-tests. Integration of completed features is performed in batches on a fixed schedule with integration tests following the procedure, leading to an eventual release.
+\gls{ci} is a concept popularized in the rise of agile software development. In classical development structures, features are coded to perceived completion before they are introduced into the codebase of a product, their functionality maybe tested in unit-tests. Integration of completed features is performed in batches on a fixed schedule with integration tests following the procedure, leading to an eventual release.
 
 A method of avoiding those time- and effort-consuming "big-bang" integrations is offered by \gls{ci}. Instead of batching up features for integration, compilation and testing of code under development is done \textit{continuously} e.g. every day. If changes to the new code break the build or existing functionality, the developer is notified quickly. This limits the number of possible causes for the failure, reducing the time loss of bug hunting.
 
@@ -166,11 +166,11 @@ Thankfully, existing \gls{cloud} providers offer virtualized build systems in va
 \paragraph{Travis CI}
 Travis \gls{ci}\furl{https://travis-ci.org} at the time of writing provides virtual machines running Linux (Ubuntu 12.04 and 14.04) and Mac OS X to provide builds on their \gls{cloud} platform.
 
-It integrates with github for starting a build on each commit and reports completion status back to github.
+It integrates with \gls{github} for starting a build on each commit and reports completion status back to \gls{github}.
 
 Builds are queued on commit, depending on the load of servers it can take some time for them to actually execute.
 
-Configuration happens in a .travis.yml file that has to be provided with the sources and the service is free for open source proojects.
+Configuration happens in a .travis.yml file that has to be provided with the sources and the service is free for open source projects.
 
 \paragraph{Circle CI}
 Circle CI\furl{https://circleci.com} distinguishes itself from Travis through its larger selection of preconfigured docker containers, reducing configuration overhead of the build environment.
@@ -181,7 +181,7 @@ Like with Travis, they integrate with Github.
 \paragraph{Appveyor CI}
 Appveyor\furl{https://ci.appveyor.com/login} is a Windows-only \gls{ci} provider, enabling builds on the various Microsoft Visual Studio compilers.
 
-It provides github integration, the build is configured through an appveyor.yml file in the sources, and is free for open source projects.
+It provides \gls{github} integration, the build is configured through an appveyor.yml file in the sources, and is free for open source projects.
 
 \subsection{Code Formatting guidelines}
 \label{sec:resformat}
@@ -206,16 +206,16 @@ While manual testing of software is expensive for large corporations, it is stri
 
 Creating an automated testing suite amounts to a one-time investment of work (not counting the work needed to write tests for new code), at which point the developer can resume devoting his time to coding - until something breaks, at which point the developer benefits of reduced bug hunting time due to the localized nature of unit tests.
 
-The main benefit of having an automated testing suite covering most of the software as given in above post is the fact that - while manual testing would only concern itself with parts of the software supposedly affected by changes - the full test suite can run on every check-in without causing significant cost to the project, incresing the chance to discover accidental cross-influences of changes to other parts of the software, which would normally remain undetected.
+The main benefit of having an automated testing suite covering most of the software as given in above post is the fact that - while manual testing would only concern itself with parts of the software supposedly affected by changes - the full test suite can run on every check-in without causing significant cost to the project, increasing the chance to discover accidental cross-influences of changes to other parts of the software, which would normally remain undetected.
 
 Having automated testing requires a software that can automatically run said tests. Many such frameworks exist, mostly differing in the way how tests are defined. Some of those available for the C++ language are:
 \begin{description}
-	\item[QtTest]\furl{http://doc.qt.io/qt-5/qttest-index.html} The native unit testing framework of Qt (described in \ref{sec:resqt}), integrated into its QtCreator IDE.
-	\item[CTest]\furl{https://www.vtk.org/Wiki/index.php?title=CTest:FAQ&oldid=9429} Due to unit testing being closely related to building the actual software, CTest is distributed with the CMake buildtool presented in \ref{sec:rescmake}. It shares syntax with CMake, i.e. test definitions can be integrated into the same files describing how to build the software.
+	\item[QtTest]\furl{http://doc.qt.io/qt-5/qttest-index.html} The native unit testing framework of Qt (described in \ref{sec:archqttest}), integrated into its QtCreator IDE.
+	\item[CTest]\furl{https://www.vtk.org/Wiki/index.php?title=CTest:FAQ&oldid=9429} Due to unit testing being closely related to building the actual software, CTest is distributed with the CMake build tool presented in \ref{sec:archcmake}. It shares syntax with CMake, i.e. test definitions can be integrated into the same files describing how to build the software.
 	\item[Google Test] \furl{https://github.com/google/googletest/} An open source standalone testing framework aiming to keep test definition overhead low while staying platform-neutral.
 \end{description}
 
-As the simple presence of tests does not confer any confidence in the functional integrity of a program by itself, it is possible to add instrumentation to a program to compile a report on which lines of code were actually executed during a run. These reports can be generated when running tests, and in sum constitutea \gls{coverage} report - i.e. give insight into which parts of the program were actually executed during testing and are thus proven to work as tested.
+As the simple presence of tests does not confer any confidence in the functional integrity of a program by itself, it is possible to add instrumentation to a program to compile a report on which lines of code were actually executed during a run. These reports can be generated when running tests, and in sum constitute a \gls{coverage} report - i.e. give insight into which parts of the program were actually executed during testing and are thus proven to work as tested.
 
 Generating coverage information during program execution is possible by compiling the program with gcc and including the following flags\furl{https://cmake.org/Wiki/index.php?title=CTest/Coverage&oldid=57013}
 \begin{lstlisting}
@@ -227,18 +227,18 @@ This adds instrumentation to the compiled program, which will dump \cmd{.gcno} a
 In combination with \gls{ci} and a test suite close to 100\% \gls{coverage} ran on every check-in, a solution like this is a great indicator that the program still works as intended after changes have been performed while costing close-to-0 ongoing time investment from developers.
 
 \subsection{Model-driven Design and Round-Trip Engineering}
-First step to writing a understandable program is understanding it yourself. Since most problems in programming today are fairly large in scope, it is often conducive to this process to decompose the main problem into several smaller subproblems. While this approach reduces the complexity of each individual problem and enables parallel work on each subproject, it introduces the overhead of keeping track of the relationships between all subproblems and guaranteeing interoperability between the individual solutions. A graphical method of mapping those relations is often conducive to understanding an architecture and maintaining synchronization between code and model. One such method is the \gls{uml} standard by the \gls{omg}, purpose of which - as taken from the specification\furl{http://www.omg.org/spec/UML/2.5.1/PDF} is .
+First step to writing a understandable program is understanding it yourself. Since most problems in programming today are fairly large in scope, it is often conducive to this process to decompose the main problem into several smaller subproblems. While this approach reduces the complexity of each individual problem and enables parallel work on each subproject, it introduces the overhead of keeping track of the relationships between all subproblems and guaranteeing interoperability between the individual solutions. A graphical method of mapping those relations is often conducive to understanding an architecture and maintaining synchronization between code and model. One such method is the \gls{uml} standard by the \gls{omg}, purpose of which - as taken from the specification\furl{http://www.omg.org/spec/UML/2.5.1/PDF} is
 \begin{quote}
 to provide system architects, software engineers, and software developers with tools for analysis, design, and implementation of software-based systems as well as for modeling business and similar processes
 \end{quote}
 
-While certainly helpful in the intial phases of system architecture, models - like documentation - when manually created are cumbersome to maintain and keep synchronized with the running changes to the architecture.
+While certainly helpful in the initial phases of system architecture, models - like documentation - when manually created are cumbersome to maintain and keep synchronized with the running changes to the architecture.
 
-In model-driven software design, the /gls{uml} model can be used to generate boilerplate parts of the code that map to elements of the model (e.g. class / namespace declarations), saving the implementer from writing boilerplate code. Architectural changes made in the code need to be manually introduced to the model though, which is at the discretion of the programmer and can not be enforced, which often leads to the model desynchronizing from the codebase. 
+In model-driven software design, the /gls{uml} model can be used to generate boilerplate parts of the code that map to elements of the model (e.g. class / namespace declarations), saving the implementer from writing boilerplate code. Architectural changes made in the code need to be manually introduced to the model though, which is at the discretion of the programmer and cannot be enforced, which often leads to the model desynchronizing from the codebase. 
 
 \gls{rte} tooling helps alleviate this problem by automating the process of feeding changes from the code back into the UML model.
 
-Depending on the target prigramming language, the task of reintroducing changes can be very difficult. C++, being a very syntactically complex language, is notoriously difficult to round-trip engineer, the effect of which is that the investment of time necessary to write an \gls{rte} tool is only feasible for companies, making \gls{floss} tools supporting \gls{rte} very rare.
+Depending on the target programming language, the task of reintroducing changes can be very difficult. C++, being a very syntactically complex language, is notoriously difficult to round-trip engineer, the effect of which is that the investment of time necessary to write an \gls{rte} tool is only feasible for companies, making \gls{floss} tools supporting \gls{rte} very rare.
 
 During research, only a single open source / free-for-education \gls{uml} modeling tool could be identified that offers \gls{rte} for C++: Astah\furl{http://astah.net}
 
@@ -251,17 +251,16 @@ Others claim that stating the intent of a section of code clearly in plain langu
 
 Documenting is most unintrusively done directly in the code and can - when using one of the available documentation generators like Doxygen\furl{https://github.com/doxygen/doxygen} or Sphinx\furl{http://www.sphinx-doc.org/en/stable/} - lead to great documentation for people not wanting to sift through source code, while not overly distracting a developer from his work.
 
-\section{Extensibility}
+\section{Extensibility}\label{sec:resext}
 
 A definition of extensibility in \citet[p.3]{Johansson}:
 \begin{definition}[Extensibility]
 We define extensibility as the ability of a system to be extended with new functionality with minimal or no effects on its internal structure and data flow.
 \end{definition}
-
 \subsection{Plugin Architecture}\label{sec:resplug}
-It is apparent from the requirements in figure \ref{fig:directreq} most components have strictly disjunct responsibilities, the main common element being the \textit{iterate} of the \gls{lsys}.
+It is apparent from the requirements in figure \ref{fig:directreq} that most components have strictly disjunct responsibilities. The main common element is the \textit{iterate} of the \gls{lsys}.
 
-The \gls{lsys} generator takes some input and outputs a \textit{iterate} that can serve as a data model. GUI, SVG and PDF renderings all operate on this model, but don't influence each others operation.
+The \gls{lsys} generator takes some input and outputs a \textit{iterate} that can serve as a data model. GUI, SVG and PDF renderings all operate on this model, but don't influence each other's operation.
 
 This characteristic is conducive to segregating those components of the app not just to different classes, but to completely separate compilation units, i.e. standalone libraries called plugins.
 
@@ -270,7 +269,7 @@ In combination with a dynamic loading system, this confers several benefits:
 \begin{itemize}
 	\item  Reduced compilation time of the main application
 	\item  "Pluggability" of new functionality without recompilation of the main app
-	\item  Lower startup times, as functionality can be loaded once it is needed, keeping the size of the the core binary small
+	\item  Lower startup times, as functionality can be loaded once it is needed, keeping the size of the core binary small
 \end{itemize}
 
 Drawbacks to this implementation are
@@ -289,7 +288,7 @@ The solution is required to be scriptable, which means all configuration options
 This focus on a feature-rich \gls{cli} leads to the necessity of good \gls{cli} documentation, i.e. a form of "help" message that documents the options available to the user.
 Providing and maintaining a help page manually is not only cumbersome, it runs the risk of going out-of-sync with the codebase.
 
-This problem becomes more significant when using a plugin architecture, as available options depend on the presence or absence of plugins that use them. This in turn is runtime information that can not be known at compile time, thus making any of the standard, static methods like "hardcoded" help message, manpage or README files impossible to use.
+This problem becomes more significant when using a plugin architecture, as available options depend on the presence or absence of plugins that use them. This in turn is runtime information that cannot be known at compile time, thus making any of the standard, static methods like "hardcoded" help message, manpage or README files impossible to use.
 
 Though it was not a direct requirement, it is desirable to provide the \gls{gui} with a method of setting configuration options as well, to eventually enable users that don't need scriptability to operate the application fully from the \gls{gui}.
 
@@ -324,7 +323,7 @@ Copying and moving are prevented by the deleted copy and assignment operators - 
 It follows that an object so-created can exist only once in the program and can be accessed from any file that can access the \code{getInstance()} method, i.e. has the header included. 
 This class can then contain a list of config options and other elements of interest to multiple parts of the program. 
 
-Since the pointer variable storing the singleton has static duration, the lifetime of its object only ends when delete is called on the instance explicity, meaning care has to be taken to ensure its proper destruction and prevent memory leaks.
+Since the pointer variable storing the singleton has static duration, the lifetime of its object only ends when delete is called on the instance explicitly, meaning care has to be taken to ensure its proper destruction and prevent memory leaks.
 
 \subsection{Commandline Parsing}
 C++ does not provide a standard built-in facility to provide parsing capability for parsing parameters passed to the program as commandline options.
@@ -335,7 +334,7 @@ The main commandline parsing solution available in any standard C++ environment 
 
 Some alternatives to getopt commandline parsing are:
 \begin{description}
-\item [Manually parse argv] Build a parser for the system-provided commandline parameter array. While this is the most flexible solution w.r.t. customization, it is reinventing the wheel and also very inflexible reagarding extensibility.
+\item [Manually parse argv] Build a parser for the system-provided commandline parameter array. While this is the most flexible solution w.r.t. customization, it is reinventing the wheel and also very inflexible regarding extensibility.
 \item [Boost.progam\_options] - A C++ native, highly configurable solution shipped with the open source Boost library\furl{http://www.boost.org/doc/libs/1\_58\_0/doc/html/program\_options.html}
 \item [QCommandLineParser]\furl{http://doc.qt.io/qt-5/qcommandlineparser.html} A Qt native parsing class. Batch-parses all parameters and returns data structures with positional arguments in correct order, and a (reordered) map of switches with their parameters
 \end{description}
@@ -343,9 +342,6 @@ Some alternatives to getopt commandline parsing are:
 
 
 \subsection{Option Persistency}
-Since it is often unneccessary and bothersome to set every config option for the program on the command line each time it is run, keeping config options persistently over program relaunches is useful. The typical implementation of this persistent store again varies by platform, ranging from putting keys into the Windows registry, over property list files on Mac to plain .ini or .cfg files on Linux.
+Since it is often unnecessary and bothersome to set every config option for the program on the command line each time it is run, keeping config options persistently over program relaunches is useful. The typical implementation of this persistent store again varies by platform, ranging from putting keys into the Windows registry, over property list files on Mac to plain .ini or .cfg files on Linux.
 
-The Qt Framework Qt comes with a wrapper around this platform disparity named QSettings, which allows for transparent and cross-platform settings and state storage to disk.
-
-\todo{Include section on performance benchmarking / profiling}
-\section{Performance}
+The Qt Framework Qt comes with a wrapper around this platform disparity named \class{QSettings}, which allows for transparent and cross-platform settings and state storage to disk.
