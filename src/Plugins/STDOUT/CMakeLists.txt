@@ -25,7 +25,7 @@ target_link_libraries(${PLUGIN_NAME} PUBLIC
 target_link_libraries(${PLUGIN_NAME} INTERFACE plugin_ALL)
 
 #Add unit tests
-if(GENERATE_UNITTESTS)
+if(BUILD_UNITTESTS)
         find_package(Qt5 REQUIRED Test)
 
         set(CMAKE_AUTOMOC ON)

@@ -16,7 +16,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(DEBUG_VERBOSE_MAKEFILE "Enable verbose makefile generation" OFF )
-option(GENERATE_UNITTESTS "Enable building and running of ctest unit testing files" ON)
+option(BUILD_UNITTESTS "Enable building and running of ctest unit testing files" ON)
 option(GENERATE_DOCS "Enable building and running of Doxygen doc creation" ON)
 
 if(DEBUG_VERBOSE_MAKEFILE)

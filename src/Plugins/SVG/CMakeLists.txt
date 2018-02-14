@@ -38,7 +38,7 @@ target_link_libraries(plugin_SVG PUBLIC
 target_link_libraries(plugin_SVG INTERFACE plugin_ALL)
 
 #Add unit tests
-if(GENERATE_UNITTESTS)
+if(BUILD_UNITTESTS)
         find_package(Qt5 REQUIRED Test)
 
         set(CMAKE_AUTOMOC ON)
