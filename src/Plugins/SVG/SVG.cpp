@@ -10,6 +10,7 @@
 
 #include "SVG.h"
 
+#include <QFileInfo>
 #include <QSvgGenerator>
 
 namespace Plugins {
@@ -26,6 +27,7 @@ namespace Export {
             };
             m_info.co = {
                 { "Plugins.SVG.outfile", QCommandLineOption("ofile", "Output file path for export", "full filepath") },
+                { "Plugins.SVG.force", QCommandLineOption("force", "Force overwriting existing files") }
             },
             m_info.plugin = this;
         }
@@ -44,8 +46,27 @@ namespace Export {
 
         void SVG::drawSVG(const Model::LSYSModel& mdl) const
         {
+            QString ofile = Common::Config_Registry::getInstance()->getOpt("Plugins.SVG.outfile");
+            QString force = Common::Config_Registry::getInstance()->getOpt("Plugins.SVG.force");
+
+            if (!ofile.compare("N/A")) {
+                qWarning() << "No output filename given";
+                return;
+            }
+
+            if (QFileInfo(ofile).exists() && !force.compare("N/A")) {
+                qWarning() << "Not overwriting existing file without --force";
+                return;
+            }
+
+            if (!QFileInfo(ofile).isWritable()) {
+                qWarning() << "Specified location " << ofile << ".svg is not writable";
+                return;
+            }
+            qDebug() << "PDF: Writing to " << ofile;
+
             QSvgGenerator qsvg;
-            qsvg.setFileName("/home/osboxes/test.svg");
+            qsvg.setFileName(ofile);
             //        qsvg.setSize({ 10000, 10000 });
             QPainterParse qpp(*mdl.getModel(), qsvg);
         }

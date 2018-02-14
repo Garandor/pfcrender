@@ -1,16 +1,17 @@
 #include <gsl/gsl>
 
-#include <QByteArray>
-#include <QCommandLineParser>
-#include <QDebug>
-#include <QVariant>
-
 #include "BboxParse.h"
 #include "Common/Config_Registry.h"
 #include "QPainterParse.h"
 #include "pdf.h"
 
+#include <QByteArray>
+#include <QCommandLineParser>
+#include <QDebug>
+#include <QFileInfo>
 #include <QPrinter>
+#include <QString>
+#include <QVariant>
 
 namespace Plugins {
 namespace Export {
@@ -25,7 +26,8 @@ namespace Export {
                 "Plugins.PDF.outfile"
             };
             m_info.co = {
-                { "Plugins.PDF.outfile", QCommandLineOption("ofile", "Output file path for export", "full filepath") },
+                { "Plugins.PDF.outfile", QCommandLineOption("ofile", "Output file path for export", "full filepath no file extension") },
+                { "Plugins.PDF.force", QCommandLineOption("force", "Force overwriting existing files") }
             },
             m_info.plugin = this;
         }
@@ -37,15 +39,33 @@ namespace Export {
 
         void PDF::exportModel(const Model::LSYSModel& mdl) const
         {
-            //While SVG is supposed to draw colored curves, we can also compute an SVG with default graphical info from the LSYS string
-            //TBI
             printPDF(mdl);
         }
 
         void PDF::printPDF(const Model::LSYSModel& mdl) const
         {
             QPrinter printer{};
-            printer.setOutputFileName("/home/osboxes/test.pdf");
+
+            QString ofile = Common::Config_Registry::getInstance()->getOpt("Plugins.PDF.outfile");
+            QString force = Common::Config_Registry::getInstance()->getOpt("Plugins.PDF.force");
+
+            if (!ofile.compare("N/A")) {
+                qWarning() << "No output filename given";
+                return;
+            }
+
+            if (QFileInfo(ofile).exists() && !force.compare("N/A")) {
+                qWarning() << "Not overwriting existing file without --force";
+                return;
+            }
+
+            if (!QFileInfo(ofile).isWritable()) {
+                qWarning() << "Specified location " << ofile << ".pdf is not writable";
+                return;
+            }
+            qDebug() << "PDF: Writing to " << ofile;
+            printer.setOutputFileName(ofile);
+
             printer.setOutputFormat(QPrinter::PdfFormat);
             printer.setPaperSize(QPrinter::A4);
             printer.setOrientation(QPrinter::Landscape);

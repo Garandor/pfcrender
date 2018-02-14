@@ -26,9 +26,7 @@ public slots:
 
     void onBoundingBoxChanged(QRectF newBox)
     {
-        qDebug() << "Bounding box is " << newBox;
         setSize(newBox.size());
-        //        setTransformOriginPoint(newBox.topLeft());
         emit boundingBoxChanged(newBox);
     }
 
