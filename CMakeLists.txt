@@ -15,6 +15,11 @@ set(VERSION_PATCH   0   )
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+  message(STATUS "Building ${CMAKE_BUILD_TYPE} configuration as no CMAKE_BUILD_TYPE was specified")
+endif()
+
 option(DEBUG_VERBOSE_MAKEFILE "Enable verbose makefile generation" OFF )
 option(BUILD_UNITTESTS "Enable building and running of ctest unit testing files" ON)
 option(GENERATE_DOCS "Enable building and running of Doxygen doc creation" ON)
