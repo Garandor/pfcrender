@@ -50,17 +50,17 @@ namespace Export {
             QString force = Common::Config_Registry::getInstance()->getOpt("Plugins.PDF.force");
 
             if (!ofile.compare("N/A")) {
-                qWarning() << "No output filename given";
+                qWarning() << "PDF: No output filename given";
                 return;
             }
 
             if (QFileInfo(ofile).exists() && !force.compare("N/A")) {
-                qWarning() << "Not overwriting existing file without --force";
+                qWarning() << "PDF: Not overwriting existing file without --force";
                 return;
             }
 
             if (!QFileInfo(ofile).isWritable()) {
-                qWarning() << "Specified location " << ofile << ".pdf is not writable";
+                qWarning() << "PDF: Specified location " << ofile << ".pdf is not writable";
                 return;
             }
             qDebug() << "PDF: Writing to " << ofile;

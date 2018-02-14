@@ -50,20 +50,20 @@ namespace Export {
             QString force = Common::Config_Registry::getInstance()->getOpt("Plugins.SVG.force");
 
             if (!ofile.compare("N/A")) {
-                qWarning() << "No output filename given";
+                qWarning() << "SVG: No output filename given";
                 return;
             }
 
             if (QFileInfo(ofile).exists() && !force.compare("N/A")) {
-                qWarning() << "Not overwriting existing file without --force";
+                qWarning() << "SVG: Not overwriting existing file without --force";
                 return;
             }
 
             if (!QFileInfo(ofile).isWritable()) {
-                qWarning() << "Specified location " << ofile << ".svg is not writable";
+                qWarning() << "SVG: Specified location " << ofile << ".svg is not writable";
                 return;
             }
-            qDebug() << "PDF: Writing to " << ofile;
+            qDebug() << "SVG: Writing to " << ofile;
 
             QSvgGenerator qsvg;
             qsvg.setFileName(ofile);
