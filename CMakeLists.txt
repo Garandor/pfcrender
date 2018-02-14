@@ -23,6 +23,9 @@ if(DEBUG_VERBOSE_MAKEFILE)
     set( CMAKE_VERBOSE_MAKEFILE on )
 endif()
 
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    add_definitions(-DQT_NO_DEBUG_OUTPUT)
+endif()
 
 #--- START SUBMODULES
 #gsl
@@ -30,7 +33,6 @@ include_directories("lib/GSL/include")
 
 #QNanoPainter
 add_definitions(
-        -DQNANO_DEBUG
 	-DQNANO_QT_GL_INCLUDE	#Platform-specific OpenGL/OpenGLES headers included through Qt::Gui module
         -DQNANO_USE_RENDERNODE
    )
