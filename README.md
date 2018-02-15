@@ -29,5 +29,5 @@ The documentation for this project is hosted on [GitHub Pages](https://garandor.
 
 # Dependencies
 - [Qt5.8](https://www.qt.io/) or newer, as QSGRenderNode functionality is used
-- [QNanoPainter](https://github.com/QUItCoding/qnanopainter) Currently used in the form of a private patched fork
+- [QNanoPainter](https://github.com/QUItCoding/qnanopainter) Currently used in the form of a [private patched fork](file:///home/osboxes/thesis/thesis.pdf)
 - The [fxtlib](http://jjj.de/fxt/fxtpage.html)'s stringsubst module is used for import of curves from L-Systems
