@@ -1,4 +1,4 @@
-PFCRender v0.9.0
+PFCRender v1.0.0
 ====================
 
 |                                                                     | Linux/Mac                                                                                                                       | Windows  |
