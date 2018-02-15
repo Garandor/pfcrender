@@ -5,12 +5,14 @@
 #include <cmath> //fmod
 #include <gsl/gsl>
 
+//! Utility classes
 namespace util {
 
 /**
  * @brief The PolarVector2D class
  * utility class for easy calculation of vertex coordinates,
- * making sure it only gets instantiated once
+ * iteration of the curve can be done by manipulating the current object,
+ * avoiding potentially costly copying
  */
 class PolarVector2D {
 

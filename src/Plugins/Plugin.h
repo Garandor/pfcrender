@@ -22,6 +22,11 @@ struct PluginInfo {
     Plugin* plugin;
 };
 
+/**
+ * @brief The Plugin class
+ * Main interface for plugins, obtains the plugin info
+ * TODO: Could be used to obtain the GUI configuration screen
+ */
 class Plugin : public QObject {
     Q_OBJECT
 public:

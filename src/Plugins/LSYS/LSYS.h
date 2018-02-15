@@ -13,6 +13,11 @@
 namespace Plugins {
 namespace LSYS {
 
+    /**
+     * @brief The LSYS class
+     * Exposes a builder that can create a model string from an L-System description.
+     * Uses the stringsubst module from the fxtlib
+     */
     class LSYS : public Import {
         Q_OBJECT
         Q_INTERFACES(Import Plugin)

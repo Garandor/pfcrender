@@ -12,6 +12,7 @@
 #include <QString>
 #include <vector>
 
+//! Classes in this namespace are used by multiple other packages (plugin, gui, cli)
 namespace Common {
 
 const std::vector<QPair<QString, QCommandLineOption>> builtin_opts{

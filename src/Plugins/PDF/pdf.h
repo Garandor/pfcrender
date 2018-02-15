@@ -13,6 +13,12 @@ namespace Plugins {
 namespace Export {
     namespace PDF {
 
+        /**
+         * @brief The PDF class
+         * An exporter for PDFs
+         * Fits a model to an A4 page and prints to PDF
+         * \todo Make page characteristis user selectable
+         */
         class PDF : public Exporter {
             Q_OBJECT
             Q_INTERFACES(Exporter Plugin)

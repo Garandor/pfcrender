@@ -7,6 +7,10 @@ namespace Plugins {
 namespace Export {
     namespace Stdout {
 
+        /**
+         * @brief The StdoutExport interface
+         * Dumps the model string to console
+         */
         class StdoutExport : public Exporter {
             Q_OBJECT
             Q_INTERFACES(Exporter Plugin)

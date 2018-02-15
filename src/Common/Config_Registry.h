@@ -13,6 +13,10 @@
 
 namespace Common {
 
+/**
+ * @brief The Config_Registry singleton is a global configuration store singleton
+ * It is fed from filesystem, CLI, and GUI
+ */
 class Config_Registry {
 private:
     static Config_Registry* instance; ///XXX: Old style leaky singleton. Should be a more C++11 style definiton

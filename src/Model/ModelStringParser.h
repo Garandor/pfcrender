@@ -2,13 +2,13 @@
 
 #define LSYS_STRING_PARSE_FUNC_DECL unsigned int parse_model_string(const QString& curve);
 
-/**
-  *
-  *
-  * Use of this macro needs include of QString in the target class
-  *
-  *
-  */
+/*
+ * Use of this macro needs include of QString in the target class
+ * This exists to allow for inlining of the submethods implemented in the classes that use this parser
+ * XXX: Obviously dirty. As this motehod is crucial to program runtime and inlining of the submethods is necessary,
+ * this rules out a template/composite approach with virtual methods, since those are not inlined (at least by gcc)
+ * on -O2
+ */
 #define LSYS_STRING_PARSE_FUNC_DEF(CLASSNAME)                        \
     unsigned int CLASSNAME::parse_model_string(const QString& curve) \
     {                                                                \

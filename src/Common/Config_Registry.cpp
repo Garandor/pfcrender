@@ -19,7 +19,6 @@ Config_Registry* Config_Registry::getInstance()
     return instance;
 }
 
-//Enhancement: When using C++17 is possible this should become a std::optional
 /**
  * @brief Config_Registry::getOpt
  * @param optName
@@ -27,6 +26,7 @@ Config_Registry* Config_Registry::getInstance()
  */
 const QString Config_Registry::getOpt(const QString& optName) const
 {
+    //Enhancement: When using C++17 is possible this should become a std::optional
     if (!m_options.contains(optName))
         return QStringLiteral("N/A");
     return m_options.value(optName);

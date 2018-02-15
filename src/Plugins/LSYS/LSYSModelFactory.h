@@ -10,7 +10,7 @@ namespace LSYS {
 
     /**
  * @brief The LSYSModelFactory class
- *
+ * The builder implementation that will be returned from the plugin
  */
     class LSYSModelFactory : public Model::ModelStringBuilder {
 

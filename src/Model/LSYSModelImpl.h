@@ -3,6 +3,9 @@
 #include "LSYSModel.h"
 
 namespace Model {
+/**
+ * @brief The LSYSModel implementation
+ */
 class LSYSModelImpl : public LSYSModel {
     Q_OBJECT
     Q_INTERFACES(LSYSModel)

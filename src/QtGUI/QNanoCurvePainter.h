@@ -10,7 +10,11 @@
 
 namespace QtGUI {
 
-// HelloItemPainter contains the painting code
+/**
+ * @brief The QNanoCurvePainter class
+ * This class is executed through the scene graph from the rendering thread and draws the actual geometry.
+ * It pulls its data from QNanoPaintedCurve before drawing
+ */
 class QNanoCurvePainter : public QObject, public QNanoQuickItemPainter {
     Q_OBJECT
 

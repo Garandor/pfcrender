@@ -14,7 +14,10 @@ class Plugin;
 }
 
 namespace Common {
-
+/**
+ * @brief The Plugin_Registry singleton
+ * Holds a map of plugins and their names for access from sequence walker and config_registry.
+ */
 class Plugin_Registry {
 private:
     static Plugin_Registry* instance;

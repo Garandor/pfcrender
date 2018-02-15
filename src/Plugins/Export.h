@@ -9,6 +9,9 @@ class QQuickItem;
 class QCommandLineParser;
 
 namespace Plugins {
+/**
+ * @brief The Exporter interface
+ */
 class Exporter : public Plugin {
     Q_OBJECT
 

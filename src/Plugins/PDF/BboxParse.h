@@ -6,6 +6,10 @@
 
 namespace Plugins {
 namespace Export {
+    /**
+     * @brief The BboxParse class
+     * Iterates through the model string, calculating a bounding box from min- and max coordinates.
+     */
     class BboxParse {
 
     public:

@@ -7,9 +7,8 @@ namespace QtGUI {
 
 class QNanoCurvePainter;
 /**
- * @brief The QNanoRenderedCurve class
- * This class is the GUI interface to the scene graph
- *
+ * @brief The QNanoPaintedCurve class
+ * This class is the GUI interface to the item placed in the rendering scene and handles business logic related to drawing.
  */
 class QNanoPaintedCurve : public QNanoQuickItem {
     Q_OBJECT

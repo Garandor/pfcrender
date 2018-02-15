@@ -13,6 +13,13 @@
 
 #include "projectinfo.h"
 
+/**
+ * @brief main program entry point
+ * @param argc
+ * @param argv
+ * @return
+ * This methods sets up the Qt runtime environment
+ */
 int main(int argc, char** argv)
 {
 //Force Qt to use OpenGLESv2 / ANGLE on windows so we can use QNanoPainter

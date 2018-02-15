@@ -5,8 +5,13 @@
 
 #include "Model/LSYSModelImpl.h"
 
+//! Classes regarding command line operation
 namespace QtCLI {
 
+/**
+ * @brief The PFCRenderCLI class
+ * This class is used when --batch operation is requested and execute the sequence
+ */
 class PFCRenderCLI : public QObject {
     Q_OBJECT
 

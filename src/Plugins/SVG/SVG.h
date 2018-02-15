@@ -13,6 +13,10 @@ namespace Plugins {
 namespace Export {
     namespace SVG {
 
+        /**
+         * @brief The SVG class
+         * An exporter for SVGs
+         */
         class SVG : public Exporter {
             Q_OBJECT
             Q_INTERFACES(Exporter Plugin)

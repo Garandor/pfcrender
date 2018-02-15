@@ -8,6 +8,11 @@ class QQuickItem;
 class QCommandLineParser;
 
 namespace Plugins {
+
+/**
+ * @brief The Import interface
+ * Declares the interface for importers
+ */
 class Import : public Plugin {
     Q_OBJECT
 

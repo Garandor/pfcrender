@@ -7,8 +7,12 @@
 
 #include "Model/LSYSModelImpl.h"
 
+//! Classes regarding GUI operation
 namespace QtGUI {
 
+/**
+ * @brief The PFCRenderGUI class is tasked with executing the requested sequence and relaying model change signals to the rendering class
+ */
 class PFCRenderGUI : public QObject {
     Q_OBJECT
 
