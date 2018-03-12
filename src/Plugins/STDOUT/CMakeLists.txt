@@ -1,6 +1,6 @@
 find_package(Qt5 REQUIRED Core)
-set (PLUGIN_NAME plugin_stdout)
-set (TEST_NAME test_stdout)
+set (PLUGIN_NAME plugin_STDOUT)
+set (TEST_NAME test_STDOUT)
 
 set (SRC
 
@@ -23,6 +23,8 @@ target_link_libraries(${PLUGIN_NAME} PUBLIC
     )
 
 target_link_libraries(${PLUGIN_NAME} INTERFACE plugin_ALL)
+
+COPY_TO_PLUGIN_DIR(${PLUGIN_NAME})
 
 #Add unit tests
 if(BUILD_UNITTESTS)

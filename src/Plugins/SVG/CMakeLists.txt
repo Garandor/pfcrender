@@ -37,6 +37,8 @@ target_link_libraries(plugin_SVG PUBLIC
 
 target_link_libraries(plugin_SVG INTERFACE plugin_ALL)
 
+COPY_TO_PLUGIN_DIR(plugin_SVG)
+
 #Add unit tests
 if(BUILD_UNITTESTS)
         find_package(Qt5 REQUIRED Test)

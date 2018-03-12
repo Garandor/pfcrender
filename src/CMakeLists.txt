@@ -101,3 +101,14 @@ endif()
 
 #descend into plugins subdirectory to build plugins
 add_subdirectory(Plugins)
+
+
+#on Windows: Copy Qt libraries to Executable folder, src https://gist.github.com/Rod-Persky/e6b93e9ee31f9516261b
+if (WIN32)
+    get_target_property(QT5_QMAKE_EXECUTABLE Qt5::qmake IMPORTED_LOCATION)
+    get_filename_component(QT5_WINDEPLOYQT_EXECUTABLE ${QT5_QMAKE_EXECUTABLE} PATH)
+    set(QT5_WINDEPLOYQT_EXECUTABLE "${QT5_WINDEPLOYQT_EXECUTABLE}/windeployqt.exe")
+
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+	    COMMAND ${QT5_WINDEPLOYQT_EXECUTABLE} --qmldir ${CMAKE_SOURCE_DIR} $<TARGET_FILE_DIR:${PROJECT_NAME}>)
+endif(WIN32)

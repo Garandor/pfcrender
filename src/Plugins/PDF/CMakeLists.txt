@@ -1,7 +1,7 @@
 find_package(Qt5 REQUIRED Core Qml Gui Quick Svg PrintSupport)
 
-set (PLUGIN_NAME plugin_pdf)
-set (TEST_NAME test_pdf)
+set (PLUGIN_NAME plugin_PDF)
+set (TEST_NAME test_PDF)
 
 set (SRC
 
@@ -39,6 +39,8 @@ target_link_libraries(${PLUGIN_NAME} PUBLIC
     )
 
 target_link_libraries(${PLUGIN_NAME} INTERFACE plugin_ALL)
+
+COPY_TO_PLUGIN_DIR(${PLUGIN_NAME})
 
 #Add unit tests
 if(BUILD_UNITTESTS)

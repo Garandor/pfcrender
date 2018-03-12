@@ -32,6 +32,8 @@ target_link_libraries(plugin_LSYS PRIVATE
 
 target_link_libraries(plugin_LSYS INTERFACE plugin_ALL)
 
+COPY_TO_PLUGIN_DIR(plugin_LSYS)
+
 #Add unit tests
 if(BUILD_UNITTESTS)
         find_package(Qt5 REQUIRED Test)

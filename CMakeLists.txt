@@ -10,7 +10,7 @@ project(pfcrender)
 # The project version number.
 set(VERSION_MAJOR   1   )
 set(VERSION_MINOR   0   )
-set(VERSION_PATCH   0   )
+set(VERSION_PATCH   1   )
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
