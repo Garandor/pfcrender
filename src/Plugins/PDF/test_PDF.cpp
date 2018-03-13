@@ -55,4 +55,4 @@ namespace Export {
 }
 
 QTEST_MAIN(Plugins::Export::PDF::Test_PDF)
-#include "test_pdf.moc"
+#include "test_PDF.moc"

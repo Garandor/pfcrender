@@ -33,7 +33,7 @@ if(BUILD_UNITTESTS)
         set(CMAKE_AUTOMOC ON)
 
         add_executable(${TEST_NAME}
-            test_stdout.cpp
+		${TEST_NAME}.cpp
             ${SRC}
             )
         target_include_directories(${TEST_NAME} PRIVATE

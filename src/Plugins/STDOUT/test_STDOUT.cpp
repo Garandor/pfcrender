@@ -52,4 +52,4 @@ namespace Export {
 }
 }
 QTEST_MAIN(Plugins::Export::Test_STDOUT)
-#include "test_stdout.moc"
+#include "test_STDOUT.moc"
