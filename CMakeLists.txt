@@ -22,7 +22,7 @@ endif()
 
 option(DEBUG_VERBOSE_MAKEFILE "Enable verbose makefile generation" OFF )
 option(BUILD_UNITTESTS "Enable building and running of ctest unit testing files" ON)
-option(GENERATE_DOCS "Enable building and running of Doxygen doc creation" ON)
+option(GENERATE_DOCS "Enable Doxygen doc creation" ON)
 
 if(DEBUG_VERBOSE_MAKEFILE)
     set( CMAKE_VERBOSE_MAKEFILE on )
