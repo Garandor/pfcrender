@@ -1,3 +1,5 @@
+Bachelorarbeit auf Basis der Latex-Vorlage von Stefan Macke. Die ursprüngliche README der Vorlage folgt. Die ursprüngliche README der Vorlage folgt.
+
 # LaTeX-Vorlage für meine Masterarbeit an der Ohm-Hochschule Nürnberg
 
 Hier kurz die wichtigsten Features der Vorlage:
