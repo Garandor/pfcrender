@@ -11,39 +11,39 @@ ApplicationWindow
     height: 600
     title: qsTr("PFCRender")
 
-    toolBar:ToolBar
-    {
-        RowLayout {
-            id: rowLayout
-            anchors.fill: parent
+//    toolBar:ToolBar
+//    {
+//        RowLayout {
+//            id: rowLayout
+//            anchors.fill: parent
 
-            ToolButton {
-                width: 100
-                height: 100
-                id: btnImport
-                text: "import"
-//				iconSource: "res/dummy.jpg"
-                onClicked: {
-                    contentArea.source = "CreatePFCForm.ui.qml";
+//            ToolButton {
+//                width: 100
+//                height: 100
+//                id: btnImport
+//                text: "import"
+////				iconSource: "res/dummy.jpg"
+//                onClicked: {
+//                    contentArea.source = "CreatePFCForm.ui.qml";
 
-                     }
-            }
-            ToolButton {
-                width: 10
-                height: 10
-                id: btnModify
-                text: "modify"
-//				iconSource: "res/dummy.jpg"
-                     }
-            ToolButton {
-                id: b_export
-                width: 10
-                height: 10
-                text: "export"
-//                iconSource: "res/dummy.jpg"
-                     }
-        }
-    }
+//                     }
+//            }
+//            ToolButton {
+//                width: 10
+//                height: 10
+//                id: btnModify
+//                text: "modify"
+////				iconSource: "res/dummy.jpg"
+//                     }
+//            ToolButton {
+//                id: b_export
+//                width: 10
+//                height: 10
+//                text: "export"
+////                iconSource: "res/dummy.jpg"
+//                     }
+//        }
+//    }
 
     Loader{
         anchors.fill: parent
