@@ -15,11 +15,13 @@
 
 /**
  * @brief main program entry point
- * @param argc
- * @param argv
- * @return
- * This methods sets up the Qt runtime environment
- */
+ * @param argc system argument count
+ * @param argv system argument value array
+ * @return 0 on success, non-zero on failure
+ *
+ * This methods sets up the Qt runtime environment and executes the application.
+ * If batchmode was selected, run and exit, otherwise starts to GUI
+ **/
 int main(int argc, char** argv)
 {
 //Force Qt to use OpenGLESv2 / ANGLE on windows so we can use QNanoPainter
