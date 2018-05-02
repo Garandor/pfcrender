@@ -1,9 +1,9 @@
 #SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins)
-#if(WIN32)
+if(WIN32)
 #	SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins)
-#	SET(BUILD_UNITTESTS OFF)
-#	MESSAGE(WARNING "Unit Tests not supported on Windows, deactivating")
-#endif()
+        SET(BUILD_UNITTESTS OFF)
+        MESSAGE(WARNING "Unit Tests not supported on Windows, deactivating")
+endif()
 
 macro (COPY_TO_PLUGIN_DIR target_name)
 
