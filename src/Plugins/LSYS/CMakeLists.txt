@@ -21,9 +21,9 @@ set (LSYS_SRC
 add_library(plugin_LSYS SHARED ${LSYS_SRC} )
 
 target_include_directories(plugin_LSYS PRIVATE
-    ${PLUGIN_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/fxt
-    ${CMAKE_SOURCE_DIR}/src
+    "${PLUGIN_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/fxt"
+    "${CMAKE_SOURCE_DIR}/src"
     )
 
 target_link_libraries(plugin_LSYS PRIVATE
@@ -42,7 +42,6 @@ if(BUILD_UNITTESTS)
 
         add_executable(test_lsys
             Test_LSYS.cpp
-            ${LSYS_SRC}
             )
         target_include_directories(test_lsys PRIVATE
             "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -51,7 +50,9 @@ if(BUILD_UNITTESTS)
             )
         target_link_libraries(test_lsys PRIVATE
             Qt5::Core
-            Qt5::Test)
+            Qt5::Test
+            plugin_LSYS
+            )
 
         add_test(NAME Test_LSYS COMMAND test_lsys)
 endif()

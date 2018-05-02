@@ -17,6 +17,7 @@ namespace LSYS {
         auto cr = Common::Config_Registry::getInstance();
 
         Plugin* p = pr->getPlugin("LSYS");
+        assert(p != nullptr);
 
         //Check if all opts are set
         for (auto opt : p->getInfo().conf_opts)

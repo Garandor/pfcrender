@@ -31,7 +31,7 @@ Plugin_Registry::Plugin_Registry()
     : m_registered{}
 {
     //Load and store all plugins in the plugin folder
-
+    qDebug() << qApp->applicationDirPath().append("/plugins");
     QDirIterator it(QDir(qApp->applicationDirPath().append("/plugins"), "*", QDir::Unsorted, QDir::Files));
     while (it.hasNext()) {
         QFile f(it.next());
