@@ -48,12 +48,13 @@ add_subdirectory("lib/qnanopainter/")
 
 #--- END SUBMODULES
 
-add_subdirectory(src)
-
-if(GENERATE_UNITTESTS)
+if(BUILD_UNITTESTS) #enable testing must be called before descending in src or CTest won't find plugin tests
         enable_testing()
         add_subdirectory(test)
 endif()
+
+add_subdirectory(src)
+
 
 if(GENERATE_DOCS)
         add_subdirectory(doc)
